@@ -10,4 +10,4 @@ Verse 2.0 is network protocol for real-time sharing of 3D data. It is successor 
 
 ## License
 
-The source code of Verse library is licensed under BSD license. This library could be used for implementation of Verse client. The source code of Verse server is licensed under GNU GPL 2.0 license. For details look at files BSD-LICENSE and GPL-LICENSE.
+The source code of Verse Javascript library is licensed under MIT license. This library could be used for implementation of Web based Verse client. For details look at file LICENSE.
