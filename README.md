@@ -1,5 +1,5 @@
 # verse-javascript
 
-testing repository
+[![Build Status](https://travis-ci.org/jirivrany/verse-javascript.png?branch=master)](https://travis-ci.org/jirivrany/verse-javascript)
 
-travis
+testing repository
