@@ -1,11 +1,11 @@
 {
-  "name": "verse",
-  "version": "0.0.0",
+  "name": "verse-javascript",
+  "version": "0.0.1",
   "authors": [
     "Jiri Vrany <jiri.vrany@tul.cz>"
   ],
   "main": "src/app.js",
-  "license": "MIT",
+  "license": "BSD",
   "ignore": [
     "**/.*",
     "node_modules",
