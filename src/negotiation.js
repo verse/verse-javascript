@@ -92,13 +92,13 @@ define(function() {
         },
 
         /*
-         * Cookie
+         * Token
          * feature type 4
          * @param type : int message type
-         * @param cookie_val : string
+         * @param token_val : string
          */
-        cookie: function(type, cookie_val) {
-            return string_message(type, cookie_val, 4);
+        token: function(type, token_val) {
+            return string_message(type, token_val, 4);
         },
 
 

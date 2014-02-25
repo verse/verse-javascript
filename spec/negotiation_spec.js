@@ -106,25 +106,25 @@ define(["negotiation"], function(negotiation) {
 
         });
 
-        describe("cookie", function() {
-            var cookie;
+        describe("token", function() {
+            var token;
 
             beforeEach(function() {
-                cookie = 'some cookie value';
-                nego = negotiation.cookie(negotiation.CONFIRM_L, cookie);
+                token = 'some token value';
+                nego = negotiation.token(negotiation.CONFIRM_L, token);
                 view = new DataView(nego);
             });
 
-            it("lenght of ccid message should be equal to 3 + 17 (cookie lenght)", function() {
-                expect(nego.byteLength).toEqual(20);
+            it("lenght of ccid message should be equal to 3 + 16 (token lenght)", function() {
+                expect(nego.byteLength).toEqual(19);
             });
 
             it("first byte - message type - should be 5 for CONFIRM_L", function() {
                 expect(view.getUint8(0)).toEqual(5);
             });
 
-            it("second byte - message lenght - should be 3 + 17 ", function() {
-                expect(view.getUint8(1)).toEqual(20);
+            it("second byte - message lenght - should be 3 + 16 ", function() {
+                expect(view.getUint8(1)).toEqual(19);
             });
 
             it("third byte - feature type - should be 4 ", function() {
@@ -136,7 +136,7 @@ define(["negotiation"], function(negotiation) {
             });
 
             it("Last char of packed passwd should be e", function() {
-                expect(view.getUint8(19)).toEqual("e".charCodeAt(0));
+                expect(view.getUint8(18)).toEqual("e".charCodeAt(0));
             });
 
 
