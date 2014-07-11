@@ -1,8 +1,7 @@
 language: node_js
 node_js:
-  - 0.8
-before_script:
-  - npm update -g npm    
+  - "0.8"
+  - "0.10"
+before_install:
+  - npm install -g npm
   - npm install -g grunt-cli
-after_failure:
- cat /home/travis/build/verse/verse-javascript/npm-debug.log
