@@ -1,7 +1,9 @@
 /*globals ArrayBuffer, define*/
 
 define(function() {
-    var negotiation, string_message, int_message;
+    'use strict';
+
+    var negotiation, sendStringMessage, sendIntMessage;
 
     /**
      * Abstract string message array buffer
@@ -9,10 +11,10 @@ define(function() {
      * @param data_str string
      * @param feature_type int
      **/
-    string_message = function(message_type, data_str, feature_type) {
+    sendStringMessage = function(message_type, data_str, feature_type) {
         var buf, view, mes_len, i;
 
-        mes_len = 3 + data_str.length;
+        mes_len = 3 + 1 + data_str.length;
         buf = new ArrayBuffer(mes_len);
         view = new DataView(buf);
         /* first byte - message type */
@@ -21,9 +23,11 @@ define(function() {
         view.setUint8(1, mes_len);
         /* third byte - feature type */
         view.setUint8(2, feature_type);
+        /* fourth byte - feature type */
+        view.setUint8(3, data_str.length);
         /* Pack the data_str */
         for (i = 0; i < data_str.length; i++) {
-            view.setUint8(3 + i, data_str.charCodeAt(i));
+            view.setUint8(4 + i, data_str.charCodeAt(i));
         }
 
         return buf;
@@ -36,7 +40,7 @@ define(function() {
      * @param feature_type int
      **/
 
-    int_message = function(message_type, data_int, feature_type) {
+    sendIntMessage = function(message_type, data_int, feature_type) {
         var buf, view;
 
         buf = new ArrayBuffer(4);
@@ -68,7 +72,7 @@ define(function() {
          * @param id : fcid Value range: 0 - 255
          */
         fcid: function(type, id) {
-            return int_message(type, id, 1);
+            return sendIntMessage(type, id, 1);
         },
 
         /*
@@ -78,7 +82,7 @@ define(function() {
          * @param id : fcid Value range: 0 - 255
          */
         ccid: function(type, id) {
-            return int_message(type, id, 2);
+            return sendIntMessage(type, id, 2);
         },
 
         /*
@@ -88,7 +92,7 @@ define(function() {
          * @param nurl : string
          */
         url: function(type, nurl) {
-            return string_message(type, nurl, 3);
+            return sendStringMessage(type, nurl, 3);
         },
 
         /*
@@ -98,7 +102,7 @@ define(function() {
          * @param token_val : string
          */
         token: function(type, token_val) {
-            return string_message(type, token_val, 4);
+            return sendStringMessage(type, token_val, 4);
         },
 
 
@@ -109,7 +113,7 @@ define(function() {
          * @param ded_val : string
          */
         ded: function(type, ded_val) {
-            return string_message(type, ded_val, 5);
+            return sendStringMessage(type, ded_val, 5);
         },
 
         /*
@@ -119,7 +123,7 @@ define(function() {
          * @param id : rwin Value range: 0 - 255
          */
         rwin: function(type, value) {
-            return int_message(type, value, 6);
+            return sendIntMessage(type, value, 6);
         },
 
         /*
@@ -153,7 +157,7 @@ define(function() {
          * @param id : compress Value range: 0 - 255
          */
         compression: function(type, value) {
-            return int_message(type, value, 8);
+            return sendIntMessage(type, value, 8);
         }
 
 

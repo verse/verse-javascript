@@ -2,7 +2,7 @@
 /* globals define*/
 
 
-define(['request', 'response'], function(request, response) {
+define(['request', 'response', 'negotiation'], function(request, response, negotiation) {
     'use strict';
     window.WebSocket = window.WebSocket || window.MozWebSocket;
     var my_webscoket;
@@ -50,7 +50,7 @@ define(['request', 'response'], function(request, response) {
         },
 
         onMessage: function onMessage(message, username, passwd) {
-            var buf, response_type;
+            var buf, response_data;
             if (message.data instanceof ArrayBuffer) {
                 if (!response.checkHeader(message.data)) {
                     /*bad protocl version - close conection*/
@@ -58,15 +58,27 @@ define(['request', 'response'], function(request, response) {
                     return;
                 }
 
-                response_type = response.parse(message.data);
-                if (response_type === 'passwd') {
-                    buf = request.userAuth(username, passwd);
-                    /* Send the blob */
-                    my_webscoket.send(buf);
-                    console.log('heslo zaslano');
-                }
+                response_data = response.parse(message.data);
+                response_data.forEach(function(cmd) {
+                    if (cmd.CMD === 'auth_passwd') {
+                        buf = request.userAuth(username, passwd);
+                        /* Send the blob */
+                        my_webscoket.send(buf);
+                        console.log('heslo zaslano');
+                    } else if (cmd.CMD === 'auth_succ')  {
+                        wsocket.confirmHost(response_data);
+                    }
+                });
+
 
             }
+        },
+
+        confirmHost: function confirmHost(response_data) {
+            my_webscoket.send(negotiation.token(negotiation.CONFIRM_R, response_data[1].TOKEN));
+            my_webscoket.send(negotiation.token(negotiation.CHANGE_R, '^DD31*$cZ6#t'));
+            my_webscoket.send(negotiation.ded(negotiation.CONFIRM_L, response_data[2].DED));
+            console.info(response_data[2].DED);
         }
 
 

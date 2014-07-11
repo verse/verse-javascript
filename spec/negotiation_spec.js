@@ -77,28 +77,32 @@ define(["negotiation"], function(negotiation) {
                 view = new DataView(nego);
             });
 
-            it("lenght of ccid message should be equal to 3 + 28 (url lenght)", function() {
-                expect(nego.byteLength).toEqual(3 + 28);
+            it("lenght of ccid message should be equal to 3 + 1 + 28 (url lenght)", function() {
+                expect(nego.byteLength).toEqual(3 + 1 + 28);
             });
 
             it("first byte - message type - should be 5 for CONFIRM_L", function() {
                 expect(view.getUint8(0)).toEqual(5);
             });
 
-            it("second byte - message lenght - should be 3 + 28 ", function() {
-                expect(view.getUint8(1)).toEqual(31);
+            it("second byte - message lenght - should be 3 + 1 + 28 ", function() {
+                expect(view.getUint8(1)).toEqual(32);
             });
 
             it("third byte - feature type - should be 3 ", function() {
                 expect(view.getUint8(2)).toEqual(3);
             });
 
+            it("First byte of packed string should be lenght of URL string = 28 ", function() {
+                expect(view.getUint8(3)).toEqual(28);
+            });
+
             it("First char of packed url should be w", function() {
-                expect(view.getUint8(3)).toEqual("w".charCodeAt(0));
+                expect(view.getUint8(4)).toEqual("w".charCodeAt(0));
             });
 
             it("Last char of packed passwd should be 5", function() {
-                expect(view.getUint8(30)).toEqual("5".charCodeAt(0));
+                expect(view.getUint8(31)).toEqual("5".charCodeAt(0));
             });
 
            
@@ -110,33 +114,37 @@ define(["negotiation"], function(negotiation) {
             var token;
 
             beforeEach(function() {
-                token = 'some token value';
+                token = 'token';
                 nego = negotiation.token(negotiation.CONFIRM_L, token);
                 view = new DataView(nego);
             });
 
-            it("lenght of ccid message should be equal to 3 + 16 (token lenght)", function() {
-                expect(nego.byteLength).toEqual(19);
+            it("lenght of token message should be equal to 3 + 1 + 5 (token lenght)", function() {
+                expect(nego.byteLength).toEqual(9);
             });
 
             it("first byte - message type - should be 5 for CONFIRM_L", function() {
                 expect(view.getUint8(0)).toEqual(5);
             });
 
-            it("second byte - message lenght - should be 3 + 16 ", function() {
-                expect(view.getUint8(1)).toEqual(19);
+            it("second byte - message lenght - should be 3 + 1 + 5 ", function() {
+                expect(view.getUint8(1)).toEqual(9);
             });
 
             it("third byte - feature type - should be 4 ", function() {
                 expect(view.getUint8(2)).toEqual(4);
             });
 
-            it("First char of packed url should be s", function() {
-                expect(view.getUint8(3)).toEqual("s".charCodeAt(0));
+             it("First byte of packed string should be lenght of token string = 5", function() {
+                expect(view.getUint8(3)).toEqual(5);
             });
 
-            it("Last char of packed passwd should be e", function() {
-                expect(view.getUint8(18)).toEqual("e".charCodeAt(0));
+            it("First char of packed token should be t", function() {
+                expect(view.getUint8(4)).toEqual("t".charCodeAt(0));
+            });
+
+            it("Last char of packed token should be n", function() {
+                expect(view.getUint8(8)).toEqual("n".charCodeAt(0));
             });
 
 

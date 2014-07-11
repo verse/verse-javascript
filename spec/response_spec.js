@@ -21,10 +21,16 @@ define(["response"], function(response) {
                 view.setUint8(6, 2);
             });
 
-            it("should return passwd for password mock message", function() {
-                expect(response.parse(mock_buff)).toEqual("passwd");
+            it("creates a mock buffer object", function() {
+                expect(mock_buff).toBeDefined();
             });
 
+            it("first value in result array should be command auth password for password mock message", function() {
+                var result = response.parse(mock_buff);
+
+                expect(result[0]).toEqual({CMD: "auth_passwd"});
+            });
+            
 
         });
 
