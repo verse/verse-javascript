@@ -14,6 +14,7 @@ git clone git@github.com:verse/verse-javascript.git
 cd verse-javascript
 npm install
 bower install
+```
 
 ## Verse
 
