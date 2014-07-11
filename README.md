@@ -1,6 +1,7 @@
 # verse-javascript
 
 [![Build Status](https://travis-ci.org/verse/verse-javascript.png?branch=master)](https://travis-ci.org/verse/verse-javascript)
+[![Code Climate](https://codeclimate.com/github/verse/verse-javascript.png)](https://codeclimate.com/github/verse/verse-javascript)
 
 Websocket support for Verse protocol
 
