@@ -5,6 +5,16 @@
 
 Websocket support for Verse protocol
 
+**Work in progress. **
+
+For testing build, node.js is required. 
+
+```bash
+git clone git@github.com:verse/verse-javascript.git 
+cd verse-javascript
+npm install
+bower install
+
 ## Verse
 
 Verse 2.0 is network protocol for real-time sharing of 3D data. It is successor of old Verse protocol developed at KTH. Verse 2.0 is still in alpha version.
