@@ -75,10 +75,15 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
         },
 
         confirmHost: function confirmHost(response_data) {
+            var paket = negotiation.url(negotiation.CHANGE_R, 'ws://verse.tul.cz:23456');
+            console.info(paket); 
+            /*
+            my_webscoket.send(paket);
             my_webscoket.send(negotiation.token(negotiation.CONFIRM_R, response_data[1].TOKEN));
             my_webscoket.send(negotiation.token(negotiation.CHANGE_R, '^DD31*$cZ6#t'));
             my_webscoket.send(negotiation.ded(negotiation.CONFIRM_L, response_data[2].DED));
             console.info(response_data[2].DED);
+            */
         }
 
 

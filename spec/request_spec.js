@@ -45,7 +45,7 @@ define(["request"], function(request) {
                 view = new DataView(auth);
             });
 
-            it("should have handshake.lenght equal to 20", function() {
+            it("should have handshake.lenght equal to 20 = 4 (header) + 3 (cmd_header) + 6 (albert) + 5 (12345)  + 2 (string type)", function() {
                 expect(auth.byteLength).toEqual(20);
             });
 
@@ -53,7 +53,7 @@ define(["request"], function(request) {
                 expect(view.getUint16(2)).toEqual(20);
             });
 
-            it("Pack length of the command  should be 16", function() {
+            it("Pack length of the command  should be 16 = 3 (cmd_header) + 6 (albert) + 5 (12345)  + 2 (string type) ", function() {
                 expect(view.getUint8(5)).toEqual(5 + uname.length + passwd.length);
             });
 
