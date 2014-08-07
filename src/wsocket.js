@@ -74,7 +74,7 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
 
         confirmHost: function confirmHost(response_data) {
 
-            var url = 'verse-web-tls://5.6.7.8:*'; //'ws://verse.tul.cz:23456'
+            var url = 'ws://localhost:23456'; //'ws://verse.tul.cz:23456'
 
             var paket = negotiation.url(negotiation.CHANGE_R, url);
 
