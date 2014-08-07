@@ -58,6 +58,7 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
                 }
 
                 response_data = response.parse(message.data);
+                console.info(response_data);
                 response_data.forEach(function(cmd) {
                     if (cmd.CMD === 'auth_passwd') {
                         buf = request.userAuth(username, passwd);
@@ -74,17 +75,16 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
 
         confirmHost: function confirmHost(response_data) {
 
-            var url = 'ws://localhost:23456'; //'ws://verse.tul.cz:23456'
+            var url = 'verse-web-tls://verse.tul.cz:23456'; //'ws://verse.tul.cz:23456'
 
             var paket = negotiation.url(negotiation.CHANGE_R, url);
 
-            paket = request.buffer_push(paket, negotiation.token(negotiation.CONFIRM_R, response_data[1].TOKEN));
+            paket = request.buffer_push(paket, negotiation.token(negotiation.CONFIRM_R, response_data[1].VALUE));
             paket = request.buffer_push(paket, negotiation.token(negotiation.CHANGE_R, '^DD31*$cZ6#t'));
-            paket = request.buffer_push(paket, negotiation.ded(negotiation.CONFIRM_L, response_data[2].DED));
+            paket = request.buffer_push(paket, negotiation.ded(negotiation.CONFIRM_L, response_data[2].VALUE));
             
             paket = request.message(paket);
-            console.info(response_data);
-
+            
             my_webscoket.send(paket);
             
             

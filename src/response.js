@@ -7,6 +7,16 @@ define(function() {
 
         var length, feature, i, token, ded;
 
+        /* OP CODES
+        * 3 CHANGE_L
+        * 4 CHANGE_R
+        * 5 CONFIRM_L
+        * 6 CONFIRM_R
+        * 7 USER_AUTH_REQUEST
+        * 8 USER_AUTH_FAILURE
+        * 9 USER_AUTH_SUCCESS
+        */
+
         if (op_code === 8) { /* Is it command usr_auth_fail */
             var method = rec_view.getUint8(buf_pos + 1);
             if (method === 2) { /* Password method */
@@ -28,10 +38,10 @@ define(function() {
                 for (i = 0; i <= length-4; i++) {
                     token += String.fromCharCode(rec_view.getUint8(buf_pos + 2 + i));
                 }
-                return {TOKEN: token.slice(1)};
+                return {CMD: 'CHANGE_R', FEATURE:'TOKEN', VALUE: token.slice(1)};
             }
             
-            return true;
+            return {CHANGE_R: feature};
         } else if (op_code === 3) {
             /* Change_L command */
             length = rec_view.getUint8(buf_pos);
@@ -41,10 +51,14 @@ define(function() {
                 for (i = 0; i <=length-4; i++) {
                     ded += String.fromCharCode(rec_view.getUint8(buf_pos + 2 + i));
                 }
-                return {DED: ded.slice(1)};
+                return {CMD: 'CHANGE_L', FEATURE:'DED', VALUE: ded.slice(1)};
             }
-            return true;
+            return {CHANGE_L:  feature};
+        } else if (op_code === 5) {
+            /* CONFIRM_L command */
         }
+
+        return {OP_CODE: op_code};
     };
 
     var response = {
