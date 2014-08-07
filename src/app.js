@@ -17,7 +17,7 @@ require(['wsocket'], function(wsocket) {
 
     config = {
         uri: 'ws://verse.example.org:54321',
-        version: 'v1.verse.example.org',
+        version: 'v1.verse.tul.cz',
         username: 'verse_user',
         passwd: 'verse_passwd'
     };
