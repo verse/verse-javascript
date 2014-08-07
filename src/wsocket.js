@@ -75,9 +75,7 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
 
         confirmHost: function confirmHost(response_data) {
 
-            var url = 'verse-web-tls://verse.tul.cz:23456'; //'ws://verse.tul.cz:23456'
-
-            var paket = negotiation.url(negotiation.CHANGE_R, url);
+            var paket = negotiation.url(negotiation.CHANGE_R, my_webscoket.url);
 
             paket = request.buffer_push(paket, negotiation.token(negotiation.CONFIRM_R, response_data[1].VALUE));
             paket = request.buffer_push(paket, negotiation.token(negotiation.CHANGE_R, '^DD31*$cZ6#t'));
