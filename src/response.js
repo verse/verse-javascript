@@ -5,7 +5,7 @@ define(function() {
 
     var checkOpCode = function checkOpCode(op_code, rec_view, buf_pos) {
 
-        var length, feature, i, token, ded;
+        var length, feature, value;
 
         /* OP CODES
         * 3 CHANGE_L
@@ -34,11 +34,8 @@ define(function() {
             feature = rec_view.getUint8(buf_pos + 1);
         
             if (feature === 4) { /* got token */
-                token = '';
-                for (i = 0; i <= length-4; i++) {
-                    token += String.fromCharCode(rec_view.getUint8(buf_pos + 2 + i));
-                }
-                return {CMD: 'CHANGE_R', FEATURE:'TOKEN', VALUE: token.slice(1)};
+                value = parseStringValue(rec_view, length, buf_pos);
+                return {CMD: 'CHANGE_R', FEATURE:'TOKEN', VALUE: value};
             }
             
             return {CHANGE_R: feature};
@@ -47,11 +44,8 @@ define(function() {
             length = rec_view.getUint8(buf_pos);
             feature = rec_view.getUint8(buf_pos + 1);
             if (feature === 5) { /* got DED */
-                ded = '';
-                for (i = 0; i <=length-4; i++) {
-                    ded += String.fromCharCode(rec_view.getUint8(buf_pos + 2 + i));
-                }
-                return {CMD: 'CHANGE_L', FEATURE:'DED', VALUE: ded.slice(1)};
+                value = parseStringValue(rec_view, length, buf_pos);
+                return {CMD: 'CHANGE_L', FEATURE:'DED', VALUE: value};
             }
             return {CHANGE_L:  feature};
         } else if (op_code === 5) {
@@ -59,6 +53,14 @@ define(function() {
         }
 
         return {OP_CODE: op_code};
+    };
+
+    var  parseStringValue = function parseStringValue(receivedDataView, length, buf_pos) {
+        var i, result = '';
+        for (i = 0; i <= length-4; i++) {
+            result += String.fromCharCode(receivedDataView.getUint8(buf_pos + 2 + i));
+        }
+        return result.slice(1);
     };
 
     var response = {
