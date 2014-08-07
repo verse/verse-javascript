@@ -1,11 +1,11 @@
 "use strict";
 
-/*globals define*/
+/*globals define, ArrayBuffer*/
 
 define(["request"], function(request) {
 
     describe("Request", function() {
-        var shake, view, auth, uname, passwd;
+        var shake, view, auth, uname, passwd, mock_view, mock_buff, mock_buff_a, mock_buff_b;
 
 
         describe("handshake", function() {
@@ -77,6 +77,85 @@ define(["request"], function(request) {
                 expect(view.getUint8(15 + passwd.length - 1)).toEqual("5".charCodeAt(0));
             });
 
+
+
+        });
+
+        describe("message - general message object", function() {
+            beforeEach(function() {
+                mock_buff = new ArrayBuffer(8);
+                mock_view = new DataView(mock_buff);
+                /*message lenght*/
+                mock_view.setUint16(2, 8);
+                /* command usr_auth_fail */
+                mock_view.setUint8(4, 8);
+                /* command length*/
+                mock_view.setUint8(5, 3);
+                /* command method*/
+                mock_view.setUint8(6, 2);
+                shake = request.message(mock_buff);
+                view = new DataView(shake);
+            });
+
+            it("should have message.lenght equal to 12 = 4 message header + 8 mock buffer length", function() {
+
+                expect(shake.byteLength).toEqual(12);
+            });
+
+            it("should have 6 byte equal to 8 if copy works", function() {
+
+                expect(view.getUint16(6)).toEqual(8);
+            });
+
+              it("encoded message lenght should be also 12", function() {
+
+                expect(view.getUint16(2)).toEqual(12);
+            });
+
+        });
+
+        describe("merge two array buffers into one", function() {
+            beforeEach(function() {
+                mock_buff_a = new ArrayBuffer(8);
+                mock_view = new DataView(mock_buff_a);
+                /*message lenght*/
+                mock_view.setUint16(2, 8);
+                /* command usr_auth_fail */
+                mock_view.setUint8(4, 8);
+                /* command length*/
+                mock_view.setUint8(5, 3);
+                /* command method*/
+                mock_view.setUint8(6, 2);
+                
+                mock_buff_b = new ArrayBuffer(10);
+                mock_view = new DataView(mock_buff_b);
+                /*message lenght*/
+                mock_view.setUint16(1, 8);
+                /* command usr_auth_fail */
+                mock_view.setUint8(4, 8);
+                /* command length*/
+                mock_view.setUint8(5, 3);
+                /* command method*/
+                mock_view.setUint8(9, 5);
+
+                mock_buff = request.buffer_push(mock_buff_a, mock_buff_b);
+                view = new DataView(mock_buff);
+            });
+
+             it("should have message.lenght equal to 18 =  8 + 10 mock buffer a + b length", function() {
+
+                expect(mock_buff.byteLength).toEqual(18);
+            });
+
+            it("should have 2 byte equal to 8 if merge works", function() {
+
+                expect(view.getUint16(2)).toEqual(8);
+            });
+
+             it("should have 18 byte equal to 5 if merge works", function() {
+
+                expect(view.getUint8(17)).toEqual(5);
+            });
 
 
         });

@@ -9,32 +9,26 @@ define(function() {
 
         if (op_code === 8) { /* Is it command usr_auth_fail */
             var method = rec_view.getUint8(buf_pos + 1);
-            console.log(method);
             if (method === 2) { /* Password method */
-                console.log('passwd');
                 return {CMD: 'auth_passwd'};
             }
 
         } else if (op_code === 9) { /*user authorized*/
             var user_id = rec_view.getUint16(buf_pos + 1);
             var avatar = rec_view.getUint32(buf_pos + 3);
-            console.log('user_id ' + user_id);
-            console.log('avatar_id' + avatar);
             return {CMD: 'auth_succ', USER_ID: user_id, AVATAR_ID: avatar};
+            
         } else if (op_code === 4) {
             /* Change_R command */
             length = rec_view.getUint8(buf_pos);
             feature = rec_view.getUint8(buf_pos + 1);
-            console.log('CH_R length ' + length);
-            console.log('CH_R feature ' + feature);
-            
+        
             if (feature === 4) { /* got token */
                 token = '';
                 for (i = 0; i <= length-4; i++) {
                     token += String.fromCharCode(rec_view.getUint8(buf_pos + 2 + i));
                 }
-                console.info(token);
-                return {TOKEN: token};
+                return {TOKEN: token.slice(1)};
             }
             
             return true;
@@ -42,16 +36,12 @@ define(function() {
             /* Change_L command */
             length = rec_view.getUint8(buf_pos);
             feature = rec_view.getUint8(buf_pos + 1);
-            console.log('CH_L length ' + length);
-            console.log('CH_L feature ' + feature);
-
             if (feature === 5) { /* got DED */
                 ded = '';
                 for (i = 0; i <=length-4; i++) {
                     ded += String.fromCharCode(rec_view.getUint8(buf_pos + 2 + i));
                 }
-                console.info(ded);
-                return {DED: ded};
+                return {DED: ded.slice(1)};
             }
             return true;
         }
@@ -88,7 +78,6 @@ define(function() {
                 op_code = rec_view.getUint8(buf_pos);
 
                 buf_pos += 1;
-                console.info('bp ' + buf_pos);
                 cmd_len = rec_view.getUint8(buf_pos);
 
                 if (cmd_len > 2) {

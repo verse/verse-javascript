@@ -5,7 +5,7 @@
 
 Websocket support for Verse protocol
 
-**Work in progress. **
+**Work in progress**
 
 For testing build, node.js is required. 
 
