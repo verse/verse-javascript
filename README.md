@@ -23,6 +23,11 @@ npm install
 bower install
 ```
 
+## Usage
+
+Rename app_example.js to app.js and change the values to your config.
+Open index.html in your browser.
+
 ## License
 
 The source code of Verse Javascript library is licensed under MIT license. This library could be used for implementation of Web based Verse client. For details look at file LICENSE.
