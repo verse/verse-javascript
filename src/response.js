@@ -56,20 +56,33 @@ define(function() {
      * @param lenght - lenght of command
      */
     var parseFeature = function parseFeature(feature, rec_view, buf_pos, length) {
-        var value;
-        var string_features = {
-            3: 'HOST_URL',
-            4: 'TOKEN',
-            5: 'DED',
-            9: 'CLIENT_NAME',
-            10: 'CLIENT_VERSION'
-        };
-        
+        var value,
+            string_features = {
+                3: 'HOST_URL',
+                4: 'TOKEN',
+                5: 'DED',
+                9: 'CLIENT_NAME',
+                10: 'CLIENT_VERSION'
+            },
+            int_features = {
+                1: 'FCID',
+                2: 'CCID',
+                6: 'RWIN',
+                8: 'COMMAND_COMPRESSION'
+            };
+
+
+
         if (feature in string_features) { /* got token */
             value = parseStringValue(rec_view, length, buf_pos);
             return {
-                FEATURE:  string_features[feature],
+                FEATURE: string_features[feature],
                 VALUE: value
+            };
+        } else if (feature in int_features){
+            return {
+                FEATURE: int_features[feature],
+                VALUE: rec_view.getUint8(7)
             };
         } else {
             return {
