@@ -60,7 +60,7 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
 
                 response_data.forEach(function(cmd) {
                     if (cmd.CMD === 'auth_passwd') {
-                        wsocket.userAuthData(config)
+                        wsocket.userAuthData(config);
                     } else if (cmd.CMD === 'auth_succ')  {
                         wsocket.confirmHost(response_data);
                     }
