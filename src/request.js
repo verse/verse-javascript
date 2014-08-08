@@ -7,6 +7,9 @@ define(function() {
     var request = {
 
         /*
+        * TODO: move to message.js file, because it will be used at
+        * other parts of code
+        *
         * Add verse protocol header to payloda
         * @param payload ArrayBuffer
         */
@@ -18,11 +21,12 @@ define(function() {
             view = new DataView(buf);
             payload_view = new DataView(payload);
 
-             /* Verse header starts with version */
+            /* Verse header starts with version */
             /* First 4 bits are reserved for version of protocol */
             view.setUint8(0, 1 << 4);
             /* The lenght of the message */
             view.setUint16(2, message_len);
+
             /* then byte copy the payload to new buffer */
             for (var i = 0; i < payload.byteLength; i++) {
                     view.setUint8(i + 4, payload_view.getUint8(i));
@@ -31,7 +35,7 @@ define(function() {
             return buf;
         },
 
-
+        /* TODO: move to message.js too */
         buffer_push: function buffer_push(buffer_a, buffer_b) {
             var result, res_view, buff_a_view, buff_b_view, i, j, message_len;
 
@@ -41,11 +45,10 @@ define(function() {
             buff_a_view = new DataView(buffer_a);
             buff_b_view = new DataView(buffer_b);
              
-             /*  byte copy the first buffer to result buffer */
+            /*  byte copy the first buffer to result buffer */
             for (i = 0; i < buffer_a.byteLength; i++) {
                     res_view.setUint8(i, buff_a_view.getUint8(i));
             }
-
 
             /*  byte copy the first buffer to result buffer */
             for (j = buffer_a.byteLength;  j < message_len; j++) {
@@ -56,6 +59,7 @@ define(function() {
 
         },
 
+        /* TODO: it is just special case of userAuth function */
         handshake: function(name) {
             var i;
             /* Fill buffer with data of Verse header and user_auth
@@ -69,6 +73,7 @@ define(function() {
             view.setUint8(0, 1 << 4);
             /* The lenght of the message */
             view.setUint16(2, message_len);
+
             /* Pack OpCode of user_auth command */
             view.setUint8(4, 7);
             /* Pack length of the command */
@@ -86,9 +91,8 @@ define(function() {
             return buf;
         },
 
+        /* TODO: use message() function for packing data */
         userAuth: function(name, passwd) {
-
-
             var i;
 
             /* Fill buffer with data of Verse header and user_auth
@@ -96,11 +100,13 @@ define(function() {
             var message_len = 9 + name.length + passwd.length;
             var buf = new ArrayBuffer(message_len);
             var view = new DataView(buf);
+
             /* Verse header starts with version */
             /* First 4 bits are reserved for version of protocol */
             view.setUint8(0, 1 << 4);
             /* The lenght of the message */
             view.setUint16(2, message_len);
+
             /* Pack OpCode of user_auth command */
             view.setUint8(4, 7);
             /* Pack length of the command */

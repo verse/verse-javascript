@@ -40,10 +40,8 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
         },
 
         onConnect: function onConnect(event, config) {
-            var buf;
             console.log('[Connected] ' + event.code);
-            buf = request.handshake(config.username);
-            my_webscoket.send(buf);
+            wsocket.userAuthNone(config);
         },
 
         onMessage: function onMessage(message, config) {
@@ -68,9 +66,13 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
             }
         },
 
+        userAuthNone: function userAuthNone(config) {
+            var buf = request.handshake(config.username);
+            my_webscoket.send(buf);
+        },
+
         userAuthData: function userAuthData(config) {
             var buf = request.userAuth(config.username, config.passwd);
-            /* Send the blob */
             my_webscoket.send(buf);
         },
 
@@ -82,7 +84,7 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
             buf = request.buffer_push(buf, negotiation.ded(negotiation.CONFIRM_L, response_data[2].VALUE));
             
             buf = request.message(buf);
-            /* Send the blob */
+
             my_webscoket.send(buf);
         }
     };
