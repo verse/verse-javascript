@@ -44,6 +44,10 @@ define(function() {
                 FEATURE: feature_val.FEATURE,
                 VALUE: feature_val.VALUE
             };
+        } else {
+            return {
+                CMD: op_code
+            };
         }
 
     };

@@ -53,7 +53,6 @@ define(['request', 'response', 'negotiation', 'node'], function(request, respons
                     return;
                 }
 
-                console.info(message);
                 response_data = response.parse(message.data);
                 console.info(response_data);
 
