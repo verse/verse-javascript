@@ -2,7 +2,7 @@
 /* globals define*/
 
 
-define(['request', 'response', 'negotiation'], function(request, response, negotiation) {
+define(['request', 'response', 'negotiation', 'node'], function(request, response, negotiation, node) {
     'use strict';
     window.WebSocket = window.WebSocket || window.MozWebSocket;
     var my_webscoket;
@@ -53,6 +53,7 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
                     return;
                 }
 
+                console.info(message);
                 response_data = response.parse(message.data);
                 console.info(response_data);
 
@@ -61,6 +62,8 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
                         wsocket.userAuthData(config);
                     } else if (cmd.CMD === 'auth_succ')  {
                         wsocket.confirmHost(response_data);
+                    } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
+                        wsocket.subscribeNode(0);
                     }
                 });
             }
@@ -86,6 +89,13 @@ define(['request', 'response', 'negotiation'], function(request, response, negot
             buf = request.message(buf);
 
             my_webscoket.send(buf);
+        },
+
+        subscribeNode: function subscribeNode(nodeId) {
+            var buf = node.subscribe(nodeId);
+            buf = request.message(buf);
+            my_webscoket.send(buf);
+
         }
     };
 
