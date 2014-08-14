@@ -5,28 +5,28 @@
 define(['request', 'response', 'negotiation', 'node'], function(request, response, negotiation, node) {
     'use strict';
     window.WebSocket = window.WebSocket || window.MozWebSocket;
-    var my_webscoket;
+    var myWebscoket;
 
     console.log(response);
 
     window.onbeforeunload = function() {
-        my_webscoket.onclose = function() {}; // disable onclose handler first
-        my_webscoket.close();
+        myWebscoket.onclose = function() {}; // disable onclose handler first
+        myWebscoket.close();
     };
 
     var wsocket = {
         init: function(config) {
             console.log('Connecting to URI:' + config.uri + ' ...');
-            my_webscoket = new WebSocket(config.uri, config.version);
-            my_webscoket.binaryType = 'arraybuffer';
+            myWebscoket = new WebSocket(config.uri, config.version);
+            myWebscoket.binaryType = 'arraybuffer';
 
-            my_webscoket.addEventListener('error', wsocket.onError);
-            my_webscoket.addEventListener('close', wsocket.onClose);
+            myWebscoket.addEventListener('error', wsocket.onError);
+            myWebscoket.addEventListener('close', wsocket.onClose);
 
-            my_webscoket.addEventListener('open', function(evnt) {
+            myWebscoket.addEventListener('open', function(evnt) {
                 wsocket.onConnect(evnt, config);
             });
-            my_webscoket.addEventListener('message', function(msg) {
+            myWebscoket.addEventListener('message', function(msg) {
                 wsocket.onMessage(msg, config);
             });
         },
@@ -49,7 +49,7 @@ define(['request', 'response', 'negotiation', 'node'], function(request, respons
 
             if (message.data instanceof ArrayBuffer) {
                 if (!response.checkHeader(message.data)) {
-                    my_webscoket.close();
+                    myWebscoket.close();
                     return;
                 }
 
@@ -70,16 +70,16 @@ define(['request', 'response', 'negotiation', 'node'], function(request, respons
 
         userAuthNone: function userAuthNone(config) {
             var buf = request.handshake(config.username);
-            my_webscoket.send(buf);
+            myWebscoket.send(buf);
         },
 
         userAuthData: function userAuthData(config) {
             var buf = request.userAuth(config.username, config.passwd);
-            my_webscoket.send(buf);
+            myWebscoket.send(buf);
         },
 
         confirmHost: function confirmHost(response_data) {
-            var buf = negotiation.url(negotiation.CHANGE_R, my_webscoket.url);
+            var buf = negotiation.url(negotiation.CHANGE_R, myWebscoket.url);
 
             buf = request.buffer_push(buf, negotiation.token(negotiation.CONFIRM_R, response_data[1].VALUE));
             buf = request.buffer_push(buf, negotiation.token(negotiation.CHANGE_R, '^DD31*$cZ6#t'));
@@ -87,13 +87,13 @@ define(['request', 'response', 'negotiation', 'node'], function(request, respons
             
             buf = request.message(buf);
 
-            my_webscoket.send(buf);
+            myWebscoket.send(buf);
         },
 
         subscribeNode: function subscribeNode(nodeId) {
             var buf = node.subscribe(nodeId);
             buf = request.message(buf);
-            my_webscoket.send(buf);
+            myWebscoket.send(buf);
 
         }
     };

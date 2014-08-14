@@ -1,7 +1,7 @@
 "use strict";
 
 /*globals define, ArrayBuffer*/
-define(["response"], function(response) {
+define(["response"], function(response, negotiation) {
 
     describe("Response", function() {
         var mock_buff, view, mes_len, i, data_str, result;

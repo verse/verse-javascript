@@ -61,6 +61,69 @@ define(function() {
         return buf;
     };
 
+    /*
+     * Parses received ArrayBuffer, find correct feature name and value
+     * @param feature - int feature number
+     * @param  rec_view - DataView for received buffer
+     * @param buf_pos - int current reading posititon
+     * @param lenght - lenght of command
+     */
+    var parseFeature = function parseFeature(feature, rec_view, buf_pos, length) {
+        var value,
+            string_features = {
+                3: 'HOST_URL',
+                4: 'TOKEN',
+                5: 'DED',
+                9: 'CLIENT_NAME',
+                10: 'CLIENT_VERSION'
+            },
+            int_features = {
+                1: 'FCID',
+                2: 'CCID',
+                6: 'RWIN',
+                8: 'COMMAND_COMPRESSION'
+            };
+
+
+
+        if (feature in string_features) { /* got token */
+            value = parseStringValue(rec_view, length, buf_pos);
+            return {
+                FEATURE: string_features[feature],
+                VALUE: value
+            };
+        } else if (feature in int_features){
+            return {
+                FEATURE: int_features[feature],
+                VALUE: rec_view.getUint8(7)
+            };
+        } else {
+            return {
+                FEATURE: feature,
+                VALUE: 'TBD'
+            };
+        }
+    };
+
+    /*
+     * Parses received ArrayBuffer returns stored string value
+     * @param  receivedDataView - DataView for received buffer
+     * @param buf_pos - int current reading posititon
+     * @param lenght - lenght of command
+     */
+
+    var parseStringValue = function parseStringValue(receivedDataView, length, buf_pos) {
+        var i, result = '';
+        for (i = 0; i <= length - 4; i++) {
+            result += String.fromCharCode(receivedDataView.getUint8(buf_pos + 2 + i));
+        }
+        return result.slice(1);
+    };
+
+    /*
+    * negotiation module
+    */ 
+
     negotiation = {
 
         /* message types */
@@ -68,6 +131,10 @@ define(function() {
         CHANGE_R: 4,
         CONFIRM_L: 5,
         CONFIRM_R: 6,
+
+        getFeatureValues: function getFeatureValues(feature, rec_view, buf_pos, length) {
+            return parseFeature(feature, rec_view, buf_pos, length);
+        },
 
         /*
          * Flow Control ID (FCID)

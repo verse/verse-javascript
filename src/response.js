@@ -1,9 +1,9 @@
 /*globals define*/
 
-define(function() {
+define(['negotiation'], function(negotiation) {
     'use strict';
 
-    var checkOpCode = function checkOpCode(op_code, rec_view, buf_pos) {
+    var checkOpCode = function checkOpCode(opCode, rec_view, buf_pos) {
 
         var length, feature, feature_val, op_codes;
 
@@ -18,7 +18,7 @@ define(function() {
             9: 'USER_AUTH_SUCCESS'
         };
 
-        if (op_code === 8) { /* Is it command usr_auth_fail */
+        if (opCode === 8) { /* Is it command usr_auth_fail */
             var method = rec_view.getUint8(buf_pos + 1);
             if (method === 2) { /* Password method */
                 return {
@@ -26,7 +26,7 @@ define(function() {
                 };
             }
 
-        } else if (op_code === 9) { /*user authorized*/
+        } else if (opCode === 9) { /*user authorized*/
             var user_id = rec_view.getUint16(buf_pos + 1);
             var avatar = rec_view.getUint32(buf_pos + 3);
             return {
@@ -35,81 +35,39 @@ define(function() {
                 AVATAR_ID: avatar
             };
 
-        } else if (op_code < 7) {
+        } else if (opCode < 7) { //negotiation commands
             length = rec_view.getUint8(buf_pos);
             feature = rec_view.getUint8(buf_pos + 1);
-            feature_val = parseFeature(feature, rec_view, buf_pos, length);
+            
+            console.info(negotiation);
+
+            feature_val = negotiation.getFeatureValues(feature, rec_view, buf_pos, length);
+
+            console.info('fv' + feature_val);
             return {
-                CMD: op_codes[op_code],
+                CMD: op_codes[opCode],
                 FEATURE: feature_val.FEATURE,
                 VALUE: feature_val.VALUE
             };
-        } else {
+        } else if (opCode > 31 && opCode < 44) { //node commands
             return {
-                CMD: op_code
-            };
-        }
-
-    };
-
-    /*
-     * Parses received ArrayBuffer, find correct feature name and value
-     * @param feature - int feature number
-     * @param  rec_view - DataView for received buffer
-     * @param buf_pos - int current reading posititon
-     * @param lenght - lenght of command
-     */
-    var parseFeature = function parseFeature(feature, rec_view, buf_pos, length) {
-        var value,
-            string_features = {
-                3: 'HOST_URL',
-                4: 'TOKEN',
-                5: 'DED',
-                9: 'CLIENT_NAME',
-                10: 'CLIENT_VERSION'
-            },
-            int_features = {
-                1: 'FCID',
-                2: 'CCID',
-                6: 'RWIN',
-                8: 'COMMAND_COMPRESSION'
-            };
-
-
-
-        if (feature in string_features) { /* got token */
-            value = parseStringValue(rec_view, length, buf_pos);
-            return {
-                FEATURE: string_features[feature],
-                VALUE: value
-            };
-        } else if (feature in int_features){
-            return {
-                FEATURE: int_features[feature],
-                VALUE: rec_view.getUint8(7)
+                CMD: opCode
             };
         } else {
             return {
-                FEATURE: feature,
-                VALUE: 'TBD'
+                CMD: opCode
             };
         }
+
     };
+
+    
+
 
     /*
-     * Parses received ArrayBuffer returns stored string value
-     * @param  receivedDataView - DataView for received buffer
-     * @param buf_pos - int current reading posititon
-     * @param lenght - lenght of command
-     */
+    * Response module - for parsing server response messages 
+    */
 
-    var parseStringValue = function parseStringValue(receivedDataView, length, buf_pos) {
-        var i, result = '';
-        for (i = 0; i <= length - 4; i++) {
-            result += String.fromCharCode(receivedDataView.getUint8(buf_pos + 2 + i));
-        }
-        return result.slice(1);
-    };
 
     var response = {
         checkHeader: function(buffer) {
@@ -130,7 +88,7 @@ define(function() {
         },
 
         parse: function(buffer) {
-            var op_code, cmd_len, result;
+            var opCode, cmd_len, result;
             var rec_view = new DataView(buffer);
             var buf_pos = 2;
 
@@ -139,13 +97,13 @@ define(function() {
 
             result = [];
             while (buf_pos < message_len - 1) {
-                op_code = rec_view.getUint8(buf_pos);
+                opCode = rec_view.getUint8(buf_pos);
 
                 buf_pos += 1;
                 cmd_len = rec_view.getUint8(buf_pos);
 
                 if (cmd_len > 2) {
-                    result.push(checkOpCode(op_code, rec_view, buf_pos));
+                    result.push(checkOpCode(opCode, rec_view, buf_pos));
                 } else {
                     /* TODO end connection */
                 }
