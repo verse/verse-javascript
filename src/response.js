@@ -1,11 +1,11 @@
 /*globals define*/
 
-define(['negotiation'], function(negotiation) {
+define(['negotiation', 'node'], function(negotiation, node) {
     'use strict';
 
     var checkOpCode = function checkOpCode(opCode, receivedView, bufferPosition) {
 
-        var length, feature, feature_val, op_codes;
+        var length, feature, cmdValues, op_codes;
 
 
         op_codes = {
@@ -38,20 +38,21 @@ define(['negotiation'], function(negotiation) {
         } else if (opCode < 7) { //negotiation commands
             length = receivedView.getUint8(bufferPosition);
             feature = receivedView.getUint8(bufferPosition + 1);
-            
-            console.info(negotiation);
 
-            feature_val = negotiation.getFeatureValues(feature, receivedView, bufferPosition, length);
-
-            console.info('fv' + feature_val);
+            cmdValues = negotiation.getFeatureValues(feature, receivedView, bufferPosition, length);
             return {
                 CMD: op_codes[opCode],
-                FEATURE: feature_val.FEATURE,
-                VALUE: feature_val.VALUE
+                FEATURE: cmdValues.FEATURE,
+                VALUE: cmdValues.VALUE
             };
         } else if (opCode > 31 && opCode < 44) { //node commands
+            
+            cmdValues = node.getNodeValues(opCode, receivedView, bufferPosition);
+
             return {
-                CMD: opCode
+                CMD: opCode,
+                ID: cmdValues
+
             };
         } else {
             return {
@@ -61,12 +62,12 @@ define(['negotiation'], function(negotiation) {
 
     };
 
-    
+
 
 
     /*
-    * Response module - for parsing server response messages 
-    */
+     * Response module - for parsing server response messages
+     */
 
 
     var response = {
