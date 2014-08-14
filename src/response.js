@@ -3,7 +3,7 @@
 define(['negotiation'], function(negotiation) {
     'use strict';
 
-    var checkOpCode = function checkOpCode(opCode, rec_view, buf_pos) {
+    var checkOpCode = function checkOpCode(opCode, receivedView, bufferPosition) {
 
         var length, feature, feature_val, op_codes;
 
@@ -19,7 +19,7 @@ define(['negotiation'], function(negotiation) {
         };
 
         if (opCode === 8) { /* Is it command usr_auth_fail */
-            var method = rec_view.getUint8(buf_pos + 1);
+            var method = receivedView.getUint8(bufferPosition + 1);
             if (method === 2) { /* Password method */
                 return {
                     CMD: 'auth_passwd'
@@ -27,8 +27,8 @@ define(['negotiation'], function(negotiation) {
             }
 
         } else if (opCode === 9) { /*user authorized*/
-            var user_id = rec_view.getUint16(buf_pos + 1);
-            var avatar = rec_view.getUint32(buf_pos + 3);
+            var user_id = receivedView.getUint16(bufferPosition + 1);
+            var avatar = receivedView.getUint32(bufferPosition + 3);
             return {
                 CMD: 'auth_succ',
                 USER_ID: user_id,
@@ -36,12 +36,12 @@ define(['negotiation'], function(negotiation) {
             };
 
         } else if (opCode < 7) { //negotiation commands
-            length = rec_view.getUint8(buf_pos);
-            feature = rec_view.getUint8(buf_pos + 1);
+            length = receivedView.getUint8(bufferPosition);
+            feature = receivedView.getUint8(bufferPosition + 1);
             
             console.info(negotiation);
 
-            feature_val = negotiation.getFeatureValues(feature, rec_view, buf_pos, length);
+            feature_val = negotiation.getFeatureValues(feature, receivedView, bufferPosition, length);
 
             console.info('fv' + feature_val);
             return {
@@ -72,12 +72,12 @@ define(['negotiation'], function(negotiation) {
     var response = {
         checkHeader: function(buffer) {
             /* TODO: do communication here :-) */
-            var rec_view = new DataView(buffer);
-            var buf_pos = 0;
+            var receivedView = new DataView(buffer);
+            var bufferPosition = 0;
 
             /* Parse header */
-            var version = rec_view.getUint8(buf_pos) >> 4;
-            buf_pos += 2;
+            var version = receivedView.getUint8(bufferPosition) >> 4;
+            bufferPosition += 2;
 
             if (version !== 1) {
                 return false;
@@ -88,27 +88,27 @@ define(['negotiation'], function(negotiation) {
         },
 
         parse: function(buffer) {
-            var opCode, cmd_len, result;
-            var rec_view = new DataView(buffer);
-            var buf_pos = 2;
+            var opCode, cmdLen, result;
+            var receivedView = new DataView(buffer);
+            var bufferPosition = 2;
 
-            var message_len = rec_view.getUint16(buf_pos);
-            buf_pos += 2;
+            var message_len = receivedView.getUint16(bufferPosition);
+            bufferPosition += 2;
 
             result = [];
-            while (buf_pos < message_len - 1) {
-                opCode = rec_view.getUint8(buf_pos);
+            while (bufferPosition < message_len - 1) {
+                opCode = receivedView.getUint8(bufferPosition);
 
-                buf_pos += 1;
-                cmd_len = rec_view.getUint8(buf_pos);
+                bufferPosition += 1;
+                cmdLen = receivedView.getUint8(bufferPosition);
 
-                if (cmd_len > 2) {
-                    result.push(checkOpCode(opCode, rec_view, buf_pos));
+                if (cmdLen > 2) {
+                    result.push(checkOpCode(opCode, receivedView, bufferPosition));
                 } else {
                     /* TODO end connection */
                 }
 
-                buf_pos += cmd_len - 1;
+                bufferPosition += cmdLen - 1;
 
             }
 
