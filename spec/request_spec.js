@@ -1,6 +1,32 @@
+/*
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013-2014 Jiri Vrany, Jiri Hnidek
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ */
+
 "use strict";
 
-/*globals define, ArrayBuffer*/
+/* globals define, ArrayBuffer */
 
 define(["request"], function(request) {
 
@@ -15,15 +41,15 @@ define(["request"], function(request) {
                 view = new DataView(shake);
             });
 
-            it("should have handshake.lenght equal to 14 for name=albert ", function() {
+            it("should have handshake.length equal to 14 for name=albert ", function() {
                 expect(shake.byteLength).toEqual(14);
             });
 
-            it("first byte - message lenght - should be 14 for albert", function() {
+            it("first byte - message length - should be 14 for albert", function() {
                 expect(view.getUint16(2)).toEqual(14);
             });
 
-            it("lenght of command should be 10 (4 + 6) for albert", function() {
+            it("length of command should be 10 (4 + 6) for albert", function() {
                 expect(view.getUint8(5)).toEqual(10);
             });
 
@@ -45,11 +71,11 @@ define(["request"], function(request) {
                 view = new DataView(auth);
             });
 
-            it("should have handshake.lenght equal to 20 = 4 (header) + 3 (cmd_header) + 6 (albert) + 5 (12345)  + 2 (string type)", function() {
+            it("should have handshake.length equal to 20 = 4 (header) + 3 (cmd_header) + 6 (albert) + 5 (12345)  + 2 (string type)", function() {
                 expect(auth.byteLength).toEqual(20);
             });
 
-            it("The lenght of the message should be 20", function() {
+            it("The length of the message should be 20", function() {
                 expect(view.getUint16(2)).toEqual(20);
             });
 
@@ -77,15 +103,14 @@ define(["request"], function(request) {
                 expect(view.getUint8(15 + passwd.length - 1)).toEqual("5".charCodeAt(0));
             });
 
-
-
         });
+
 
         describe("message - general message object", function() {
             beforeEach(function() {
                 mock_buff = new ArrayBuffer(8);
                 mock_view = new DataView(mock_buff);
-                /*message lenght*/
+                /*message length*/
                 mock_view.setUint16(2, 8);
                 /* command usr_auth_fail */
                 mock_view.setUint8(4, 8);
@@ -97,7 +122,7 @@ define(["request"], function(request) {
                 view = new DataView(shake);
             });
 
-            it("should have message.lenght equal to 12 = 4 message header + 8 mock buffer length", function() {
+            it("should have message.length equal to 12 = 4 message header + 8 mock buffer length", function() {
 
                 expect(shake.byteLength).toEqual(12);
             });
@@ -107,18 +132,19 @@ define(["request"], function(request) {
                 expect(view.getUint16(6)).toEqual(8);
             });
 
-              it("encoded message lenght should be also 12", function() {
+              it("encoded message length should be also 12", function() {
 
                 expect(view.getUint16(2)).toEqual(12);
             });
 
         });
 
+
         describe("merge two array buffers into one", function() {
             beforeEach(function() {
                 mock_buff_a = new ArrayBuffer(8);
                 mock_view = new DataView(mock_buff_a);
-                /*message lenght*/
+                /*message length*/
                 mock_view.setUint16(2, 8);
                 /* command usr_auth_fail */
                 mock_view.setUint8(4, 8);
@@ -129,7 +155,7 @@ define(["request"], function(request) {
                 
                 mock_buff_b = new ArrayBuffer(10);
                 mock_view = new DataView(mock_buff_b);
-                /*message lenght*/
+                /*message length*/
                 mock_view.setUint16(1, 8);
                 /* command usr_auth_fail */
                 mock_view.setUint8(4, 8);
@@ -142,7 +168,7 @@ define(["request"], function(request) {
                 view = new DataView(mock_buff);
             });
 
-             it("should have message.lenght equal to 18 =  8 + 10 mock buffer a + b length", function() {
+             it("should have message.length equal to 18 =  8 + 10 mock buffer a + b length", function() {
 
                 expect(mock_buff.byteLength).toEqual(18);
             });

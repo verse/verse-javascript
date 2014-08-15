@@ -1,6 +1,32 @@
+/*
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013-2014 Jiri Vrany, Jiri Hnidek
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ */
+
 "use strict";
 
-/*globals define*/
+/* globals define */
 
 define(["negotiation"], function(negotiation) {
 
@@ -14,7 +40,7 @@ define(["negotiation"], function(negotiation) {
                 view = new DataView(nego);
             });
 
-            it("lenght of fcid message should be equal to 4", function() {
+            it("length of fcid message should be equal to 4", function() {
                 expect(nego.byteLength).toEqual(4);
             });
 
@@ -22,7 +48,7 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(0)).toEqual(4);
             });
 
-            it("second byte - message lenght - should be 4 ", function() {
+            it("second byte - message length - should be 4 ", function() {
                 expect(view.getUint8(1)).toEqual(4);
             });
 
@@ -34,9 +60,8 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(3)).toEqual(15);
             });
 
-            
-
         });
+
 
         describe("ccid", function() {
             beforeEach(function() {
@@ -44,7 +69,7 @@ define(["negotiation"], function(negotiation) {
                 view = new DataView(nego);
             });
 
-            it("lenght of ccid message should be equal to 4", function() {
+            it("length of ccid message should be equal to 4", function() {
                 expect(nego.byteLength).toEqual(4);
             });
 
@@ -52,7 +77,7 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(0)).toEqual(3);
             });
 
-            it("second byte - message lenght - should be 4 ", function() {
+            it("second byte - message length - should be 4 ", function() {
                 expect(view.getUint8(1)).toEqual(4);
             });
 
@@ -64,20 +89,19 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(3)).toEqual(215);
             });
 
-            
-
         });
+
 
         describe("url", function() {
             var url;
 
             beforeEach(function() {
-                url = 'wc://verse.example.com:12345';
+                url = 'ws://verse.example.com:12345';
                 nego = negotiation.url(negotiation.CONFIRM_L, url);
                 view = new DataView(nego);
             });
 
-            it("lenght of ccid message should be equal to 3 + 1 + 28 (url lenght)", function() {
+            it("length of ccid message should be equal to 3 + 1 + 28 (url length)", function() {
                 expect(nego.byteLength).toEqual(3 + 1 + 28);
             });
 
@@ -85,7 +109,7 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(0)).toEqual(5);
             });
 
-            it("second byte - message lenght - should be 3 + 1 + 28 ", function() {
+            it("second byte - message length - should be 3 + 1 + 28 ", function() {
                 expect(view.getUint8(1)).toEqual(32);
             });
 
@@ -93,7 +117,7 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(2)).toEqual(3);
             });
 
-            it("First byte of packed string should be lenght of URL string = 28 ", function() {
+            it("First byte of packed string should be length of URL string = 28 ", function() {
                 expect(view.getUint8(3)).toEqual(28);
             });
 
@@ -105,10 +129,8 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(31)).toEqual("5".charCodeAt(0));
             });
 
-           
-            
-
         });
+
 
         describe("token", function() {
             var token;
@@ -119,7 +141,7 @@ define(["negotiation"], function(negotiation) {
                 view = new DataView(nego);
             });
 
-            it("lenght of token message should be equal to 3 + 1 + 5 (token lenght)", function() {
+            it("length of token message should be equal to 3 + 1 + 5 (token lenght)", function() {
                 expect(nego.byteLength).toEqual(9);
             });
 
@@ -127,7 +149,7 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(0)).toEqual(5);
             });
 
-            it("second byte - message lenght - should be 3 + 1 + 5 ", function() {
+            it("second byte - message length - should be 3 + 1 + 5 ", function() {
                 expect(view.getUint8(1)).toEqual(9);
             });
 
@@ -135,7 +157,7 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(2)).toEqual(4);
             });
 
-             it("First byte of packed string should be lenght of token string = 5", function() {
+             it("First byte of packed string should be length of token string = 5", function() {
                 expect(view.getUint8(3)).toEqual(5);
             });
 
@@ -147,8 +169,8 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(8)).toEqual("n".charCodeAt(0));
             });
 
-
         });
+
 
          describe("fps", function() {
             var fps_val;
@@ -159,7 +181,7 @@ define(["negotiation"], function(negotiation) {
                 view = new DataView(nego);
             });
 
-            it("lenght of ccid message should be equal to 7", function() {
+            it("length of ccid message should be equal to 7", function() {
                 expect(nego.byteLength).toEqual(7);
             });
 
@@ -167,7 +189,7 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(0)).toEqual(6);
             });
 
-            it("second byte - message lenght - should be 7 ", function() {
+            it("second byte - message length - should be 7 ", function() {
                 expect(view.getUint8(1)).toEqual(7);
             });
 
@@ -178,9 +200,6 @@ define(["negotiation"], function(negotiation) {
             it("fourth byte - FPS - should be 7.244 ", function() {
                 expect(view.getFloat32(3)).toBeCloseTo(7.244);
             });
-
-           
-
 
         });
         
