@@ -28,7 +28,9 @@ define(function() {
     //command codes = opCodes
     commands = {
         32: 'NODE_CREATE',
-        33: 'NODE_DESTROY'
+        33: 'NODE_DESTROY',
+        34: 'NODE_SUBSCRIBE',
+        38: 'NODE_PERMISIONS'
     };
 
     //routines - parsing functions
@@ -43,7 +45,30 @@ define(function() {
                 CUSTOM_TYPE: receivedView.getUint16(13)
             };
         },
-        33: getNodeDestroy
+        33: function getNodeDestroy(opCode, receivedView) {
+            return {
+                CMD: commands[opCode],
+                NODE_ID: receivedView.getUint32(3)
+            };
+        },
+        34: function getNodeSubscribe(opCode, receivedView) {
+            return {
+                CMD: commands[opCode],
+                NODE_ID: receivedView.getUint32(2),
+                VERSION: receivedView.getUint32(6),
+                CRC32: receivedView.getUint32(10)
+            };
+        },
+        38: function getNodePermissions(opCode, receivedView) {
+            return {
+                CMD: commands[opCode],
+                SHARE: receivedView.getUint8(2),
+                USER_ID: receivedView.getUint16(3),
+                PERMSSIONS: receivedView.getUint8(5),
+                NODE_ID: receivedView.getUint32(6)
+            };
+        }
+         
     };
 
 
@@ -71,9 +96,10 @@ define(function() {
         },
 
         getNodeValues: function getNodeValues(opCode, receivedView) {
-
-            console.info(routines[opCode](opCode, receivedView));
-            return routines[opCode](opCode, receivedView);
+            var result = routines[opCode](opCode, receivedView);
+            return result;
+    
+           
         }
 
 
