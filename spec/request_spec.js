@@ -31,43 +31,47 @@
 define(["request"], function(request) {
 
     describe("Request", function() {
-        var shake, view, auth, uname, passwd, mock_view, mock_buff, mock_buff_a, mock_buff_b;
+        var view, msg, auth, uname, passwd, mock_view, mock_buff, mock_buff_a, mock_buff_b;
 
 
-        describe("handshake", function() {
+        describe("userAuthNone", function() {
             beforeEach(function() {
                 uname = "albert";
-                shake = request.handshake(uname);
-                view = new DataView(shake);
+                auth = request.userAuth(uname, 1, "");
+                view = new DataView(auth);
             });
 
-            it("should have handshake.length equal to 14 for name=albert ", function() {
-                expect(shake.byteLength).toEqual(14);
+            it("The length of userAuthNone should be 10 for name=albert ", function() {
+                expect(auth.byteLength).toEqual(10);
             });
 
-            it("first byte - message length - should be 14 for albert", function() {
-                expect(view.getUint16(2)).toEqual(14);
+            it("The OpCode of the command should be 7", function() {
+                expect(view.getUint8(0)).toEqual(7);
             });
 
-            it("length of command should be 10 (4 + 6) for albert", function() {
-                expect(view.getUint8(5)).toEqual(10);
+            it("The second byte - command length - should be 10 for albert", function() {
+                expect(view.getUint8(1)).toEqual(10);
             });
 
             it("Pack length of string should be 6 for albert", function() {
-                expect(view.getUint8(6)).toEqual(6);
+                expect(view.getUint8(2)).toEqual(6);
             });
 
             it("First char of packed string should a", function() {
-                expect(view.getUint8(7)).toEqual("a".charCodeAt(0));
+                expect(view.getUint8(3)).toEqual("a".charCodeAt(0));
+            });
+
+            it("The type of auth method should be 1", function() {
+                expect(view.getUint8(9)).toEqual(1);
             });
 
         });
 
-        describe("userAuth", function() {
+        describe("userAuthData", function() {
             beforeEach(function() {
                 uname = "albert";
                 passwd = "12345";
-                auth = request.userAuth(uname, passwd);
+                auth = request.userAuth(uname, 2, passwd);
                 view = new DataView(auth);
             });
 
@@ -114,21 +118,21 @@ define(["request"], function(request) {
             beforeEach(function() {
                 mock_buff = new ArrayBuffer(8);
                 mock_view = new DataView(mock_buff);
-                /*message length*/
+                /* message length */
                 mock_view.setUint16(2, 8);
                 /* command usr_auth_fail */
                 mock_view.setUint8(4, 8);
                 /* command length*/
                 mock_view.setUint8(5, 3);
-                /* command method*/
+                /* command method */
                 mock_view.setUint8(6, 2);
-                shake = request.message(mock_buff);
-                view = new DataView(shake);
+                msg = request.message(mock_buff);
+                view = new DataView(msg);
             });
 
             it("should have message.length equal to 12 = 4 message header + 8 mock buffer length", function() {
 
-                expect(shake.byteLength).toEqual(12);
+                expect(msg.byteLength).toEqual(12);
             });
 
             it("should have 6 byte equal to 8 if copy works", function() {

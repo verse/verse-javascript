@@ -47,7 +47,7 @@ define(function() {
             /* Verse header starts with version */
             /* First 4 bits are reserved for version of protocol */
             view.setUint8(0, 1 << 4);
-            /* The lenght of the message */
+            /* The length of the message */
             view.setUint16(2, message_len);
 
             /* then byte copy the payload to new buffer */
@@ -86,68 +86,56 @@ define(function() {
 
         },
 
-        /* TODO: it is just special case of userAuth function */
-        handshake: function(name) {
+
+        /*
+         * Pack command for user authentication
+         * @param name
+         * @param meth_type
+         * @param passwd
+         */
+        userAuth: function(name, meth_type, passwd) {
             var i;
+
             /* Fill buffer with data of Verse header and user_auth
              * command */
-            var message_len = name.length + 8;
-            var buf = new ArrayBuffer(message_len);
-            var view = new DataView(buf);
+            var cmd_len;
 
-            /* Verse header starts with version */
-            /* First 4 bits are reserved for version of protocol */
-            view.setUint8(0, 1 << 4);
-            /* The lenght of the message */
-            view.setUint16(2, message_len);
-
-            /* Pack OpCode of user_auth command */
-            view.setUint8(4, 7);
-            /* Pack length of the command */
-            view.setUint8(5, 4 + name.length);
-            /* Pack length of string */
-            view.setUint8(6, name.length);
-            /* Pack the string of the username */
-            for (i = 0; i < name.length; i++) {
-                view.setUint8(7 + i, name.charCodeAt(i));
+            if (meth_type === 1) {
+                cmd_len = 1 + 1 + 1 + name.length + 1;
+            } else if (meth_type === 2) {
+                cmd_len = 1 + 1 + 1 + name.length + 1 + 1 + passwd.length;
+            } else {
+                return null;
             }
-            /* Pack method NONE ... it is not supported and server will
-             * return list of supported methods in command user_auth_fail */
-            view.setUint8(7 + name.length, 1);
 
-            return buf;
-        },
-
-        /* TODO: use message() function for packing data */
-        userAuth: function(name, passwd) {
-            var i;
-
-            /* Fill buffer with data of Verse header and user_auth
-             * command */
-            var message_len = 1 + 1 + 1 + name.length + 1 + 1 + passwd.length;
-            var buf = new ArrayBuffer(message_len);
+            var buf = new ArrayBuffer(cmd_len);
             var view = new DataView(buf);
 
             /* Pack OpCode of user_auth command */
             view.setUint8(0, 7);
             /* Pack length of the command */
-            view.setUint8(1, 5 + name.length + passwd.length);
+            view.setUint8(1, cmd_len);
+
             /* Pack length of string */
             view.setUint8(2, name.length);
             /* Pack the string of the username */
             for (i = 0; i < name.length; i++) {
                 view.setUint8(3 + i, name.charCodeAt(i));
             }
-            /* Pack method Password  */
-            view.setUint8(3 + name.length, 2);
-            /* Pack password length */
-            view.setUint8(3 + name.length + 1, passwd.length);
-            /* Pack the string of the password */
-            for (i = 0; i < passwd.length; i++) {
-                view.setUint8(3 + name.length + 2 + i, passwd.charCodeAt(i));
+
+            /* Pack method type */
+            view.setUint8(3 + name.length, meth_type);
+
+            /* Pack auth data */
+            if (meth_type === 2) {
+                /* Pack password length */
+                view.setUint8(3 + name.length + 1, passwd.length);
+                /* Pack the string of the password */
+                for (i = 0; i < passwd.length; i++) {
+                    view.setUint8(3 + name.length + 2 + i, passwd.charCodeAt(i));
+                }
             }
 
-            /* Send the blob */
             return buf;
         }
     };

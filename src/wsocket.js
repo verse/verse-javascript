@@ -63,6 +63,7 @@ define(['request', 'response', 'negotiation', 'node'], function(request, respons
 
         onClose: function onClose(event) {
             console.log('[Disconnected], Code:' + event.code + ', Reason: ' + event.reason);
+            /* TODO: Call callback function 'connect_terminate' defined by developer */
         },
 
         onConnect: function onConnect(event, config) {
@@ -88,6 +89,7 @@ define(['request', 'response', 'negotiation', 'node'], function(request, respons
                     } else if (cmd.CMD === 'auth_succ')  {
                         wsocket.confirmHost(response_data);
                     } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
+                        /* TODO: Call callback function 'connect_accept' defined by developer */
                         wsocket.subscribeNode(0);
                     }
                 });
@@ -95,19 +97,21 @@ define(['request', 'response', 'negotiation', 'node'], function(request, respons
         },
 
         userAuthNone: function userAuthNone(config) {
-            var buf = request.handshake(config.username);
+            /* Send command user auth with type NONE */
+            var buf = request.userAuth(config.username, 1, "");
+            buf = request.message(buf);
             myWebscoket.send(buf);
         },
 
         userAuthData: function userAuthData(config) {
-            var buf = request.userAuth(config.username, config.passwd);
+            /* Send command user auth with type PASSWORD */
+            var buf = request.userAuth(config.username, 2, config.passwd);
             buf = request.message(buf);
             myWebscoket.send(buf);
         },
 
         confirmHost: function confirmHost(response_data) {
             var buf = negotiation.url(negotiation.CHANGE_R, myWebscoket.url);
-
             buf = request.buffer_push(buf, negotiation.token(negotiation.CONFIRM_R, response_data[1].VALUE));
             buf = request.buffer_push(buf, negotiation.token(negotiation.CHANGE_R, '^DD31*$cZ6#t'));
             buf = request.buffer_push(buf, negotiation.ded(negotiation.CONFIRM_L, response_data[2].VALUE));
