@@ -71,36 +71,40 @@ define(["request"], function(request) {
                 view = new DataView(auth);
             });
 
-            it("should have handshake.length equal to 20 = 4 (header) + 3 (cmd_header) + 6 (albert) + 5 (12345)  + 2 (string type)", function() {
-                expect(auth.byteLength).toEqual(20);
+            it("The length of userAuth should be 16 = 2 (cmd_header) + 1 + (string length) + 6 (albert) + 1 + 1 (string length) + 5 (12345)", function() {
+                expect(auth.byteLength).toEqual(16);
             });
 
-            it("The length of the message should be 20", function() {
-                expect(view.getUint16(2)).toEqual(20);
+            it("The OpCode of the command should be 7", function() {
+                expect(view.getUint8(0)).toEqual(7);
             });
 
-            it("Pack length of the command  should be 16 = 3 (cmd_header) + 6 (albert) + 5 (12345)  + 2 (string type) ", function() {
-                expect(view.getUint8(5)).toEqual(5 + uname.length + passwd.length);
+            it("The length of the command should be 16", function() {
+                expect(view.getUint8(1)).toEqual(16);
             });
 
-            it("Pack length of the username should be 6", function() {
-                expect(view.getUint8(6)).toEqual(uname.length);
+            it("Pack length of the username (albert) should be 6", function() {
+                expect(view.getUint8(2)).toEqual(uname.length);
             });
 
             it("First char of packed username should be a", function() {
-                expect(view.getUint8(7)).toEqual("a".charCodeAt(0));
+                expect(view.getUint8(3)).toEqual("a".charCodeAt(0));
             });
 
-            it("Pack length of the passwd should be 5", function() {
-                expect(view.getUint8(14)).toEqual(passwd.length);
+            it("The type of auth method should be 2", function() {
+                expect(view.getUint8(9)).toEqual(2);
+            });
+
+            it("The length of the passwd should be 5", function() {
+                expect(view.getUint8(10)).toEqual(passwd.length);
             });
 
             it("First char of packed passwd should be 1", function() {
-                expect(view.getUint8(15)).toEqual("1".charCodeAt(0));
+                expect(view.getUint8(11)).toEqual("1".charCodeAt(0));
             });
 
             it("Last char of packed passwd should be 5", function() {
-                expect(view.getUint8(15 + passwd.length - 1)).toEqual("5".charCodeAt(0));
+                expect(view.getUint8(15)).toEqual("5".charCodeAt(0));
             });
 
         });

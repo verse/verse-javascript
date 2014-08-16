@@ -101,6 +101,7 @@ define(['request', 'response', 'negotiation', 'node'], function(request, respons
 
         userAuthData: function userAuthData(config) {
             var buf = request.userAuth(config.username, config.passwd);
+            buf = request.message(buf);
             myWebscoket.send(buf);
         },
 

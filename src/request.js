@@ -33,12 +33,9 @@ define(function() {
     var request = {
 
         /*
-        * TODO: move to message.js file, because it will be used at
-        * other parts of code
-        *
-        * Add verse protocol header to payloda
-        * @param payload ArrayBuffer
-        */
+         * Add verse protocol header before payload
+         * @param payload ArrayBuffer
+         */
         message: function message(payload) {
             var message_len, buf, view, payload_view;
 
@@ -61,7 +58,11 @@ define(function() {
             return buf;
         },
 
-        /* TODO: move to message.js too */
+        /*
+         * Concatenate two buffers and return new buffer
+         * @param buffer_a
+         * @param buffer_b
+         */
         buffer_push: function buffer_push(buffer_a, buffer_b) {
             var result, res_view, buff_a_view, buff_b_view, i, j, message_len;
 
@@ -123,33 +124,27 @@ define(function() {
 
             /* Fill buffer with data of Verse header and user_auth
              * command */
-            var message_len = 9 + name.length + passwd.length;
+            var message_len = 1 + 1 + 1 + name.length + 1 + 1 + passwd.length;
             var buf = new ArrayBuffer(message_len);
             var view = new DataView(buf);
 
-            /* Verse header starts with version */
-            /* First 4 bits are reserved for version of protocol */
-            view.setUint8(0, 1 << 4);
-            /* The lenght of the message */
-            view.setUint16(2, message_len);
-
             /* Pack OpCode of user_auth command */
-            view.setUint8(4, 7);
+            view.setUint8(0, 7);
             /* Pack length of the command */
-            view.setUint8(5, 5 + name.length + passwd.length);
+            view.setUint8(1, 5 + name.length + passwd.length);
             /* Pack length of string */
-            view.setUint8(6, name.length);
+            view.setUint8(2, name.length);
             /* Pack the string of the username */
             for (i = 0; i < name.length; i++) {
-                view.setUint8(7 + i, name.charCodeAt(i));
+                view.setUint8(3 + i, name.charCodeAt(i));
             }
             /* Pack method Password  */
-            view.setUint8(7 + name.length, 2);
+            view.setUint8(3 + name.length, 2);
             /* Pack password length */
-            view.setUint8(8 + name.length, passwd.length);
+            view.setUint8(3 + name.length + 1, passwd.length);
             /* Pack the string of the password */
             for (i = 0; i < passwd.length; i++) {
-                view.setUint8(9 + name.length + i, passwd.charCodeAt(i));
+                view.setUint8(3 + name.length + 2 + i, passwd.charCodeAt(i));
             }
 
             /* Send the blob */
