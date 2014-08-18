@@ -90,7 +90,7 @@ define(["node"], function(node) {
             it("command should be parsed out as NODE_CREATE, USERID = 125 object", function() {
                 
                 mockView = new DataView(mockBuffer);
-                result = node.getNodeValues(32, mockView);
+                result = node.getNodeValues(32, mockView, 0, mockBuffer.byteLength);
                 
                 expect(result).toEqual({
                     CMD: "NODE_CREATE",

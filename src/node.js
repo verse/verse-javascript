@@ -71,83 +71,83 @@ define(function() {
      */
 
     routines = {
-        32: function getNodeCreate(opCode, receivedView) {
+        32: function getNodeCreate(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                SHARE: receivedView.getUint8(2),
-                USER_ID: receivedView.getUint16(3),
-                PARENT_ID: receivedView.getUint32(5),
-                NODE_ID: receivedView.getUint32(9),
-                CUSTOM_TYPE: receivedView.getUint16(13)
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                USER_ID: receivedView.getUint16(bufferPosition + 3),
+                PARENT_ID: receivedView.getUint32(bufferPosition + 5),
+                NODE_ID: receivedView.getUint32(bufferPosition + 9),
+                CUSTOM_TYPE: receivedView.getUint16(bufferPosition + 13)
             };
         },
-        33: function getNodeDestroy(opCode, receivedView) {
+        33: function getNodeDestroy(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                NODE_ID: receivedView.getUint32(3)
+                NODE_ID: receivedView.getUint32(bufferPosition + 3)
             };
         },
-        34: function getNodeSubscribe(opCode, receivedView) {
+        34: function getNodeSubscribe(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                NODE_ID: receivedView.getUint32(2),
-                VERSION: receivedView.getUint32(6),
-                CRC32: receivedView.getUint32(10)
+                NODE_ID: receivedView.getUint32(bufferPosition + 2),
+                VERSION: receivedView.getUint32(bufferPosition + 6),
+                CRC32: receivedView.getUint32(bufferPosition + 10)
             };
         },
-        35: function getNodeUnsubscribe(opCode, receivedView) {
+        35: function getNodeUnsubscribe(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                NODE_ID: receivedView.getUint32(2),
-                VERSION: receivedView.getUint32(6),
-                CRC32: receivedView.getUint32(10)
+                NODE_ID: receivedView.getUint32(bufferPosition + 2),
+                VERSION: receivedView.getUint32(bufferPosition + 6),
+                CRC32: receivedView.getUint32(bufferPosition + 10)
             };
         },
-        37: function getNodeLink(opCode, receivedView) {
+        37: function getNodeLink(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                SHARE: receivedView.getUint8(2),
-                PARENT_ID: receivedView.getUint32(3),
-                CHILD_ID: receivedView.getUint32(7)
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                PARENT_ID: receivedView.getUint32(bufferPosition + 3),
+                CHILD_ID: receivedView.getUint32(bufferPosition + 7)
             };
         },
-        38: function getNodePermissions(opCode, receivedView) {
+        38: function getNodePermissions(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                SHARE: receivedView.getUint8(2),
-                USER_ID: receivedView.getUint16(3),
-                PERMISSIONS: receivedView.getUint8(5),
-                NODE_ID: receivedView.getUint32(6)
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                USER_ID: receivedView.getUint16(bufferPosition + 3),
+                PERMISSIONS: receivedView.getUint8(bufferPosition + 5),
+                NODE_ID: receivedView.getUint32(bufferPosition + 6)
             };
         },
-        39: function getNodeUmask(opCode, receivedView) {
+        39: function getNodeUmask(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                PERMISSIONS: receivedView.getUint8(2)
+                PERMISSIONS: receivedView.getUint8(bufferPosition + 2)
             };
         },
-        40: function getNodeOwner(opCode, receivedView) {
+        40: function getNodeOwner(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                SHARE: receivedView.getUint8(2),
-                USER_ID: receivedView.getUint16(3),
-                NODE_ID: receivedView.getUint32(5)
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                USER_ID: receivedView.getUint16(bufferPosition + 3),
+                NODE_ID: receivedView.getUint32(bufferPosition + 5)
             };
         },
-        41: function getNodeLock(opCode, receivedView) {
+        41: function getNodeLock(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                SHARE: receivedView.getUint8(2),
-                AVATAR_ID: receivedView.getUint32(3),
-                NODE_ID: receivedView.getUint32(7)
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                AVATAR_ID: receivedView.getUint32(bufferPosition + 3),
+                NODE_ID: receivedView.getUint32(bufferPosition + 7)
             };
         },
-        42: function getNodeUnlock(opCode, receivedView) {
+        42: function getNodeUnlock(opCode, receivedView, bufferPosition, length) {
             return {
                 CMD: commands[opCode],
-                SHARE: receivedView.getUint8(2),
-                AVATAR_ID: receivedView.getUint32(3),
-                NODE_ID: receivedView.getUint32(7)
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                AVATAR_ID: receivedView.getUint32(bufferPosition + 3),
+                NODE_ID: receivedView.getUint32(bufferPosition + 7)
             };
         }
 
@@ -177,8 +177,8 @@ define(function() {
             return msg;
         },
 
-        getNodeValues: function getNodeValues(opCode, receivedView) {
-            var result = routines[opCode](opCode, receivedView);
+        getNodeValues: function getNodeValues(opCode, receivedView, bufferPosition, length) {
+            var result = routines[opCode](opCode, receivedView, bufferPosition, length);
             return result;
 
 

@@ -72,9 +72,10 @@ define(['negotiation', 'node'], function(negotiation, node) {
                 VALUE: cmdValues.VALUE
             };
         } else if (opCode > 31 && opCode < 44) { //node commands
+            length = receivedView.getUint8(bufferPosition);
 
             console.info(opCode);
-            cmdValues = node.getNodeValues(opCode, receivedView, bufferPosition);
+            cmdValues = node.getNodeValues(opCode, receivedView, bufferPosition - 1, length);
             return cmdValues;
 
         } else {
