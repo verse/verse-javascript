@@ -33,31 +33,31 @@ define(function() {
 
     /**
      * Abstract string message array buffer
-     * @param message_type int
-     * @param data_str string
-     * @param feature_type int
+     * @param messageType int
+     * @param payload string
+     * @param featureType int
      **/
-    sendStringMessage = function(message_type, data_str, feature_type) {
-        var buf, view, mes_len, i;
+    sendStringMessage = function(messageType, payload, featureType) {
+        var buf, view, messageLen, i;
 
-        mes_len = 3 + 1 + data_str.length;
-        buf = new ArrayBuffer(mes_len);
+        messageLen = 3 + 1 + payload.length;
+        buf = new ArrayBuffer(messageLen);
         view = new DataView(buf);
         /* first byte - message type */
-        view.setUint8(0, message_type);
+        view.setUint8(0, messageType);
         /* second byte - message length */
-        view.setUint8(1, mes_len);
+        view.setUint8(1, messageLen);
         /* third byte - feature type */
-        view.setUint8(2, feature_type);
+        view.setUint8(2, featureType);
         /* fourth byte - length of packed string */
-        view.setUint8(3, data_str.length);
+        view.setUint8(3, payload.length);
 
-        //console.info(data_str);
-        /* Pack the data_str */
-        for (i = 0; i < data_str.length; i++) {
-            //console.info(data_str[i]);
+        //console.info(payload);
+        /* Pack the payload */
+        for (i = 0; i < payload.length; i++) {
+            //console.info(payload[i]);
             
-            view.setUint8(4 + i, data_str.charCodeAt(i));
+            view.setUint8(4 + i, payload.charCodeAt(i));
         }
 
         return buf;
@@ -65,24 +65,24 @@ define(function() {
 
     /**
      * Abstract int message array buffer
-     * @param message_type int
-     * @param data_int int
-     * @param feature_type int
+     * @param messageType int
+     * @param payload int
+     * @param featureType int
      **/
 
-    sendIntMessage = function(message_type, data_int, feature_type) {
+    sendIntMessage = function(messageType, payload, featureType) {
         var buf, view;
 
         buf = new ArrayBuffer(4);
         view = new DataView(buf);
         /* first byte - message type */
-        view.setUint8(0, message_type);
+        view.setUint8(0, messageType);
         /* second byte - message length */
         view.setUint8(1, 4);
         /* third byte - feature type */
-        view.setUint8(2, feature_type);
+        view.setUint8(2, featureType);
         /* fourth byte - id */
-        view.setUint8(3, data_int);
+        view.setUint8(3, payload);
 
         return buf;
     };
@@ -90,20 +90,20 @@ define(function() {
     /*
      * Parses received ArrayBuffer, find correct feature name and value
      * @param feature - int feature number
-     * @param  rec_view - DataView for received buffer
-     * @param buf_pos - int current reading posititon
+     * @param  receivedView - DataView for received buffer
+     * @param bufferPosition - int current reading posititon
      * @param lenght - lenght of command
      */
-    var parseFeature = function parseFeature(feature, rec_view, buf_pos, length) {
+    var parseFeature = function parseFeature(feature, receivedView, bufferPosition, length) {
         var value,
-            string_features = {
+            stringFeatures = {
                 3: 'HOST_URL',
                 4: 'TOKEN',
                 5: 'DED',
                 9: 'CLIENT_NAME',
                 10: 'CLIENT_VERSION'
             },
-            int_features = {
+            intFeatures = {
                 1: 'FCID',
                 2: 'CCID',
                 6: 'RWIN',
@@ -112,16 +112,16 @@ define(function() {
 
 
 
-        if (feature in string_features) { /* got token */
-            value = parseStringValue(rec_view, length, buf_pos);
+        if (feature in stringFeatures) { /* got token */
+            value = parseStringValue(receivedView, length, bufferPosition);
             return {
-                FEATURE: string_features[feature],
+                FEATURE: stringFeatures[feature],
                 VALUE: value
             };
-        } else if (feature in int_features){
+        } else if (feature in intFeatures){
             return {
-                FEATURE: int_features[feature],
-                VALUE: rec_view.getUint8(7)
+                FEATURE: intFeatures[feature],
+                VALUE: receivedView.getUint8(7)
             };
         } else {
             return {
@@ -134,14 +134,14 @@ define(function() {
     /*
      * Parses received ArrayBuffer returns stored string value
      * @param  receivedDataView - DataView for received buffer
-     * @param buf_pos - int current reading posititon
+     * @param bufferPosition - int current reading posititon
      * @param lenght - lenght of command
      */
 
-    var parseStringValue = function parseStringValue(receivedDataView, length, buf_pos) {
+    var parseStringValue = function parseStringValue(receivedDataView, length, bufferPosition) {
         var i, result = '';
         for (i = 0; i <= length - 4; i++) {
-            result += String.fromCharCode(receivedDataView.getUint8(buf_pos + 2 + i));
+            result += String.fromCharCode(receivedDataView.getUint8(bufferPosition + 2 + i));
         }
         return result.slice(1);
     };
@@ -158,8 +158,8 @@ define(function() {
         CONFIRM_L: 5,
         CONFIRM_R: 6,
 
-        getFeatureValues: function getFeatureValues(feature, rec_view, buf_pos, length) {
-            return parseFeature(feature, rec_view, buf_pos, length);
+        getFeatureValues: function getFeatureValues(feature, receivedView, bufferPosition, length) {
+            return parseFeature(feature, receivedView, bufferPosition, length);
         },
 
         /*
@@ -196,10 +196,10 @@ define(function() {
          * Token
          * feature type 4
          * @param type : int message type
-         * @param token_val : string
+         * @param tokenString : string
          */
-        token: function(type, token_val) {
-            return sendStringMessage(type, token_val, 4);
+        token: function(type, tokenString) {
+            return sendStringMessage(type, tokenString, 4);
         },
 
 
@@ -207,10 +207,10 @@ define(function() {
          * Data Exchange Definition (DED)
          * feature type 5
          * @param type : int message type
-         * @param ded_val : string
+         * @param dedString : string
          */
-        ded: function(type, ded_val) {
-            return sendStringMessage(type, ded_val, 5);
+        ded: function(type, dedString) {
+            return sendStringMessage(type, dedString, 5);
         },
 
         /*
@@ -230,13 +230,13 @@ define(function() {
          * @param fps: float Value range: Float min - Float max
          */
 
-        fps: function(message_type, value) {
+        fps: function(messageType, value) {
             var buf, view;
 
             buf = new ArrayBuffer(7);
             view = new DataView(buf);
             /* first byte - message type */
-            view.setUint8(0, message_type);
+            view.setUint8(0, messageType);
             /* second byte - message length */
             view.setUint8(1, 7);
             /* third byte - feature type */

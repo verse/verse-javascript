@@ -31,23 +31,23 @@
 define(["request"], function(request) {
 
     describe("Request", function() {
-        var view, msg, auth, uname, passwd, mock_view, mock_buff, mock_buff_a, mock_buff_b;
+        var view, msg, mockView, mockBuffer, mockBufferA, mockBufferB;
 
 
 
         describe("message - general message object", function() {
             beforeEach(function() {
-                mock_buff = new ArrayBuffer(8);
-                mock_view = new DataView(mock_buff);
+                mockBuffer = new ArrayBuffer(8);
+                mockView = new DataView(mockBuffer);
                 /* message length */
-                mock_view.setUint16(2, 8);
+                mockView.setUint16(2, 8);
                 /* command usr_auth_fail */
-                mock_view.setUint8(4, 8);
+                mockView.setUint8(4, 8);
                 /* command length*/
-                mock_view.setUint8(5, 3);
+                mockView.setUint8(5, 3);
                 /* command method */
-                mock_view.setUint8(6, 2);
-                msg = request.message(mock_buff);
+                mockView.setUint8(6, 2);
+                msg = request.message(mockBuffer);
                 view = new DataView(msg);
             });
 
@@ -71,35 +71,35 @@ define(["request"], function(request) {
 
         describe("merge two array buffers into one", function() {
             beforeEach(function() {
-                mock_buff_a = new ArrayBuffer(8);
-                mock_view = new DataView(mock_buff_a);
+                mockBufferA = new ArrayBuffer(8);
+                mockView = new DataView(mockBufferA);
                 /*message length*/
-                mock_view.setUint16(2, 8);
+                mockView.setUint16(2, 8);
                 /* command usr_auth_fail */
-                mock_view.setUint8(4, 8);
+                mockView.setUint8(4, 8);
                 /* command length*/
-                mock_view.setUint8(5, 3);
+                mockView.setUint8(5, 3);
                 /* command method*/
-                mock_view.setUint8(6, 2);
+                mockView.setUint8(6, 2);
                 
-                mock_buff_b = new ArrayBuffer(10);
-                mock_view = new DataView(mock_buff_b);
+                mockBufferB = new ArrayBuffer(10);
+                mockView = new DataView(mockBufferB);
                 /*message length*/
-                mock_view.setUint16(1, 8);
+                mockView.setUint16(1, 8);
                 /* command usr_auth_fail */
-                mock_view.setUint8(4, 8);
+                mockView.setUint8(4, 8);
                 /* command length*/
-                mock_view.setUint8(5, 3);
+                mockView.setUint8(5, 3);
                 /* command method*/
-                mock_view.setUint8(9, 5);
+                mockView.setUint8(9, 5);
 
-                mock_buff = request.buffer_push(mock_buff_a, mock_buff_b);
-                view = new DataView(mock_buff);
+                mockBuffer = request.buffer_push(mockBufferA, mockBufferB);
+                view = new DataView(mockBuffer);
             });
 
              it("should have message.length equal to 18 =  8 + 10 mock buffer a + b length", function() {
 
-                expect(mock_buff.byteLength).toEqual(18);
+                expect(mockBuffer.byteLength).toEqual(18);
             });
 
             it("should have 2 byte equal to 8 if merge works", function() {

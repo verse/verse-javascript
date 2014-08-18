@@ -31,10 +31,10 @@ define(['negotiation', 'node'], function(negotiation, node) {
 
     var checkOpCode = function checkOpCode(opCode, receivedView, bufferPosition) {
 
-        var length, feature, cmdValues, op_codes;
+        var length, feature, cmdValues, opCodes;
 
 
-        op_codes = {
+        opCodes = {
             3: 'CHANGE_L',
             4: 'CHANGE_R',
             5: 'CONFIRM_L',
@@ -53,11 +53,11 @@ define(['negotiation', 'node'], function(negotiation, node) {
             }
 
         } else if (opCode === 9) { /*user authorized*/
-            var user_id = receivedView.getUint16(bufferPosition + 1);
-            var avatar = receivedView.getUint32(bufferPosition + 3);
+            var userId = receivedView.getUint16(bufferPosition + 1),
+                avatar = receivedView.getUint32(bufferPosition + 3);
             return {
                 CMD: 'auth_succ',
-                USER_ID: user_id,
+                USER_ID: userId,
                 AVATAR_ID: avatar
             };
 
@@ -67,12 +67,12 @@ define(['negotiation', 'node'], function(negotiation, node) {
 
             cmdValues = negotiation.getFeatureValues(feature, receivedView, bufferPosition, length);
             return {
-                CMD: op_codes[opCode],
+                CMD: opCodes[opCode],
                 FEATURE: cmdValues.FEATURE,
                 VALUE: cmdValues.VALUE
             };
         } else if (opCode > 31 && opCode < 44) { //node commands
-            
+
             console.info(opCode);
             cmdValues = node.getNodeValues(opCode, receivedView, bufferPosition);
             return cmdValues;

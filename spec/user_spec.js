@@ -26,12 +26,12 @@
 
 "use strict";
 
-/* globals define, ArrayBuffer */
+/* globals define */
 
 define(["user"], function(user) {
 
     describe("User module ", function() {
-        var view, msg, auth, uname, passwd, mock_view, mock_buff, mock_buff_a, mock_buff_b;
+        var view, auth, uname, passwd;
 
 
         describe("userAuthNone - first step of auth algorithm", function() {

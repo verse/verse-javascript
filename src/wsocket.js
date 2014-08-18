@@ -98,7 +98,7 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
 
         userAuthNone: function userAuthNone(config) {
             /* Send command user auth with type NONE */
-            var buf = user.auth(config.username, 1, "");
+            var buf = user.auth(config.username, 1, '');
             buf = request.message(buf);
             myWebscoket.send(buf);
         },

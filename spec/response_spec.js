@@ -31,13 +31,13 @@
 define(["response"], function(response, negotiation) {
 
     describe("Response", function() {
-        var mock_buff, view, mes_len, i, data_str, result;
+        var mockBuffer, view, messageLen, i, dataString, result;
 
 
         describe("parse int message with auth success", function() {
             beforeEach(function() {
-                mock_buff = new ArrayBuffer(8);
-                view = new DataView(mock_buff);
+                mockBuffer = new ArrayBuffer(8);
+                view = new DataView(mockBuffer);
                 /* message length */
                 view.setUint16(2, 8);
                 /* command usr_auth_fail */
@@ -49,11 +49,11 @@ define(["response"], function(response, negotiation) {
             });
 
             it("creates a mock buffer object", function() {
-                expect(mock_buff).toBeDefined();
+                expect(mockBuffer).toBeDefined();
             });
 
             it("first value in result array should be command auth password for password mock message", function() {
-                result = response.parse(mock_buff);
+                result = response.parse(mockBuffer);
 
                 expect(result[0]).toEqual({
                     CMD: "auth_passwd"
@@ -68,43 +68,43 @@ define(["response"], function(response, negotiation) {
                 var message_type = 4,
                     feature_type = 4;
 
-                data_str = "^DD31*$cZ6#t";
+                dataString = "^DD31*$cZ6#t";
 
-                mes_len = 4 + 3 + 1 + data_str.length;
-                mock_buff = new ArrayBuffer(mes_len);
-                view = new DataView(mock_buff);
+                messageLen = 4 + 3 + 1 + dataString.length;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
 
                 /* Verse header starts with version */
                 /* First 4 bits are reserved for version of protocol */
                 view.setUint8(0, 1 << 4);
                 /* The length of the message */
-                view.setUint16(2, mes_len);
+                view.setUint16(2, messageLen);
                 /*  message type  */
                 view.setUint8(4, message_type);
                 /* second byte - message length */
-                view.setUint8(5, mes_len - 4);
+                view.setUint8(5, messageLen - 4);
                 /* third byte - feature type */
                 view.setUint8(6, feature_type);
                 /* fourth byte - length of packed string */
-                view.setUint8(7, data_str.length);
+                view.setUint8(7, dataString.length);
 
-                //console.info(data_str);
-                /* Pack the data_str */
-                for (i = 0; i < data_str.length; i++) {
-                    //console.info(data_str[i]);
+                //console.info(dataString);
+                /* Pack the dataString */
+                for (i = 0; i < dataString.length; i++) {
+                    //console.info(dataString[i]);
 
-                    view.setUint8(8 + i, data_str.charCodeAt(i));
+                    view.setUint8(8 + i, dataString.charCodeAt(i));
                 }
 
             });
 
             it("command should be parsed out as CHANGE_R", function() {
-                result = response.parse(mock_buff);
+                result = response.parse(mockBuffer);
 
                 expect(result[0]).toEqual({
                     CMD: "CHANGE_R",
                     FEATURE: "TOKEN",
-                    VALUE: data_str
+                    VALUE: dataString
                 });
             });
         });
@@ -115,22 +115,22 @@ define(["response"], function(response, negotiation) {
                 var message_type = 6,
                     feature_type = 2;
 
-                mes_len = 4 + 3 + 1;
-                mock_buff = new ArrayBuffer(mes_len);
-                view = new DataView(mock_buff);
+                messageLen = 4 + 3 + 1;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
 
                 /* First 4 bits are reserved for version of protocol */
                 view.setUint8(0, 1 << 4);
-                view.setUint16(2, mes_len);
+                view.setUint16(2, messageLen);
                 view.setUint8(4, message_type);
-                view.setUint8(5, mes_len - 4);
+                view.setUint8(5, messageLen - 4);
                 view.setUint8(6, feature_type);
                 view.setUint8(7, 18);   
 
             });
 
             it("command should be parsed out as CONFIRM_R, CCID, 18 object", function() {
-                result = response.parse(mock_buff);
+                result = response.parse(mockBuffer);
 
                 expect(result[0]).toEqual({
                     CMD: "CONFIRM_R",

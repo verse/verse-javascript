@@ -24,7 +24,7 @@
  *
  */
 
-/* globals ArrayBuffer, define, Uint8Array */
+/* globals ArrayBuffer, define, */
 
 define(function() {
     'use strict';
@@ -37,22 +37,22 @@ define(function() {
          * @param payload ArrayBuffer
          */
         message: function message(payload) {
-            var message_len, buf, view, payload_view;
+            var messageLen, buf, view, payloadView;
 
-            message_len = 4 + payload.byteLength;
-            buf = new ArrayBuffer(message_len);
+            messageLen = 4 + payload.byteLength;
+            buf = new ArrayBuffer(messageLen);
             view = new DataView(buf);
-            payload_view = new DataView(payload);
+            payloadView = new DataView(payload);
 
             /* Verse header starts with version */
             /* First 4 bits are reserved for version of protocol */
             view.setUint8(0, 1 << 4);
             /* The length of the message */
-            view.setUint16(2, message_len);
+            view.setUint16(2, messageLen);
 
             /* then byte copy the payload to new buffer */
             for (var i = 0; i < payload.byteLength; i++) {
-                    view.setUint8(i + 4, payload_view.getUint8(i));
+                    view.setUint8(i + 4, payloadView.getUint8(i));
             }
             
             return buf;
@@ -60,26 +60,26 @@ define(function() {
 
         /*
          * Concatenate two buffers and return new buffer
-         * @param buffer_a
-         * @param buffer_b
+         * @param bufferA
+         * @param bufferB
          */
-        buffer_push: function buffer_push(buffer_a, buffer_b) {
-            var result, res_view, buff_a_view, buff_b_view, i, j, message_len;
+        buffer_push: function buffer_push(bufferA, bufferB) {
+            var result, viewResult, viewA, viewB, i, j, messageLen;
 
-            message_len = buffer_a.byteLength + buffer_b.byteLength;
-            result = new ArrayBuffer(message_len);
-            res_view = new DataView(result);
-            buff_a_view = new DataView(buffer_a);
-            buff_b_view = new DataView(buffer_b);
+            messageLen = bufferA.byteLength + bufferB.byteLength;
+            result = new ArrayBuffer(messageLen);
+            viewResult = new DataView(result);
+            viewA = new DataView(bufferA);
+            viewB = new DataView(bufferB);
              
             /*  byte copy the first buffer to result buffer */
-            for (i = 0; i < buffer_a.byteLength; i++) {
-                    res_view.setUint8(i, buff_a_view.getUint8(i));
+            for (i = 0; i < bufferA.byteLength; i++) {
+                    viewResult.setUint8(i, viewA.getUint8(i));
             }
 
             /*  byte copy the first buffer to result buffer */
-            for (j = buffer_a.byteLength;  j < message_len; j++) {
-                    res_view.setUint8(j, buff_b_view.getUint8(j - buffer_a.byteLength));
+            for (j = bufferA.byteLength;  j < messageLen; j++) {
+                    viewResult.setUint8(j, viewB.getUint8(j - bufferA.byteLength));
             }
             
             return result;
