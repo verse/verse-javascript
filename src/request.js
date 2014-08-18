@@ -84,60 +84,9 @@ define(function() {
             
             return result;
 
-        },
-
-
-        /*
-         * Pack command for user authentication
-         * @param name
-         * @param meth_type
-         * @param passwd
-         */
-        userAuth: function(name, meth_type, passwd) {
-            var i;
-
-            /* Fill buffer with data of Verse header and user_auth
-             * command */
-            var cmd_len;
-
-            if (meth_type === 1) {
-                cmd_len = 1 + 1 + 1 + name.length + 1;
-            } else if (meth_type === 2) {
-                cmd_len = 1 + 1 + 1 + name.length + 1 + 1 + passwd.length;
-            } else {
-                return null;
-            }
-
-            var buf = new ArrayBuffer(cmd_len);
-            var view = new DataView(buf);
-
-            /* Pack OpCode of user_auth command */
-            view.setUint8(0, 7);
-            /* Pack length of the command */
-            view.setUint8(1, cmd_len);
-
-            /* Pack length of string */
-            view.setUint8(2, name.length);
-            /* Pack the string of the username */
-            for (i = 0; i < name.length; i++) {
-                view.setUint8(3 + i, name.charCodeAt(i));
-            }
-
-            /* Pack method type */
-            view.setUint8(3 + name.length, meth_type);
-
-            /* Pack auth data */
-            if (meth_type === 2) {
-                /* Pack password length */
-                view.setUint8(3 + name.length + 1, passwd.length);
-                /* Pack the string of the password */
-                for (i = 0; i < passwd.length; i++) {
-                    view.setUint8(3 + name.length + 2 + i, passwd.charCodeAt(i));
-                }
-            }
-
-            return buf;
         }
+
+
     };
 
     return request;

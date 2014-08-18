@@ -28,7 +28,7 @@
 /* globals define */
 
 
-define(['request', 'response', 'negotiation', 'node'], function(request, response, negotiation, node) {
+define(['request', 'response', 'negotiation', 'node', 'user'], function(request, response, negotiation, node, user) {
     'use strict';
     window.WebSocket = window.WebSocket || window.MozWebSocket;
     var myWebscoket;
@@ -98,14 +98,14 @@ define(['request', 'response', 'negotiation', 'node'], function(request, respons
 
         userAuthNone: function userAuthNone(config) {
             /* Send command user auth with type NONE */
-            var buf = request.userAuth(config.username, 1, "");
+            var buf = user.auth(config.username, 1, "");
             buf = request.message(buf);
             myWebscoket.send(buf);
         },
 
         userAuthData: function userAuthData(config) {
             /* Send command user auth with type PASSWORD */
-            var buf = request.userAuth(config.username, 2, config.passwd);
+            var buf = user.auth(config.username, 2, config.passwd);
             buf = request.message(buf);
             myWebscoket.send(buf);
         },
