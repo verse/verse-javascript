@@ -56,10 +56,20 @@ define(function() {
         32: 'NODE_CREATE',
         33: 'NODE_DESTROY',
         34: 'NODE_SUBSCRIBE',
-        38: 'NODE_PERMISIONS'
+        35: 'NODE_UNSUBSCRIBE',
+        37: 'NODE_LINK',
+        38: 'NODE_PERMISIONS',
+        39: 'NODE_UMASK',
+        40: 'NODE_OWNER',
+        41: 'NODE_LOCK',
+        42: 'NODE_UNLOCK',
+        43: 'NODE_PRIORITY'
     };
 
-    //routines - parsing functions
+    /*
+     * routines - parsing functions for node commands from server
+     */
+
     routines = {
         32: function getNodeCreate(opCode, receivedView) {
             return {
@@ -85,16 +95,62 @@ define(function() {
                 CRC32: receivedView.getUint32(10)
             };
         },
+        35: function getNodeUnsubscribe(opCode, receivedView) {
+            return {
+                CMD: commands[opCode],
+                NODE_ID: receivedView.getUint32(2),
+                VERSION: receivedView.getUint32(6),
+                CRC32: receivedView.getUint32(10)
+            };
+        },
+        37: function getNodeLink(opCode, receivedView) {
+            return {
+                CMD: commands[opCode],
+                SHARE: receivedView.getUint8(2),
+                PARENT_ID: receivedView.getUint32(3),
+                CHILD_ID: receivedView.getUint32(7)
+            };
+        },
         38: function getNodePermissions(opCode, receivedView) {
             return {
                 CMD: commands[opCode],
                 SHARE: receivedView.getUint8(2),
                 USER_ID: receivedView.getUint16(3),
-                PERMSSIONS: receivedView.getUint8(5),
+                PERMISSIONS: receivedView.getUint8(5),
                 NODE_ID: receivedView.getUint32(6)
             };
+        },
+        39: function getNodeUmask(opCode, receivedView) {
+            return {
+                CMD: commands[opCode],
+                PERMISSIONS: receivedView.getUint8(2)
+            };
+        },
+        40: function getNodeOwner(opCode, receivedView) {
+            return {
+                CMD: commands[opCode],
+                SHARE: receivedView.getUint8(2),
+                USER_ID: receivedView.getUint16(3),
+                NODE_ID: receivedView.getUint32(5)
+            };
+        },
+        41: function getNodeLock(opCode, receivedView) {
+            return {
+                CMD: commands[opCode],
+                SHARE: receivedView.getUint8(2),
+                AVATAR_ID: receivedView.getUint32(3),
+                NODE_ID: receivedView.getUint32(7)
+            };
+        },
+        42: function getNodeUnlock(opCode, receivedView) {
+            return {
+                CMD: commands[opCode],
+                SHARE: receivedView.getUint8(2),
+                AVATAR_ID: receivedView.getUint32(3),
+                NODE_ID: receivedView.getUint32(7)
+            };
         }
-         
+
     };
 
 
@@ -124,8 +180,8 @@ define(function() {
         getNodeValues: function getNodeValues(opCode, receivedView) {
             var result = routines[opCode](opCode, receivedView);
             return result;
-    
-           
+
+
         }
 
 
