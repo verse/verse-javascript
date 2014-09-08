@@ -35,6 +35,8 @@
 / then use bower install - see http://bower.io/ for further details
 */
 
+/* jshint devel: true, unused: true */
+/* global require */
 
 require(['wsocket'], function(wsocket) {
     'use strict';
@@ -48,30 +50,31 @@ require(['wsocket'], function(wsocket) {
         passwd: 'verse_passwd',
         dataCallback: function(data) {
             /* 
-            * callback function for data handling 
-            *  every command send by server comes here parsed to data object
-            * data object example 
-            * Object {CMD: "NODE_PERMISIONS", SHARE: 0, USER_ID: 65535, PERMISSIONS: 1, NODE_ID: 0} 
+             * callback function for data handling
+             *  every command send by server comes here parsed to data object
+             * data object example
+             * Object {CMD: "NODE_PERMISIONS", SHARE: 0, USER_ID: 65535, PERMISSIONS: 1, NODE_ID: 0}
              */
-            }
             console.info(data);
         },
-        connectionTerminatedCallback:  function(event) {
+        connectionTerminatedCallback: function(event) {
             /*
-            *  callback function for end of session handling
-            * called when onClose websocket event is fired
-            */
+             *  callback function for end of session handling
+             * called when onClose websocket event is fired
+             */
             console.info('[Disconnected], Code:' + event.code + ', Reason: ' + event.reason);
         },
         connectionAcceptedCallback: function(userInfo) {
             /*
-            *  callback function for connection accepted event
-            * called when negotiation process is finished
-            * @param userInfo object 
-            */
+             *  callback function for connection accepted event
+             * called when negotiation process is finished
+             * @param userInfo object
+             */
             console.info('User ID: ' + userInfo.USER_ID);
             console.info('Avatar ID: ' + userInfo.AVATAR_ID);
         }
+
+
 
     };
 
