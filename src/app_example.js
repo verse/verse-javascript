@@ -45,7 +45,11 @@ require(['wsocket'], function(wsocket) {
         uri: 'ws://verse.example.org:54321',
         version: 'v1.verse.tul.cz',
         username: 'verse_user',
-        passwd: 'verse_passwd'
+        passwd: 'verse_passwd',
+        callback: function callback(data) {
+            console.info(data);
+        }
+
     };
 
     wsocket.init(config);

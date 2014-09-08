@@ -33,8 +33,7 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
     window.WebSocket = window.WebSocket || window.MozWebSocket;
     var myWebscoket;
 
-    console.log(response);
-
+    
     window.onbeforeunload = function() {
         myWebscoket.onclose = function() {}; // disable onclose handler first
         myWebscoket.close();
@@ -42,7 +41,7 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
 
     var wsocket = {
         init: function(config) {
-            console.log('Connecting to URI:' + config.uri + ' ...');
+            console.info('Connecting to URI:' + config.uri + ' ...');
             myWebscoket = new WebSocket(config.uri, config.version);
             myWebscoket.binaryType = 'arraybuffer';
 
@@ -58,7 +57,7 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
         },
 
         onError: function onError(event) {
-            console.log('Error:' + event.data);
+            console.error('Error:' + event.data);
         },
 
         onClose: function onClose(event) {
@@ -81,8 +80,7 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
                 }
 
                 response_data = response.parse(message.data);
-                console.info(response_data);
-
+                
                 response_data.forEach(function(cmd) {
                     if (cmd.CMD === 'auth_passwd') {
                         wsocket.userAuthData(config);
@@ -91,7 +89,11 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
                     } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
                         /* TODO: Call callback function 'connect_accept' defined by developer */
                         wsocket.subscribeNode(0);
+                    } else {
+                        /* call the callback function from config */
+                        config.callback(cmd);    
                     }
+                    
                 });
             }
         },
