@@ -46,8 +46,31 @@ require(['wsocket'], function(wsocket) {
         version: 'v1.verse.tul.cz',
         username: 'verse_user',
         passwd: 'verse_passwd',
-        callback: function callback(data) {
+        dataCallback: function(data) {
+            /* 
+            * callback function for data handling 
+            *  every command send by server comes here parsed to data object
+            * data object example 
+            * Object {CMD: "NODE_PERMISIONS", SHARE: 0, USER_ID: 65535, PERMISSIONS: 1, NODE_ID: 0} 
+             */
+            }
             console.info(data);
+        },
+        connectionTerminatedCallback:  function(event) {
+            /*
+            *  callback function for end of session handling
+            * called when onClose websocket event is fired
+            */
+            console.info('[Disconnected], Code:' + event.code + ', Reason: ' + event.reason);
+        },
+        connectionAcceptedCallback: function(userInfo) {
+            /*
+            *  callback function for connection accepted event
+            * called when negotiation process is finished
+            * @param userInfo object 
+            */
+            console.info('User ID: ' + userInfo.USER_ID);
+            console.info('Avatar ID: ' + userInfo.AVATAR_ID);
         }
 
     };

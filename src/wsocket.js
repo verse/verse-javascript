@@ -32,6 +32,7 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
     'use strict';
     window.WebSocket = window.WebSocket || window.MozWebSocket;
     var myWebscoket;
+    var userInfo = {};
 
     
     window.onbeforeunload = function() {
@@ -60,9 +61,8 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
             console.error('Error:' + event.data);
         },
 
-        onClose: function onClose(event) {
-            console.log('[Disconnected], Code:' + event.code + ', Reason: ' + event.reason);
-            /* TODO: Call callback function 'connect_terminate' defined by developer */
+        onClose: function onClose(event, config) {
+           config.connectionTerminatedCallback(event);
         },
 
         onConnect: function onConnect(event, config) {
@@ -86,12 +86,14 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
                         wsocket.userAuthData(config);
                     } else if (cmd.CMD === 'auth_succ')  {
                         wsocket.confirmHost(response_data);
+                        userInfo = cmd;
                     } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
-                        /* TODO: Call callback function 'connect_accept' defined by developer */
                         wsocket.subscribeNode(0);
+                        /* pass the user info to callback function */
+                        config.connectionAcceptedCallback(userInfo);
                     } else {
                         /* call the callback function from config */
-                        config.callback(cmd);    
+                        config.dataCallback(cmd);
                     }
                     
                 });
