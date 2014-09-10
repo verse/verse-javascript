@@ -31,8 +31,16 @@
 define(['request', 'response', 'negotiation', 'node', 'user'], function(request, response, negotiation, node, user) {
     'use strict';
     window.WebSocket = window.WebSocket || window.MozWebSocket;
-    var myWebscoket, wsocket, onMessage, onSocketError, onSocketConnect, onSocketClose;
-    var userInfo = {};
+    var myWebscoket,
+        wsocket,
+        onSocketMessage,
+        onSocketError,
+        onSocketConnect,
+        onSocketClose,
+        userAuthNone,
+        userInfo = {},
+        confirmHost,
+        userAuthData;
 
 
     window.onbeforeunload = function() {
@@ -45,9 +53,8 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
      * @param message
      * @param config object
      */
-
-    onMessage = function onMessage(message, config) {
-        var response_data;
+    onSocketMessage = function onSocketMessage(message, config) {
+        var responseData;
 
         if (message.data instanceof ArrayBuffer) {
             if (!response.checkHeader(message.data)) {
@@ -55,13 +62,13 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
                 return;
             }
 
-            response_data = response.parse(message.data);
+            responseData = response.parse(message.data);
 
-            response_data.forEach(function(cmd) {
+            responseData.forEach(function(cmd) {
                 if (cmd.CMD === 'auth_passwd') {
-                    wsocket.userAuthData(config);
+                    userAuthData(config);
                 } else if (cmd.CMD === 'auth_succ') {
-                    wsocket.confirmHost(response_data);
+                    confirmHost(responseData);
                     userInfo = cmd;
                 } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
                     wsocket.subscribeNode(0);
@@ -76,25 +83,80 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
         }
     };
 
+    /*
+     *   hadler for websocket error event
+     */
     onSocketError = function onSocketError(event) {
         console.error('Error:' + event.data);
     };
 
+    /*
+     *  hadler for websocket connect
+     * @param event
+     * @param config object
+     */
     onSocketConnect = function onSocketConnect(event, config) {
         console.log('[Connected] ' + event.code);
-        wsocket.userAuthNone(config);
+        userAuthNone(config);
     };
 
+    /*
+     *  hadler for websocket connection close
+     * @param event
+     * @param config object
+     */
     onSocketClose = function onSocketClose(event, config) {
         if (config.connectionTerminatedCallback && typeof config.connectionTerminatedCallback === 'function') {
             config.connectionTerminatedCallback(event);
         }
     };
 
+    /*
+     * First step of negotiation process
+     * Send command user auth with type NONE
+     */
 
+    userAuthNone = function userAuthNone(config) {
+        var buf = user.auth(config.username, 1, '');
+        buf = request.message(buf);
+        myWebscoket.send(buf);
+    };
+
+    /*
+     * Second step of negotiation process
+     * Send command user auth with type PASSWORD
+     */
+
+    userAuthData = function userAuthData(config) {
+
+        var buf = user.auth(config.username, 2, config.passwd);
+        buf = request.message(buf);
+        myWebscoket.send(buf);
+    };
+
+    /*
+     * confirm values send by server to finish the negotitation process
+     * @param responseData list of objects
+     */
+
+    confirmHost = function confirmHost(responseData) {
+        var buf = negotiation.url(negotiation.CHANGE_R, myWebscoket.url);
+        buf = request.buffer_push(buf, negotiation.token(negotiation.CONFIRM_R, responseData[1].VALUE));
+        buf = request.buffer_push(buf, negotiation.token(negotiation.CHANGE_R, '^DD31*$cZ6#t'));
+        buf = request.buffer_push(buf, negotiation.ded(negotiation.CONFIRM_L, responseData[2].VALUE));
+
+        buf = request.message(buf);
+
+        myWebscoket.send(buf);
+    };
+
+
+    /*
+     * public API of Verse Websocket module
+     */
     wsocket = {
         init: function(config) {
-            console.info(config);
+
             console.info('Connecting to URI:' + config.uri + ' ...');
             myWebscoket = new WebSocket(config.uri, config.version);
             myWebscoket.binaryType = 'arraybuffer';
@@ -106,34 +168,14 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
                 onSocketConnect(evnt, config);
             });
             myWebscoket.addEventListener('message', function(msg) {
-                onMessage(msg, config);
+                onSocketMessage(msg, config);
             });
         },
 
-        userAuthNone: function userAuthNone(config) {
-            /* Send command user auth with type NONE */
-            var buf = user.auth(config.username, 1, '');
-            buf = request.message(buf);
-            myWebscoket.send(buf);
-        },
-
-        userAuthData: function userAuthData(config) {
-            /* Send command user auth with type PASSWORD */
-            var buf = user.auth(config.username, 2, config.passwd);
-            buf = request.message(buf);
-            myWebscoket.send(buf);
-        },
-
-        confirmHost: function confirmHost(response_data) {
-            var buf = negotiation.url(negotiation.CHANGE_R, myWebscoket.url);
-            buf = request.buffer_push(buf, negotiation.token(negotiation.CONFIRM_R, response_data[1].VALUE));
-            buf = request.buffer_push(buf, negotiation.token(negotiation.CHANGE_R, '^DD31*$cZ6#t'));
-            buf = request.buffer_push(buf, negotiation.ded(negotiation.CONFIRM_L, response_data[2].VALUE));
-
-            buf = request.message(buf);
-
-            myWebscoket.send(buf);
-        },
+        /*
+        * subscribe node on server
+        * @param nodeId int
+        */
 
         subscribeNode: function subscribeNode(nodeId) {
             var buf = node.subscribe(nodeId);
