@@ -48,40 +48,7 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
         myWebscoket.close();
     };
 
-    /*
-     * handler for received message
-     * @param message
-     * @param config object
-     */
-    onSocketMessage = function onSocketMessage(message, config) {
-        var responseData;
-
-        if (message.data instanceof ArrayBuffer) {
-            if (!response.checkHeader(message.data)) {
-                myWebscoket.close();
-                return;
-            }
-
-            responseData = response.parse(message.data);
-
-            responseData.forEach(function(cmd) {
-                if (cmd.CMD === 'auth_passwd') {
-                    userAuthData(config);
-                } else if (cmd.CMD === 'auth_succ') {
-                    confirmHost(responseData);
-                    userInfo = cmd;
-                } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
-                    wsocket.subscribeNode(0);
-                    /* pass the user info to callback function */
-                    config.connectionAcceptedCallback(userInfo);
-                } else {
-                    /* call the callback function from config */
-                    config.dataCallback(cmd);
-                }
-
-            });
-        }
-    };
+   
 
     /*
      *   hadler for websocket error event
@@ -150,6 +117,41 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
         myWebscoket.send(buf);
     };
 
+     /*
+     * handler for received message
+     * @param message
+     * @param config object
+     */
+    onSocketMessage = function onSocketMessage(message, config) {
+        var responseData;
+
+        if (message.data instanceof ArrayBuffer) {
+            if (!response.checkHeader(message.data)) {
+                myWebscoket.close();
+                return;
+            }
+
+            responseData = response.parse(message.data);
+
+            responseData.forEach(function(cmd) {
+                if (cmd.CMD === 'auth_passwd') {
+                    userAuthData(config);
+                } else if (cmd.CMD === 'auth_succ') {
+                    confirmHost(responseData);
+                    userInfo = cmd;
+                } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
+                    wsocket.subscribeNode(0);
+                    /* pass the user info to callback function */
+                    config.connectionAcceptedCallback(userInfo);
+                } else {
+                    /* call the callback function from config */
+                    config.dataCallback(cmd);
+                }
+
+            });
+        }
+    };
+
 
     /*
      * public API of Verse Websocket module
@@ -178,6 +180,7 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
         */
 
         subscribeNode: function subscribeNode(nodeId) {
+            console.info('subscribe node id ' + nodeId);
             var buf = node.subscribe(nodeId);
             buf = request.message(buf);
             myWebscoket.send(buf);

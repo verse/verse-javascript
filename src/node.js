@@ -29,7 +29,7 @@
 define(function() {
     'use strict';
 
-    var node, commands, routines, messageTemplate, getNodeCreate, getNodeDestroy;
+    var node, commands, routines, messageTemplate;
 
 
     /**
@@ -71,7 +71,7 @@ define(function() {
      */
 
     routines = {
-        32: function getNodeCreate(opCode, receivedView, bufferPosition, length) {
+        32: function getNodeCreate(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 SHARE: receivedView.getUint8(bufferPosition + 2),
@@ -81,13 +81,13 @@ define(function() {
                 CUSTOM_TYPE: receivedView.getUint16(bufferPosition + 13)
             };
         },
-        33: function getNodeDestroy(opCode, receivedView, bufferPosition, length) {
+        33: function getNodeDestroy(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 NODE_ID: receivedView.getUint32(bufferPosition + 3)
             };
         },
-        34: function getNodeSubscribe(opCode, receivedView, bufferPosition, length) {
+        34: function getNodeSubscribe(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 NODE_ID: receivedView.getUint32(bufferPosition + 2),
@@ -95,7 +95,7 @@ define(function() {
                 CRC32: receivedView.getUint32(bufferPosition + 10)
             };
         },
-        35: function getNodeUnsubscribe(opCode, receivedView, bufferPosition, length) {
+        35: function getNodeUnsubscribe(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 NODE_ID: receivedView.getUint32(bufferPosition + 2),
@@ -103,7 +103,7 @@ define(function() {
                 CRC32: receivedView.getUint32(bufferPosition + 10)
             };
         },
-        37: function getNodeLink(opCode, receivedView, bufferPosition, length) {
+        37: function getNodeLink(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 SHARE: receivedView.getUint8(bufferPosition + 2),
@@ -111,7 +111,7 @@ define(function() {
                 CHILD_ID: receivedView.getUint32(bufferPosition + 7)
             };
         },
-        38: function getNodePermissions(opCode, receivedView, bufferPosition, length) {
+        38: function getNodePermissions(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 SHARE: receivedView.getUint8(bufferPosition + 2),
@@ -120,13 +120,13 @@ define(function() {
                 NODE_ID: receivedView.getUint32(bufferPosition + 6)
             };
         },
-        39: function getNodeUmask(opCode, receivedView, bufferPosition, length) {
+        39: function getNodeUmask(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 PERMISSIONS: receivedView.getUint8(bufferPosition + 2)
             };
         },
-        40: function getNodeOwner(opCode, receivedView, bufferPosition, length) {
+        40: function getNodeOwner(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 SHARE: receivedView.getUint8(bufferPosition + 2),
@@ -134,7 +134,7 @@ define(function() {
                 NODE_ID: receivedView.getUint32(bufferPosition + 5)
             };
         },
-        41: function getNodeLock(opCode, receivedView, bufferPosition, length) {
+        41: function getNodeLock(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 SHARE: receivedView.getUint8(bufferPosition + 2),
@@ -142,7 +142,7 @@ define(function() {
                 NODE_ID: receivedView.getUint32(bufferPosition + 7)
             };
         },
-        42: function getNodeUnlock(opCode, receivedView, bufferPosition, length) {
+        42: function getNodeUnlock(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
                 SHARE: receivedView.getUint8(bufferPosition + 2),
@@ -152,9 +152,6 @@ define(function() {
         }
 
     };
-
-
-    getNodeCreate =
 
     node = {
 
@@ -171,8 +168,8 @@ define(function() {
             var msg, view;
             msg = messageTemplate(14, 34);
             view = new DataView(msg);
-            view.setUint32(3, id);
-            view.setUint32(7, 0);
+            view.setUint32(2, id);
+            view.setUint32(6, 0);
             view.setUint32(10, 0);
             return msg;
         },

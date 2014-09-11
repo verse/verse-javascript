@@ -36,7 +36,7 @@ define(["node"], function(node) {
 
         describe("node subscribe command", function() {
             beforeEach(function() {
-                testNode = node.subscribe(0);
+                testNode = node.subscribe(41);
                 view = new DataView(testNode);
             });
 
@@ -52,12 +52,8 @@ define(["node"], function(node) {
                 expect(view.getUint8(1)).toEqual(14);
             });
 
-            it("third byte nodeId should be 0 for this test ", function() {
-                expect(view.getUint32(2)).toEqual(0);
-            });
-
-            it("third byte nodeId should be 0 for this test ", function() {
-                expect(view.getUint32(2)).toEqual(0);
+            it("third byte nodeId should be 41 for this test ", function() {
+                expect(view.getUint32(2)).toEqual(41);
             });
 
             it("version (byte 7) should be 0 as not supported ", function() {
