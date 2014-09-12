@@ -29,7 +29,35 @@
 define(['message'], function(message) {
     'use strict';
 
-    var commands, routines, tagGroup, subUnsub;
+    var commands, routines, tagGroup, sendSubUnsub, getSubUnsub;
+
+    /*
+     * subscibe and ubsucribe tagGroup
+     */
+
+    sendSubUnsub = function sendSubUnsub(opCode, nodeId, tagGroupId) {
+        var msg, view;
+        msg = message.template(17, opCode);
+        view = new DataView(msg);
+        view.setUint8(3, 0); //share
+        view.setUint32(3, nodeId);
+        view.setUint16(7, tagGroupId);
+        view.setUint32(9, 0); //Version
+        view.setUint32(13, 0); //CRC32
+        return msg;
+    };
+
+
+    getSubUnsub = function getSubUnsub(opCode, receivedView, bufferPosition) {
+        return {
+            CMD: commands[opCode],
+            SHARE: receivedView.getUint8(bufferPosition + 2),
+            NODE_ID: receivedView.getUint32(bufferPosition + 3),
+            TAG_GROUP_ID: receivedView.getUint16(bufferPosition + 7),
+            VERSION: receivedView.getUint32(bufferPosition + 9),
+            CRC32: receivedView.getUint32(bufferPosition + 13)
+        };
+    };
 
     //command codes = opCodes
     commands = {
@@ -52,51 +80,19 @@ define(['message'], function(message) {
                 TAG_GROUP_ID: receivedView.getUint16(bufferPosition + 7),
                 CUSTOM_TYPE: receivedView.getUint16(bufferPosition + 9)
             };
-        },//@TODO - rewrite for tag Group
+        },
         65: function getTagGroupDestroy(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
-                NODE_ID: receivedView.getUint32(bufferPosition + 3)
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                NODE_ID: receivedView.getUint32(bufferPosition + 3),
+                TAG_GROUP_ID: receivedView.getUint16(bufferPosition + 7)
             };
-        },//@TODO - rewrite for tag Group
-        66: function getTagGroupSubscribe(opCode, receivedView, bufferPosition) {
-            return {
-                CMD: commands[opCode],
-                NODE_ID: receivedView.getUint32(bufferPosition + 2),
-                VERSION: receivedView.getUint32(bufferPosition + 6),
-                CRC32: receivedView.getUint32(bufferPosition + 10)
-            };
-        },//@TODO - rewrite for tag Group
-        67: function getTagGroupUnsubscribe(opCode, receivedView, bufferPosition) {
-            return {
-                CMD: commands[opCode],
-                NODE_ID: receivedView.getUint32(bufferPosition + 2),
-                VERSION: receivedView.getUint32(bufferPosition + 6),
-                CRC32: receivedView.getUint32(bufferPosition + 10)
-            };
-        }
+        },
+        66: getSubUnsub,
+        67: getSubUnsub
 
     };
-
-
-    /*
-    * subscibe and ubsucribe tagGroup
-    */
-
-    subUnsub = function subUnsub(opCode, nodeId, tagGroupId) {
-        var msg, view;
-        msg = message.template(17, opCode);
-        view = new DataView(msg);
-        view.setUint8(3, 0); //share
-        view.setUint32(3, nodeId);
-        view.setUint16(7, tagGroupId);
-        view.setUint32(9, 0); //Version
-        view.setUint32(13, 0); //CRC32
-        return msg;
-    };
-
-
-
 
     tagGroup = {
 
@@ -106,7 +102,7 @@ define(['message'], function(message) {
          * @param tagGroupId int16
          */
         subscribe: function(nodeId, tagGroupId) {
-            return subUnsub(66, nodeId, tagGroupId);
+            return sendSubUnsub(66, nodeId, tagGroupId);
         },
 
         /*
@@ -116,22 +112,17 @@ define(['message'], function(message) {
          */
 
         unsubscribe: function(nodeId, tagGroupId) {
-            return subUnsub(67, nodeId, tagGroupId);
+            return sendSubUnsub(67, nodeId, tagGroupId);
         },
 
         /*
-        * parse received buffer for tagGroup command values
-        */
+         * parse received buffer for tagGroup command values
+         */
 
         getTagGroupValues: function getTagGroupValues(opCode, receivedView, bufferPosition, length) {
             var result = routines[opCode](opCode, receivedView, bufferPosition, length);
             return result;
-
-
         }
-
-
-
 
     };
 
