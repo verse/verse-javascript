@@ -28,7 +28,7 @@
 /* globals define */
 
 
-define(['request', 'response', 'negotiation', 'node', 'user'], function(request, response, negotiation, node, user) {
+define(['request', 'response', 'negotiation', 'node', 'user', 'taggroup'], function(request, response, negotiation, node, user, tagGroup) {
     'use strict';
     window.WebSocket = window.WebSocket || window.MozWebSocket;
     var myWebscoket,
@@ -160,6 +160,7 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
         init: function(config) {
 
             console.info('Connecting to URI:' + config.uri + ' ...');
+
             myWebscoket = new WebSocket(config.uri, config.version);
             myWebscoket.binaryType = 'arraybuffer';
 
@@ -180,12 +181,25 @@ define(['request', 'response', 'negotiation', 'node', 'user'], function(request,
         */
 
         subscribeNode: function subscribeNode(nodeId) {
-            console.info('subscribe node id ' + nodeId);
             var buf = node.subscribe(nodeId);
             buf = request.message(buf);
             myWebscoket.send(buf);
 
+        },
+
+        /*
+        * subscribe tag_group on server
+        * @param nodeId int32
+        * @param tagGroupId int16
+        */
+
+        subscribeTagGroup: function subscribeNode(nodeId, tagGroupId) {
+            var buf = tagGroup.subscribe(nodeId, tagGroupId);
+            buf = request.message(buf);
+            myWebscoket.send(buf);
+
         }
+
     };
 
 

@@ -24,32 +24,13 @@
  *
  */
 
-/* globals ArrayBuffer, define */
+/* globals define */
 
-define(function() {
+define(['message'], function(message) {
     'use strict';
 
-    var node, commands, routines, messageTemplate;
+    var node, commands, routines;
 
-
-    /**
-     * Abstract int message array buffer
-     * @param opcode int
-     * @param length int
-     **/
-
-    messageTemplate = function(length, opCode) {
-        var buf, view;
-
-        buf = new ArrayBuffer(length);
-        view = new DataView(buf);
-        /* first byte - op code*/
-        view.setUint8(0, opCode);
-        /* second byte - message length */
-        view.setUint8(1, length);
-
-        return buf;
-    };
 
     //command codes = opCodes
     commands = {
@@ -159,14 +140,9 @@ define(function() {
          * subscribe node commad
          * @param id - node id
          */
-
-
-
-
-
         subscribe: function(id) {
             var msg, view;
-            msg = messageTemplate(14, 34);
+            msg = message.template(14, 34);
             view = new DataView(msg);
             view.setUint32(2, id);
             view.setUint32(6, 0);
