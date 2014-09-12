@@ -69,6 +69,37 @@ define(["taggroup"], function(tagGroup) {
 
         });
 
+        describe("got TagGroupCreate from server", function() {
+            beforeEach(function() {
+                
+                messageLen = 11;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, 64); //tagGroupCreate command
+                view.setUint8(1, 17); //length
+                view.setUint8(2, 0); //share is 0
+                view.setUint32(3, 115); //Node ID
+                view.setUint16(7, 68); //TagGroupID
+                view.setUint16(9, 62);//custom type  
+
+            });
+
+            it("command should be parsed out as TAG_GROUP_CREATE, NODE_ID = 111 object", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = tagGroup.getTagGroupValues(64, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result).toEqual({
+                    CMD: "TAG_GROUP_CREATE",
+                    SHARE: 0,
+                    NODE_ID: 115,
+                    TAG_GROUP_ID: 68,
+                    CUSTOM_TYPE: 62
+                });
+            });
+        });
+
 
 
 
