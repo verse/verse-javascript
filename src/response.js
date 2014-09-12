@@ -26,7 +26,7 @@
 
 /* globals define */
 
-define(['negotiation', 'node'], function(negotiation, node) {
+define(['negotiation', 'node', 'taggroup'], function(negotiation, node, tagGroup) {
     'use strict';
 
     var checkOpCode = function checkOpCode(opCode, receivedView, bufferPosition) {
@@ -74,6 +74,12 @@ define(['negotiation', 'node'], function(negotiation, node) {
         } else if (opCode > 31 && opCode < 44) { //node commands
             length = receivedView.getUint8(bufferPosition);
             cmdValues = node.getNodeValues(opCode, receivedView, bufferPosition - 1, length);
+
+            return cmdValues;
+
+        } else if (opCode > 63 && opCode < 68) { //TagGroup commands
+            length = receivedView.getUint8(bufferPosition);
+            cmdValues = tagGroup.getTagGroupValues(opCode, receivedView, bufferPosition - 1, length);
 
             return cmdValues;
 

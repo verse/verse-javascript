@@ -31,7 +31,6 @@ define(['message'], function(message) {
 
     var node, commands, routines;
 
-
     //command codes = opCodes
     commands = {
         32: 'NODE_CREATE',

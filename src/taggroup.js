@@ -29,27 +29,105 @@
 define(['message'], function(message) {
     'use strict';
 
-     var tagGroup;
+    var commands, routines, tagGroup, subUnsub;
 
-    
+    //command codes = opCodes
+    commands = {
+        64: 'TAG_GROUP_CREATE',
+        65: 'TAG_GROUP_DESTROY',
+        66: 'TAG_GROUP_SUBSCRIBE',
+        67: 'TAG_GROUP_UNSUBSCRIBE'
+    };
+
+    /*
+     * routines - parsing functions for node commands from server
+     */
+
+    routines = {
+        64: function getTagGroupCreate(opCode, receivedView, bufferPosition) {
+            return {
+                CMD: commands[opCode],
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                NODE_ID: receivedView.getUint32(bufferPosition + 3),
+                TAG_GROUP_ID: receivedView.getUint16(bufferPosition + 7),
+                CUSTOM_TYPE: receivedView.getUint16(bufferPosition + 9)
+            };
+        },//@TODO - rewrite for tag Group
+        65: function getTagGroupDestroy(opCode, receivedView, bufferPosition) {
+            return {
+                CMD: commands[opCode],
+                NODE_ID: receivedView.getUint32(bufferPosition + 3)
+            };
+        },//@TODO - rewrite for tag Group
+        66: function getTagGroupSubscribe(opCode, receivedView, bufferPosition) {
+            return {
+                CMD: commands[opCode],
+                NODE_ID: receivedView.getUint32(bufferPosition + 2),
+                VERSION: receivedView.getUint32(bufferPosition + 6),
+                CRC32: receivedView.getUint32(bufferPosition + 10)
+            };
+        },//@TODO - rewrite for tag Group
+        67: function getTagGroupUnsubscribe(opCode, receivedView, bufferPosition) {
+            return {
+                CMD: commands[opCode],
+                NODE_ID: receivedView.getUint32(bufferPosition + 2),
+                VERSION: receivedView.getUint32(bufferPosition + 6),
+                CRC32: receivedView.getUint32(bufferPosition + 10)
+            };
+        }
+
+    };
+
+
+    /*
+    * subscibe and ubsucribe tagGroup
+    */
+
+    subUnsub = function subUnsub(opCode, nodeId, tagGroupId) {
+        var msg, view;
+        msg = message.template(17, opCode);
+        view = new DataView(msg);
+        view.setUint8(3, 0); //share
+        view.setUint32(3, nodeId);
+        view.setUint16(7, tagGroupId);
+        view.setUint32(9, 0); //Version
+        view.setUint32(13, 0); //CRC32
+        return msg;
+    };
+
+
+
 
     tagGroup = {
 
         /*
-         * subscribe tagGroup commad
+         * subscribe tagGroup commad OpCode 46
          * @param nodeId int32
          * @param tagGroupId int16
          */
         subscribe: function(nodeId, tagGroupId) {
-            var msg, view;
-            msg = message.template(17, 46);
-            view = new DataView(msg);
-            view.setUint8(3, 0);//share
-            view.setUint32(3, nodeId);
-            view.setUint16(7, tagGroupId);
-            view.setUint32(9, 0);//Version
-            view.setUint32(13, 0);//CRC32
-            return msg;
+            return subUnsub(66, nodeId, tagGroupId);
+        },
+
+        /*
+         * unsubscribe tagGroup commad OpCode 47
+         * @param nodeId int32
+         * @param tagGroupId int16
+         */
+
+        unsubscribe: function(nodeId, tagGroupId) {
+            return subUnsub(67, nodeId, tagGroupId);
+        },
+
+        /*
+        * parse received buffer for tagGroup command values
+        */
+
+        getTagGroupValues: function getTagGroupValues(opCode, receivedView, bufferPosition, length) {
+            var result = routines[opCode](opCode, receivedView, bufferPosition, length);
+            return result;
+
+
         }
 
 

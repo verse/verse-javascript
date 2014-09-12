@@ -44,8 +44,8 @@ define(["taggroup"], function(tagGroup) {
                 expect(testNode.byteLength).toEqual(17);
             });
 
-            it("first byte - opcode - should be 46", function() {
-                expect(view.getUint8(0)).toEqual(46);
+            it("first byte - opcode - should be 66", function() {
+                expect(view.getUint8(0)).toEqual(66);
             });
 
             it("second byte - message length - should be 14 ", function() {
