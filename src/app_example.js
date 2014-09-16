@@ -36,27 +36,53 @@
 */
 
 /* jshint devel: true, unused: true */
-/* global require */
+/* global require, requirejs */
 
-require(['wsocket'], function(wsocket) {
+
+requirejs.config({
+    baseUrl: 'src/',
+    paths: {
+        PubSubJS: '../bower_components/pubsub-js/src/pubsub'
+
+    }
+});
+
+require(['wsocket', 'PubSubJS'], function(wsocket, PubSub) {
     'use strict';
 
-    var config;
+    var config, mySubscriber, dataHandler;
+
+    // create a function to subscribe to topics
+    mySubscriber = function(msg, data) {
+        console.log(msg, data);
+    };
+
+    // add the function to the list of subscribers for a particular topic
+    // we're keeping the returned token, in order to be able to unsubscribe
+    // from the topic later on
+    PubSub.subscribe('CMD', mySubscriber);
+
+    dataHandler = function dataHandler (data) {
+        if (data.CMD === 'NODE_CREATE') {
+            wsocket.subscribeNode(data.NODE_ID);
+            console.log('subscribed node ' + data.NODE_ID);
+        }
+        else if (data.CMD === 'TAG_GROUP_CREATE') {
+            wsocket.subscribeTagGroup(data.NODE_ID, data.TAG_GROUP_ID);
+            console.info('subscribed tagGroup nodeId =' + data.NODE_ID + ' tagGroupId = ' + data.TAG_GROUP_ID);
+        }
+        else {
+            console.log(data);
+        }
+    };
+
 
     config = {
         uri: 'ws://verse.example.org:54321',
         version: 'v1.verse.tul.cz',
         username: 'verse_user',
         passwd: 'verse_passwd',
-        dataCallback: function(data) {
-            /* 
-             * callback function for data handling
-             *  every command send by server comes here parsed to data object
-             * data object example
-             * Object {CMD: "NODE_PERMISIONS", SHARE: 0, USER_ID: 65535, PERMISSIONS: 1, NODE_ID: 0}
-             */
-            console.info(data);
-        },
+        dataCallback: dataHandler,
         connectionTerminatedCallback: function(event) {
             /*
              *  callback function for end of session handling
@@ -80,5 +106,11 @@ require(['wsocket'], function(wsocket) {
 
     wsocket.init(config);
 
+    console.info(wsocket);
+
+    
+    
+
+   
 
 });
