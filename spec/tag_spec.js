@@ -31,7 +31,7 @@
 define(["tag"], function(tag) {
 
     describe("Tag command test suite", function() {
-        var testNode, view, messageLen, mockBuffer, mockView, result;
+        var testNode, view, messageLen, mockBuffer, mockView, result, opCode;
 
         /*
         describe("received tag group subscribe command", function() {
@@ -162,7 +162,7 @@ define(["tag"], function(tag) {
 
             });
 
-            it("command should be parsed out as TAG_SET_UINT8 object", function() {
+            it("command should be parsed out as TAG_SET_UINT32 4D object", function() {
                 
                 mockView = new DataView(mockBuffer);
                 result = tag.getTagValues(81, mockView, 0, mockBuffer.byteLength);
@@ -178,7 +178,98 @@ define(["tag"], function(tag) {
             });
         });
 
+        describe("got tagSetReal32 2D from server", function() {
+            beforeEach(function() {
+                
+                messageLen = 19;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
 
+                view.setUint8(0, 91); // tagSetReal32 2D command
+                view.setUint8(1, messageLen); // length
+                view.setUint8(2, 0); // share is 0
+                view.setUint32(3, 6545); // Node ID
+                view.setUint16(7, 68); // TagGroupID
+                view.setUint16(9, 154);// TagID
+                view.setFloat32(11, 15.3234);// 1 Value
+                view.setFloat32(15, 98.35654);// 2 Value
+                
+
+            });
+
+            it("command should be parsed out as TAG_SET_UINT64 2D object", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(91, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result.CMD).toEqual("TAG_SET_REAL32");
+            });
+
+            it("lenght of VALUES array should be 2", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(91, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result.VALUES.length).toEqual(2);
+            });
+
+            it("second of VALUES should be close to 98.35654", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(91, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result.VALUES[1]).toBeCloseTo(98.35654);
+            });
+
+        });
+
+         describe("got tagSetReal64 4D from server", function() {
+            beforeEach(function() {
+                
+                opCode = 97;
+                messageLen = 43;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, opCode); // tagSetReal32 2D command
+                view.setUint8(1, messageLen); // length
+                view.setUint8(2, 0); // share is 0
+                view.setUint32(3, 6545); // Node ID
+                view.setUint16(7, 68); // TagGroupID
+                view.setUint16(9, 154);// TagID
+                view.setFloat64(11, 125.453457876465465463234);// 1 Value
+                view.setFloat64(19, 125.453457876465465463234);// 1 Value
+                view.setFloat64(27, 125.453457876465465463234);// 1 Value
+                view.setFloat64(35, 125.453457876465465463234);// 1 Value
+                
+
+            });
+
+            it("command should be parsed out as TAG_SET_UINT64 2D object", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(opCode, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result.CMD).toEqual("TAG_SET_REAL64");
+            });
+
+            it("lenght of VALUES array should be 4", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(opCode, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result.VALUES.length).toEqual(4);
+            });
+
+            it("second of VALUES should be close to 98.35654", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(opCode, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result.VALUES[3]).toBeCloseTo(125.453457876465465463234);
+            });
+
+        });
 
 
 

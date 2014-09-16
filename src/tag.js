@@ -30,7 +30,7 @@ define(['message'], function(message) {
     'use strict';
 
     var commands, routines, tag, getTagSetCommons, getTagSetUint8, getTagSetUint16,
-        getTagSetUint32;
+        getTagSetUint32, getTagSetFloat32, getTagSetFloat64;
 
     /*
     * common function for all tagSet commands 
@@ -99,7 +99,7 @@ define(['message'], function(message) {
     };
 
     /*
-    * common function for all SetUint16 opCodes
+    * common function for all SetUint32 opCodes
     * @param opCode int from interval 78 - 81
     */
 
@@ -123,6 +123,57 @@ define(['message'], function(message) {
         return result;
     };
 
+    /*
+    * common function for all SetReal32 opCodes
+    * @param opCode int from interval 90 - 93
+    */
+
+    getTagSetFloat32 = function getTagSetFloat32(opCode, receivedView, bufferPosition) {
+        var result = getTagSetCommons(opCode, receivedView, bufferPosition);
+
+        result.VALUES[0] = receivedView.getFloat32(bufferPosition + 11);
+
+        if (opCode > 90) {
+            result.VALUES[1] = receivedView.getFloat32(bufferPosition + 15);   
+        }
+
+        if (opCode > 91) {
+            result.VALUES[2] = receivedView.getFloat32(bufferPosition + 19);   
+        }
+
+        if (opCode > 92) {
+            result.VALUES[3] = receivedView.getFloat32(bufferPosition + 23);   
+        }
+
+        return result;
+    };
+
+    /*
+    * common function for all SetReal64 opCodes
+    * @param opCode int from interval 94 - 97
+    */
+
+    getTagSetFloat64 = function getTagSetFloat64(opCode, receivedView, bufferPosition) {
+        var result = getTagSetCommons(opCode, receivedView, bufferPosition);
+
+        result.VALUES[0] = receivedView.getFloat64(bufferPosition + 11);
+
+        if (opCode > 94) {
+            result.VALUES[1] = receivedView.getFloat64(bufferPosition + 19);   
+        }
+
+        if (opCode > 95) {
+            result.VALUES[2] = receivedView.getFloat64(bufferPosition + 27);   
+        }
+
+        if (opCode > 96) {
+            result.VALUES[3] = receivedView.getFloat64(bufferPosition + 35);   
+        }
+
+        return result;
+    };
+
+
 
     //command codes = opCodes
     commands = {
@@ -139,11 +190,20 @@ define(['message'], function(message) {
         78: 'TAG_SET_UINT32',
         79: 'TAG_SET_UINT32',
         80: 'TAG_SET_UINT32',
-        81: 'TAG_SET_UINT32'
+        81: 'TAG_SET_UINT32',
+        90: 'TAG_SET_REAL32',
+        91: 'TAG_SET_REAL32',
+        92: 'TAG_SET_REAL32',
+        93: 'TAG_SET_REAL32',
+        94: 'TAG_SET_REAL64',
+        95: 'TAG_SET_REAL64',
+        96: 'TAG_SET_REAL64',
+        97: 'TAG_SET_REAL64'
+        
     };
 
     /*
-     * routines - parsing functions for node commands from server
+     * routines - parsing functions for tag commands from server
      */
 
     routines = {
@@ -179,7 +239,15 @@ define(['message'], function(message) {
         78: getTagSetUint32,
         79: getTagSetUint32,
         80: getTagSetUint32,
-        81: getTagSetUint32
+        81: getTagSetUint32,
+        90: getTagSetFloat32,
+        91: getTagSetFloat32,
+        92: getTagSetFloat32,
+        93: getTagSetFloat32,
+        94: getTagSetFloat64,
+        95: getTagSetFloat64,
+        96: getTagSetFloat64,
+        97: getTagSetFloat64
 
     };
 
