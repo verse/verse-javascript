@@ -29,12 +29,50 @@
 define(['message'], function(message) {
     'use strict';
 
-    var commands, routines, tag;
+    var commands, routines, tag, getTagSetUint8;
+
+    /*
+    * common function for all SetUint8 opCodes
+    * @param opCode int from interval 70 - 73
+    */
+
+    getTagSetUint8 = function getTagSetUint8(opCode, receivedView, bufferPosition) {
+        var values = [];
+
+        values[0] = receivedView.getUint8(bufferPosition + 11);
+
+        if (opCode > 70) {
+            values[1] = receivedView.getUint8(bufferPosition + 12);   
+        }
+
+        if (opCode > 71) {
+            values[2] = receivedView.getUint8(bufferPosition + 13);   
+        }
+
+        if (opCode > 72) {
+            values[3] = receivedView.getUint8(bufferPosition + 14);   
+        }
+
+
+        return {
+            CMD: commands[opCode],
+            SHARE: receivedView.getUint8(bufferPosition + 2),
+            NODE_ID: receivedView.getUint32(bufferPosition + 3),
+            TAG_GROUP_ID: receivedView.getUint16(bufferPosition + 7),
+            TAG_ID: receivedView.getUint16(bufferPosition + 9),
+            VALUES: values
+        };
+    };
+
 
     //command codes = opCodes
     commands = {
         68: 'TAG_CREATE',
-        69: 'TAG_DESTROY'
+        69: 'TAG_DESTROY',
+        70: 'TAG_SET_UINT8',
+        71: 'TAG_SET_UINT8',
+        72: 'TAG_SET_UINT8',
+        73: 'TAG_SET_UINT8'
     };
 
     /*
@@ -62,13 +100,17 @@ define(['message'], function(message) {
                 TAG_GROUP_ID: receivedView.getUint16(bufferPosition + 7),
                 TAG_ID: receivedView.getUint16(bufferPosition + 9)
             };
-        }
-        
+        },
+        70: getTagSetUint8,
+        71: getTagSetUint8,
+        72: getTagSetUint8,
+        73: getTagSetUint8
+
     };
 
     tag = {
 
-        
+
         /*
          * parse received buffer for tag command values
          */

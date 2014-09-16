@@ -107,6 +107,41 @@ define(["tag"], function(tag) {
             });
         });
 
+        describe("got tagSetUint8 3D from server", function() {
+            beforeEach(function() {
+                
+                messageLen = 14;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, 72); // tagSetUint8 3D command
+                view.setUint8(1, 14); // length
+                view.setUint8(2, 0); // share is 0
+                view.setUint32(3, 6545); // Node ID
+                view.setUint16(7, 68); // TagGroupID
+                view.setUint16(9, 154);// TagID
+                view.setUint8(11, 15);// X Value
+                view.setUint8(12, 55);// Y Value
+                view.setUint8(13, 6);// Z Value
+
+            });
+
+            it("command should be parsed out as TAG_SET_UINT8 object", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(72, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result).toEqual({
+                    CMD: "TAG_SET_UINT8",
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    TAG_GROUP_ID: 68,
+                    TAG_ID: 154,
+                    VALUES: [15, 55, 6]
+                });
+            });
+        });
+
 
 
 
