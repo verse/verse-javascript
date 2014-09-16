@@ -142,6 +142,42 @@ define(["tag"], function(tag) {
             });
         });
 
+        describe("got tagSetUint32 4D from server", function() {
+            beforeEach(function() {
+                
+                messageLen = 27;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, 81); // tagSetUint32 4D command
+                view.setUint8(1, messageLen); // length
+                view.setUint8(2, 0); // share is 0
+                view.setUint32(3, 6545); // Node ID
+                view.setUint16(7, 68); // TagGroupID
+                view.setUint16(9, 154);// TagID
+                view.setUint32(11, 155465);// 1 Value
+                view.setUint32(15, 5535654);// 2 Value
+                view.setUint32(19, 6455453);// 3 Value
+                view.setUint32(23, 54643);// 4 Value
+
+            });
+
+            it("command should be parsed out as TAG_SET_UINT8 object", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(81, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result).toEqual({
+                    CMD: "TAG_SET_UINT32",
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    TAG_GROUP_ID: 68,
+                    TAG_ID: 154,
+                    VALUES: [155465, 5535654, 6455453, 54643]
+                });
+            });
+        });
+
 
 
 

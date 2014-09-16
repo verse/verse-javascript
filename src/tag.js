@@ -29,7 +29,23 @@
 define(['message'], function(message) {
     'use strict';
 
-    var commands, routines, tag, getTagSetUint8;
+    var commands, routines, tag, getTagSetCommons, getTagSetUint8, getTagSetUint16,
+        getTagSetUint32;
+
+    /*
+    * common function for all tagSet commands 
+    */
+
+    getTagSetCommons = function getTagSetCommons(opCode, receivedView, bufferPosition) {
+        return {
+            CMD: commands[opCode],
+            SHARE: receivedView.getUint8(bufferPosition + 2),
+            NODE_ID: receivedView.getUint32(bufferPosition + 3),
+            TAG_GROUP_ID: receivedView.getUint16(bufferPosition + 7),
+            TAG_ID: receivedView.getUint16(bufferPosition + 9),
+            VALUES: []
+        };
+    };
 
     /*
     * common function for all SetUint8 opCodes
@@ -37,31 +53,74 @@ define(['message'], function(message) {
     */
 
     getTagSetUint8 = function getTagSetUint8(opCode, receivedView, bufferPosition) {
-        var values = [];
+        
+        var result = getTagSetCommons(opCode, receivedView, bufferPosition);
 
-        values[0] = receivedView.getUint8(bufferPosition + 11);
+        result.VALUES[0] = receivedView.getUint8(bufferPosition + 11);
 
         if (opCode > 70) {
-            values[1] = receivedView.getUint8(bufferPosition + 12);   
+            result.VALUES[1] = receivedView.getUint8(bufferPosition + 12);   
         }
 
         if (opCode > 71) {
-            values[2] = receivedView.getUint8(bufferPosition + 13);   
+            result.VALUES[2] = receivedView.getUint8(bufferPosition + 13);   
         }
 
         if (opCode > 72) {
-            values[3] = receivedView.getUint8(bufferPosition + 14);   
+            result.VALUES[3] = receivedView.getUint8(bufferPosition + 14);   
         }
 
+        return result;
+    };
 
-        return {
-            CMD: commands[opCode],
-            SHARE: receivedView.getUint8(bufferPosition + 2),
-            NODE_ID: receivedView.getUint32(bufferPosition + 3),
-            TAG_GROUP_ID: receivedView.getUint16(bufferPosition + 7),
-            TAG_ID: receivedView.getUint16(bufferPosition + 9),
-            VALUES: values
-        };
+    /*
+    * common function for all SetUint16 opCodes
+    * @param opCode int from interval 74 - 77
+    */
+
+    getTagSetUint16 = function getTagSetUint16(opCode, receivedView, bufferPosition) {
+        var result = getTagSetCommons(opCode, receivedView, bufferPosition);
+
+        result.VALUES[0] = receivedView.getUint16(bufferPosition + 11);
+
+        if (opCode > 74) {
+            result.VALUES[1] = receivedView.getUint16(bufferPosition + 13);   
+        }
+
+        if (opCode > 75) {
+            result.VALUES[2] = receivedView.getUint16(bufferPosition + 15);   
+        }
+
+        if (opCode > 76) {
+            result.VALUES[3] = receivedView.getUint16(bufferPosition + 17);   
+        }
+
+        return result;
+    };
+
+    /*
+    * common function for all SetUint16 opCodes
+    * @param opCode int from interval 78 - 81
+    */
+
+    getTagSetUint32 = function getTagSetUint32(opCode, receivedView, bufferPosition) {
+        var result = getTagSetCommons(opCode, receivedView, bufferPosition);
+
+        result.VALUES[0] = receivedView.getUint32(bufferPosition + 11);
+
+        if (opCode > 78) {
+            result.VALUES[1] = receivedView.getUint32(bufferPosition + 15);   
+        }
+
+        if (opCode > 79) {
+            result.VALUES[2] = receivedView.getUint32(bufferPosition + 19);   
+        }
+
+        if (opCode > 80) {
+            result.VALUES[3] = receivedView.getUint32(bufferPosition + 23);   
+        }
+
+        return result;
     };
 
 
@@ -72,7 +131,15 @@ define(['message'], function(message) {
         70: 'TAG_SET_UINT8',
         71: 'TAG_SET_UINT8',
         72: 'TAG_SET_UINT8',
-        73: 'TAG_SET_UINT8'
+        73: 'TAG_SET_UINT8',
+        74: 'TAG_SET_UINT16',
+        75: 'TAG_SET_UINT16',
+        76: 'TAG_SET_UINT16',
+        77: 'TAG_SET_UINT16',
+        78: 'TAG_SET_UINT32',
+        79: 'TAG_SET_UINT32',
+        80: 'TAG_SET_UINT32',
+        81: 'TAG_SET_UINT32'
     };
 
     /*
@@ -104,7 +171,15 @@ define(['message'], function(message) {
         70: getTagSetUint8,
         71: getTagSetUint8,
         72: getTagSetUint8,
-        73: getTagSetUint8
+        73: getTagSetUint8,
+        74: getTagSetUint16,
+        75: getTagSetUint16,
+        76: getTagSetUint16,
+        77: getTagSetUint16,
+        78: getTagSetUint32,
+        79: getTagSetUint32,
+        80: getTagSetUint32,
+        81: getTagSetUint32
 
     };
 
@@ -112,7 +187,7 @@ define(['message'], function(message) {
 
 
         /*
-         * parse received buffer for tag command values
+         * parse received buffer for tag command VALUES
          */
 
         getTagValues: function getTagValues(opCode, receivedView, bufferPosition, length) {
