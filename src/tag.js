@@ -125,20 +125,42 @@ define(['Int64'], function(Int64) {
     };
 
     /*
-    * common function for all SetUint32 opCodes
-    * @param opCode int from interval 78 - 81
+    * common function for all SetUint64 opCodes
+    * WARNING > conversion by valueOf fails if the number is bigger than 2^53
+    * @param opCode int from interval 82 - 85
+    *
     */
 
     getTagSetUint64 = function getTagSetUint64(opCode, receivedView, bufferPosition) {
-        var result, hi, lo, number;
+        var result, hi, lo, bigNumber;
 
         result = getTagSetCommons(opCode, receivedView, bufferPosition);
 
         lo = receivedView.getUint32(bufferPosition + 11);
         hi = receivedView.getUint32(bufferPosition + 15); 
+        bigNumber = new Int64(hi, lo);
+        result.VALUES[0] = bigNumber.valueOf();
 
-        number = new Int64(hi, lo);
-        result.VALUES[0] = number.toString();
+        if (opCode > 82) {
+            lo = receivedView.getUint32(bufferPosition + 19);
+            hi = receivedView.getUint32(bufferPosition + 23); 
+            bigNumber = new Int64(hi, lo);
+            result.VALUES[1] = bigNumber.valueOf();
+        }
+
+        if (opCode > 83) {
+            lo = receivedView.getUint32(bufferPosition + 27);
+            hi = receivedView.getUint32(bufferPosition + 31); 
+            bigNumber = new Int64(hi, lo);
+            result.VALUES[2] = bigNumber.valueOf();
+        }
+
+        if (opCode > 84) {
+            lo = receivedView.getUint32(bufferPosition + 35);
+            hi = receivedView.getUint32(bufferPosition + 39); 
+            bigNumber = new Int64(hi, lo);
+            result.VALUES[3] = bigNumber.valueOf();
+        }
 
         return result;
     };
