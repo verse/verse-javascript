@@ -180,6 +180,43 @@ define(["layer"], function(layer) {
                 });
             });
         });
+
+        describe("got layerSetUint32 4D from server", function() {
+            beforeEach(function() {
+
+                messageLen = 29;
+                opCode = 144;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, opCode); //tagCreate command
+                view.setUint8(1, messageLen); //length
+                view.setUint8(2, 0); //share is 0
+                view.setUint32(3, 6545); //Node ID
+                view.setUint16(7, 68); //Layer ID
+                view.setUint32(9, 154); // Item ID
+                view.setUint32(13, 15); // X Value
+                view.setUint32(17, 55); // Y Value
+                view.setUint32(21, 6); // Z Value
+                view.setUint32(25, 16); // 4 Value
+
+            });
+
+            it("command should be parsed out as LAYER_SET_UINT16 object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = layer.getLayerValues(opCode, mockView, 0, mockBuffer.byteLength);
+
+                expect(result).toEqual({
+                    CMD: "LAYER_SET_UINT32",
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    LAYER_ID: 68,
+                    ITEM_ID: 154,
+                    VALUES: [15, 55, 6, 16]
+                });
+            });
+        });
         
     });
 

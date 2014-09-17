@@ -120,24 +120,26 @@ define(['message'], function(message) {
 
     /*
      * common function for all SetUint32 opCodes
-     * @param opCode int from interval 78 - 81
+     * @param opCode int from interval 141 - 144
      */
 
     getLayerSetUint32 = function getLayerSetUint32(opCode, receivedView, bufferPosition) {
-        var result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
+        var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.VALUES[0] = receivedView.getUint32(bufferPosition + 11);
+        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
+        result.VALUES = [];
+        result.VALUES[0] = receivedView.getUint32(bufferPosition + 13);
 
-        if (opCode > 78) {
-            result.VALUES[1] = receivedView.getUint32(bufferPosition + 15);
+        if (opCode > 141) {
+            result.VALUES[1] = receivedView.getUint32(bufferPosition + 17);
         }
 
-        if (opCode > 79) {
-            result.VALUES[2] = receivedView.getUint32(bufferPosition + 19);
+        if (opCode > 142) {
+            result.VALUES[2] = receivedView.getUint32(bufferPosition + 21);
         }
 
-        if (opCode > 80) {
-            result.VALUES[3] = receivedView.getUint32(bufferPosition + 23);
+        if (opCode > 143) {
+            result.VALUES[3] = receivedView.getUint32(bufferPosition + 25);
         }
 
         return result;
@@ -221,10 +223,10 @@ define(['message'], function(message) {
         138: 'LAYER_SET_UINT16',
         139: 'LAYER_SET_UINT16',
         140: 'LAYER_SET_UINT16',
-        78: 'LAYER_SET_UINT32',
-        79: 'LAYER_SET_UINT32',
-        80: 'LAYER_SET_UINT32',
-        81: 'LAYER_SET_UINT32',
+        141: 'LAYER_SET_UINT32',
+        142: 'LAYER_SET_UINT32',
+        143: 'LAYER_SET_UINT32',
+        144: 'LAYER_SET_UINT32',
         90: 'LAYER_SET_REAL32',
         91: 'LAYER_SET_REAL32',
         92: 'LAYER_SET_REAL32',
@@ -267,10 +269,10 @@ define(['message'], function(message) {
         138: getLayerSetUint16,
         139: getLayerSetUint16,
         140: getLayerSetUint16,
-        78: getLayerSetUint32,
-        79: getLayerSetUint32,
-        80: getLayerSetUint32,
-        81: getLayerSetUint32,
+        141: getLayerSetUint32,
+        142: getLayerSetUint32,
+        143: getLayerSetUint32,
+        144: getLayerSetUint32,
         90: getLayerSetFloat32,
         91: getLayerSetFloat32,
         92: getLayerSetFloat32,
