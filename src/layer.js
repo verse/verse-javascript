@@ -147,24 +147,26 @@ define(['message'], function(message) {
 
     /*
      * common function for all SetReal32 opCodes
-     * @param opCode int from interval 90 - 93
+     * @param opCode int from interval 153 - 156
      */
 
     getLayerSetFloat32 = function getLayerSetFloat32(opCode, receivedView, bufferPosition) {
-        var result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
+         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.VALUES[0] = receivedView.getFloat32(bufferPosition + 11);
+        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
+        result.VALUES = [];
+        result.VALUES[0] = receivedView.getFloat32(bufferPosition + 13);
 
-        if (opCode > 90) {
-            result.VALUES[1] = receivedView.getFloat32(bufferPosition + 15);
+        if (opCode > 153) {
+            result.VALUES[1] = receivedView.getFloat32(bufferPosition + 17);
         }
 
-        if (opCode > 91) {
-            result.VALUES[2] = receivedView.getFloat32(bufferPosition + 19);
+        if (opCode > 154) {
+            result.VALUES[2] = receivedView.getFloat32(bufferPosition + 21);
         }
 
-        if (opCode > 92) {
-            result.VALUES[3] = receivedView.getFloat32(bufferPosition + 23);
+        if (opCode > 155) {
+            result.VALUES[3] = receivedView.getFloat32(bufferPosition + 25);
         }
 
         return result;
@@ -172,24 +174,26 @@ define(['message'], function(message) {
 
     /*
      * common function for all SetReal64 opCodes
-     * @param opCode int from interval 94 - 97
+     * @param opCode int from interval 157 - 160
      */
 
     getLayerSetFloat64 = function getLayerSetFloat64(opCode, receivedView, bufferPosition) {
-        var result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
+         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.VALUES[0] = receivedView.getFloat64(bufferPosition + 11);
+        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
+        result.VALUES = [];
+        result.VALUES[0] = receivedView.getFloat64(bufferPosition + 13);
 
-        if (opCode > 94) {
-            result.VALUES[1] = receivedView.getFloat64(bufferPosition + 19);
+        if (opCode > 157) {
+            result.VALUES[1] = receivedView.getFloat64(bufferPosition + 21);
         }
 
-        if (opCode > 95) {
-            result.VALUES[2] = receivedView.getFloat64(bufferPosition + 27);
+        if (opCode > 158) {
+            result.VALUES[2] = receivedView.getFloat64(bufferPosition + 29);
         }
 
-        if (opCode > 96) {
-            result.VALUES[3] = receivedView.getFloat64(bufferPosition + 35);
+        if (opCode > 159) {
+            result.VALUES[3] = receivedView.getFloat64(bufferPosition + 37);
         }
 
         return result;
@@ -227,15 +231,15 @@ define(['message'], function(message) {
         142: 'LAYER_SET_UINT32',
         143: 'LAYER_SET_UINT32',
         144: 'LAYER_SET_UINT32',
-        90: 'LAYER_SET_REAL32',
-        91: 'LAYER_SET_REAL32',
-        92: 'LAYER_SET_REAL32',
-        93: 'LAYER_SET_REAL32',
-        94: 'LAYER_SET_REAL64',
-        95: 'LAYER_SET_REAL64',
-        96: 'LAYER_SET_REAL64',
-        97: 'LAYER_SET_REAL64',
-        98: 'LAYER_SET_STRING8'
+        153: 'LAYER_SET_REAL32',
+        154: 'LAYER_SET_REAL32',
+        155: 'LAYER_SET_REAL32',
+        156: 'LAYER_SET_REAL32',
+        157: 'LAYER_SET_REAL64',
+        158: 'LAYER_SET_REAL64',
+        159: 'LAYER_SET_REAL64',
+        160: 'LAYER_SET_REAL64',
+        161: 'LAYER_UNSET_DATA'
         
     };
 
@@ -273,14 +277,14 @@ define(['message'], function(message) {
         142: getLayerSetUint32,
         143: getLayerSetUint32,
         144: getLayerSetUint32,
-        90: getLayerSetFloat32,
-        91: getLayerSetFloat32,
-        92: getLayerSetFloat32,
-        93: getLayerSetFloat32,
-        94: getLayerSetFloat64,
-        95: getLayerSetFloat64,
-        96: getLayerSetFloat64,
-        97: getLayerSetFloat64
+        153: getLayerSetFloat32,
+        154: getLayerSetFloat32,
+        155: getLayerSetFloat32,
+        156: getLayerSetFloat32,
+        157: getLayerSetFloat64,
+        158: getLayerSetFloat64,
+        159: getLayerSetFloat64,
+        160: getLayerSetFloat64
         
 
     };
