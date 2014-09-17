@@ -30,7 +30,8 @@ define(['message'], function(message) {
     'use strict';
 
     var commands, routines, tag, getTagSetCommons, getTagSetUint8, getTagSetUint16,
-        getTagSetUint32, getTagSetFloat32, getTagSetFloat64, getTagSetString8;
+        getTagSetUint32, getTagSetUint64, getTagSetFloat16,
+        getTagSetFloat32, getTagSetFloat64, getTagSetString8;
 
     /*
     * common function for all tagSet commands 
@@ -124,6 +125,32 @@ define(['message'], function(message) {
     };
 
     /*
+    * common function for all SetUint32 opCodes
+    * @param opCode int from interval 78 - 81
+    */
+
+    getTagSetUint64 = function getTagSetUint64(opCode, receivedView, bufferPosition) {
+        var result = getTagSetCommons(opCode, receivedView, bufferPosition);
+
+        result.VALUES[0] = '@TODO > Unit64 not supported';
+
+        return result;
+    };
+
+    /*
+    * common function for all SetReal32 opCodes
+    * @param opCode int from interval 90 - 93
+    */
+
+    getTagSetFloat16 = function getTagSetFloat16(opCode, receivedView, bufferPosition) {
+        var result = getTagSetCommons(opCode, receivedView, bufferPosition);
+
+        result.VALUES[0] = '@TODO > Float16 not supported';
+
+        return result;
+    };
+
+    /*
     * common function for all SetReal32 opCodes
     * @param opCode int from interval 90 - 93
     */
@@ -211,6 +238,14 @@ define(['message'], function(message) {
         79: 'TAG_SET_UINT32',
         80: 'TAG_SET_UINT32',
         81: 'TAG_SET_UINT32',
+        82: 'TAG_SET_UINT64',
+        83: 'TAG_SET_UINT64',
+        84: 'TAG_SET_UINT64',
+        85: 'TAG_SET_UINT64',
+        86: 'TAG_SET_REAL16',
+        87: 'TAG_SET_REAL16',
+        88: 'TAG_SET_REAL16',
+        89: 'TAG_SET_REAL16',
         90: 'TAG_SET_REAL32',
         91: 'TAG_SET_REAL32',
         92: 'TAG_SET_REAL32',
@@ -257,6 +292,14 @@ define(['message'], function(message) {
         79: getTagSetUint32,
         80: getTagSetUint32,
         81: getTagSetUint32,
+        82: getTagSetUint64,
+        83: getTagSetUint64,
+        84: getTagSetUint64,
+        85: getTagSetUint64,
+        86: getTagSetFloat16,
+        87: getTagSetFloat16,
+        88: getTagSetFloat16,
+        89: getTagSetFloat16,
         90: getTagSetFloat32,
         91: getTagSetFloat32,
         92: getTagSetFloat32,
