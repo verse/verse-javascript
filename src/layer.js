@@ -26,11 +26,11 @@
 
 /* globals define */
 
-define(['message'], function(message) {
+define(['Int64'], function(Int64) {
     'use strict';
 
     var commands, routines, layer, getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
-        getLayerSetUint32, getLayerSetFloat32, getLayerSetFloat64,
+        getLayerSetUint32, getLayerSetUint64, getLayerSetFloat16, getLayerSetFloat32, getLayerSetFloat64,
         getLayerCmdCommons, getLayerSubUnsub;
 
     /*
@@ -146,6 +146,65 @@ define(['message'], function(message) {
     };
 
     /*
+    * common function for all SetUint64 opCodes
+    * WARNING > conversion by valueOf fails if the number is bigger than 2^53
+    * @param opCode int from interval 145 - 148
+    *
+    */
+
+    getLayerSetUint64 = function getLayerSetUint64(opCode, receivedView, bufferPosition) {
+        var result, hi, lo, bigNumber;
+
+        result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
+
+        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
+        result.VALUES = [];
+
+        lo = receivedView.getUint32(bufferPosition + 13);
+        hi = receivedView.getUint32(bufferPosition + 17); 
+        bigNumber = new Int64(hi, lo);
+        result.VALUES[0] = bigNumber.valueOf();
+
+        if (opCode > 145) {
+            lo = receivedView.getUint32(bufferPosition + 21);
+            hi = receivedView.getUint32(bufferPosition + 25); 
+            bigNumber = new Int64(hi, lo);
+            result.VALUES[1] = bigNumber.valueOf();
+        }
+
+        if (opCode > 146) {
+            lo = receivedView.getUint32(bufferPosition + 29);
+            hi = receivedView.getUint32(bufferPosition + 33); 
+            bigNumber = new Int64(hi, lo);
+            result.VALUES[2] = bigNumber.valueOf();
+        }
+
+        if (opCode > 147) {
+            lo = receivedView.getUint32(bufferPosition + 37);
+            hi = receivedView.getUint32(bufferPosition + 41); 
+            bigNumber = new Int64(hi, lo);
+            result.VALUES[3] = bigNumber.valueOf();
+        }
+
+        return result;
+    };
+
+    /*
+     * common function for all SetReal16 opCodes
+     * @param opCode int from interval 149 - 152
+     */
+
+    getLayerSetFloat32 = function getLayerSetFloat32(opCode, receivedView, bufferPosition) {
+         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
+
+        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
+        result.VALUES = [];
+        result.VALUES[0] = '@TODO - data type Real16 not supported';
+
+        return result;
+    };
+
+    /*
      * common function for all SetReal32 opCodes
      * @param opCode int from interval 153 - 156
      */
@@ -231,6 +290,14 @@ define(['message'], function(message) {
         142: 'LAYER_SET_UINT32',
         143: 'LAYER_SET_UINT32',
         144: 'LAYER_SET_UINT32',
+        145: 'LAYER_SET_UINT64',
+        146: 'LAYER_SET_UINT64',
+        147: 'LAYER_SET_UINT64',
+        148: 'LAYER_SET_UINT64',
+        149: 'LAYER_SET_REAL16',
+        150: 'LAYER_SET_REAL16',
+        151: 'LAYER_SET_REAL16',
+        152: 'LAYER_SET_REAL16',
         153: 'LAYER_SET_REAL32',
         154: 'LAYER_SET_REAL32',
         155: 'LAYER_SET_REAL32',
@@ -277,6 +344,14 @@ define(['message'], function(message) {
         142: getLayerSetUint32,
         143: getLayerSetUint32,
         144: getLayerSetUint32,
+        145: getLayerSetUint64,
+        146: getLayerSetUint64,
+        147: getLayerSetUint64,
+        148: getLayerSetUint64,
+        149: getLayerSetFloat16,
+        150: getLayerSetFloat16,
+        151: getLayerSetFloat16,
+        152: getLayerSetFloat16,
         153: getLayerSetFloat32,
         154: getLayerSetFloat32,
         155: getLayerSetFloat32,
