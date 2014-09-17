@@ -75,7 +75,7 @@ define(['request', 'response', 'negotiation', 'node', 'user', 'taggroup'],
          * @param config object
          */
         onSocketClose = function onSocketClose(event, config) {
-            if (config.connectionTerminatedCallback && typeof config.connectionTerminatedCallback === 'function') {
+            if (config && config.connectionTerminatedCallback && typeof config.connectionTerminatedCallback === 'function') {
                 config.connectionTerminatedCallback(event);
             }
         };
