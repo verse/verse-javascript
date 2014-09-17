@@ -26,7 +26,7 @@
 
 /* globals define */
 
-define(['negotiation', 'node', 'taggroup', 'tag'], function(negotiation, node, tagGroup, tag) {
+define(['negotiation', 'node', 'taggroup', 'tag', 'layer'], function(negotiation, node, tagGroup, tag, layer) {
     'use strict';
 
     var checkOpCode = function checkOpCode(opCode, receivedView, bufferPosition) {
@@ -89,9 +89,16 @@ define(['negotiation', 'node', 'taggroup', 'tag'], function(negotiation, node, t
 
             return cmdValues;
 
+        }  else if (opCode > 127 && opCode < 162) { //Layer commands
+            length = receivedView.getUint8(bufferPosition);
+            cmdValues = layer.getLayerValues(opCode, receivedView, bufferPosition - 1, length);
+
+            return cmdValues;
+
         } else {
             return {
-                CMD: opCode
+                CMD: opCode,
+                MESSAGE: '@TODO - opCode not implemented'
             };
         }
 
