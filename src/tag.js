@@ -26,7 +26,7 @@
 
 /* globals define */
 
-define(['message'], function(message) {
+define(['Int64'], function(Int64) {
     'use strict';
 
     var commands, routines, tag, getTagSetCommons, getTagSetUint8, getTagSetUint16,
@@ -130,9 +130,15 @@ define(['message'], function(message) {
     */
 
     getTagSetUint64 = function getTagSetUint64(opCode, receivedView, bufferPosition) {
-        var result = getTagSetCommons(opCode, receivedView, bufferPosition);
+        var result, hi, lo, number;
 
-        result.VALUES[0] = '@TODO > Unit64 not supported';
+        result = getTagSetCommons(opCode, receivedView, bufferPosition);
+
+        lo = receivedView.getUint32(bufferPosition + 11);
+        hi = receivedView.getUint32(bufferPosition + 15); 
+
+        number = new Int64(hi, lo);
+        result.VALUES[0] = number.toString();
 
         return result;
     };

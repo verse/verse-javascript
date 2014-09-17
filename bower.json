@@ -17,7 +17,6 @@
     "requirejs": "~2.1.10"
   },
   "devDependencies": {
-    "almond": "~0.2.9",
-    "pubsub-js": "~1.5.0"
+    "almond": "~0.2.9"
   }
 }

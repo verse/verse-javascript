@@ -36,32 +36,14 @@
 */
 
 /* jshint devel: true, unused: true */
-/* global require, requirejs */
+/* global require */
 
-
-requirejs.config({
-    baseUrl: 'src/',
-    paths: {
-        PubSubJS: '../bower_components/pubsub-js/src/pubsub'
-
-    }
-});
-
-require(['wsocket', 'PubSubJS'], function(wsocket, PubSub) {
+require(['wsocket'], function(wsocket) {
     'use strict';
 
-    var config, mySubscriber, dataHandler;
+    var config,  dataHandler;
 
-    // create a function to subscribe to topics
-    mySubscriber = function(msg, data) {
-        console.log(msg, data);
-    };
-
-    // add the function to the list of subscribers for a particular topic
-    // we're keeping the returned token, in order to be able to unsubscribe
-    // from the topic later on
-    PubSub.subscribe('CMD', mySubscriber);
-
+   
     dataHandler = function dataHandler (data) {
         if (data.CMD === 'NODE_CREATE') {
             wsocket.subscribeNode(data.NODE_ID);
