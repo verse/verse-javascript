@@ -235,8 +235,6 @@ define(['message'], function(message) {
             result.DATA_TYPE = receivedView.getUint8(bufferPosition + 11);
             result.COUNT = receivedView.getUint8(bufferPosition + 12);
             result.CUSTOM_TYPE = receivedView.getUint16(bufferPosition + 13);
-        
-
             return result;
             
         },

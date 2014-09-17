@@ -29,23 +29,34 @@
 define(['message'], function(message) {
     'use strict';
 
-    var commands, routines, tag, getLayerSetCommons, getLayerSetUint8, getLayerSetUint16,
-        getLayerSetUint32, getLayerSetFloat32, getLayerSetFloat64, getLayerSetString8;
+    var commands, routines, tag, getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
+        getLayerSetUint32, getLayerSetFloat32, getLayerSetFloat64, getLayerSetString8,
+        getLayerCmdCommons;
 
     /*
-    * common function for all tagSet commands 
+    * common function for layer Create and Destroy commands 
     */
 
-    getLayerSetCommons = function getLayerSetCommons(opCode, receivedView, bufferPosition) {
+    getLayerCreateCommons = function getLayerCreateCommons(opCode, receivedView, bufferPosition) {
         return {
             CMD: commands[opCode],
             SHARE: receivedView.getUint8(bufferPosition + 2),
             NODE_ID: receivedView.getUint32(bufferPosition + 3),
             PARENT_LAYER_ID: receivedView.getUint16(bufferPosition + 7),
-            LAYER_ID: receivedView.getUint16(bufferPosition + 9),
-            VALUES: []
+            LAYER_ID: receivedView.getUint16(bufferPosition + 9)
         };
     };
+
+    getLayerCmdCommons = function getLayerCmdCommons(opCode, receivedView, bufferPosition) {
+        return {
+            CMD: commands[opCode],
+            SHARE: receivedView.getUint8(bufferPosition + 2),
+            NODE_ID: receivedView.getUint32(bufferPosition + 3),
+            LAYER_ID: receivedView.getUint16(bufferPosition + 7)
+        };
+    };
+
+
 
     /*
     * common function for all SetUint8 opCodes
@@ -54,7 +65,7 @@ define(['message'], function(message) {
 
     getLayerSetUint8 = function getLayerSetUint8(opCode, receivedView, bufferPosition) {
         
-        var result = getLayerSetCommons(opCode, receivedView, bufferPosition);
+        var result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES[0] = receivedView.getUint8(bufferPosition + 11);
 
@@ -79,7 +90,7 @@ define(['message'], function(message) {
     */
 
     getLayerSetUint16 = function getLayerSetUint16(opCode, receivedView, bufferPosition) {
-        var result = getLayerSetCommons(opCode, receivedView, bufferPosition);
+        var result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES[0] = receivedView.getUint16(bufferPosition + 11);
 
@@ -104,7 +115,7 @@ define(['message'], function(message) {
     */
 
     getLayerSetUint32 = function getLayerSetUint32(opCode, receivedView, bufferPosition) {
-        var result = getLayerSetCommons(opCode, receivedView, bufferPosition);
+        var result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES[0] = receivedView.getUint32(bufferPosition + 11);
 
@@ -129,7 +140,7 @@ define(['message'], function(message) {
     */
 
     getLayerSetFloat32 = function getLayerSetFloat32(opCode, receivedView, bufferPosition) {
-        var result = getLayerSetCommons(opCode, receivedView, bufferPosition);
+        var result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES[0] = receivedView.getFloat32(bufferPosition + 11);
 
@@ -154,7 +165,7 @@ define(['message'], function(message) {
     */
 
     getLayerSetFloat64 = function getLayerSetFloat64(opCode, receivedView, bufferPosition) {
-        var result = getLayerSetCommons(opCode, receivedView, bufferPosition);
+        var result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES[0] = receivedView.getFloat64(bufferPosition + 11);
 
@@ -173,32 +184,16 @@ define(['message'], function(message) {
         return result;
     };
 
-    /*
-    * common function for all SetReal64 opCodes
-    * @param opCode int from interval 94 - 97
-    */
-
-    getLayerSetString8 = function getLayerSetString8(opCode, receivedView, bufferPosition) {
-        var i, strLength, result;
-
-        result = getLayerSetCommons(opCode, receivedView, bufferPosition);
-        delete result.VALUES;
-        result.VALUE = '';
-
-        strLength = receivedView.getUint8(11);
-        for (i = 0; i < strLength; i++) {
-            result.VALUE += String.fromCharCode(receivedView.getUint8(bufferPosition + 12 + i));
-        }
-        
-        return result;
-    };
-
+    
 
 
     //command codes = opCodes
     commands = {
         128: 'LAYER_CREATE',
-        129: 'LAYER_DESTROY'/*,
+        129: 'LAYER_DESTROY',
+        130: 'LAYER_SUBSCRIBE',
+        131: 'LAYER_UNSUBSCRIBE'
+        /*,
         
         70: 'LAYER_SET_UINT8',
         71: 'LAYER_SET_UINT8',
@@ -231,8 +226,7 @@ define(['message'], function(message) {
     routines = {
         128: function getLayerCreate(opCode, receivedView, bufferPosition) {
             var result;
-            result = getLayerSetCommons(opCode, receivedView, bufferPosition);
-            delete result.VALUES;  
+            result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
             result.DATA_TYPE = receivedView.getUint8(bufferPosition + 11);
             result.COUNT = receivedView.getUint8(bufferPosition + 12);
             result.CUSTOM_TYPE = receivedView.getUint16(bufferPosition + 13);
@@ -241,11 +235,18 @@ define(['message'], function(message) {
         },
         129: function getLayerDestroy(opCode, receivedView, bufferPosition) {
             var result;
-            result = getLayerSetCommons(opCode, receivedView, bufferPosition);
-            delete result.VALUES;    
-
+            result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
+            
             return result;
         },
+        130: function getLayerSubscribe(opCode, receivedView, bufferPosition) {
+            var result;
+            result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
+            result.VERSION = receivedView.getUint32(bufferPosition + 9);
+            result.CRC32 = receivedView.getUint32(bufferPosition + 13);
+            return result;
+        }
+        /*,
         70: getLayerSetUint8,
         71: getLayerSetUint8,
         72: getLayerSetUint8,
@@ -266,7 +267,7 @@ define(['message'], function(message) {
         95: getLayerSetFloat64,
         96: getLayerSetFloat64,
         97: getLayerSetFloat64,
-        98: getLayerSetString8
+        */
 
     };
 

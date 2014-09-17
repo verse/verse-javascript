@@ -73,8 +73,40 @@ define(["layer"], function(layer) {
             });
         });
 
-        
+        describe("got layerSubscribe from server", function() {
+            beforeEach(function() {
 
+                opCode = 130;
+                messageLen = 17;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, opCode); //tagCreate command
+                view.setUint8(1, messageLen); //length
+                view.setUint8(2, 0); //share is 0
+                view.setUint32(3, 6545); //Node ID
+                view.setUint16(7, 68); //Layer ID
+                view.setUint32(9, 154); //Version
+                view.setUint32(13, 298); //CRC32
+
+            });
+
+            it("command should be parsed out as LAYER_SUBSCRIBE object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = layer.getLayerValues(opCode, mockView, 0, mockBuffer.byteLength);
+
+                expect(result).toEqual({
+                    CMD: "LAYER_SUBSCRIBE",
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    LAYER_ID: 68,
+                    VERSION: 154,
+                    CRC32: 298
+                });
+            });
+        });
+        
     });
 
 
