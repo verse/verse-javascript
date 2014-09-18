@@ -41,19 +41,20 @@
 require(['wsocket'], function(wsocket) {
     'use strict';
 
-    var config,  dataHandler;
+    var config, dataHandler;
 
-   
-    dataHandler = function dataHandler (data) {
+
+    dataHandler = function dataHandler(data) {
         if (data.CMD === 'NODE_CREATE') {
             wsocket.subscribeNode(data.NODE_ID);
             console.log('subscribed node ' + data.NODE_ID);
-        }
-        else if (data.CMD === 'TAG_GROUP_CREATE') {
+        } else if (data.CMD === 'TAG_GROUP_CREATE') {
             wsocket.subscribeTagGroup(data.NODE_ID, data.TAG_GROUP_ID);
             console.info('subscribed tagGroup nodeId =' + data.NODE_ID + ' tagGroupId = ' + data.TAG_GROUP_ID);
-        }
-        else {
+        } else if (data.CMD === 'LAYER_CREATE') {
+            wsocket.subscribeLayer(data.NODE_ID, data.LAYER_ID);
+            console.info('subscribed Layer nodeId =' + data.NODE_ID + ' layerId = ' + data.LAYER_ID);
+        } else {
             console.log(data);
         }
     };
@@ -90,9 +91,9 @@ require(['wsocket'], function(wsocket) {
 
     console.info(wsocket);
 
-    
-    
 
-   
+
+
+
 
 });

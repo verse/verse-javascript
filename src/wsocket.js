@@ -28,8 +28,8 @@
 /* globals define */
 
 
-define(['request', 'response', 'negotiation', 'node', 'user', 'taggroup'],
-    function(request, response, negotiation, node, user, tagGroup) {
+define(['request', 'response', 'negotiation', 'node', 'user', 'taggroup', 'layer'],
+    function(request, response, negotiation, node, user, tagGroup, layer) {
 
         'use strict';
         window.WebSocket = window.WebSocket || window.MozWebSocket;
@@ -197,6 +197,19 @@ define(['request', 'response', 'negotiation', 'node', 'user', 'taggroup'],
 
             subscribeTagGroup: function subscribeNode(nodeId, tagGroupId) {
                 var buf = tagGroup.subscribe(nodeId, tagGroupId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+
+            },
+
+            /*
+             * subscribe layer on server
+             * @param nodeId int32
+             * @param layerId int16
+             */
+
+            subscribeLayer: function subscribeNode(nodeId, layerId) {
+                var buf = layer.subscribe(nodeId, layerId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
 
