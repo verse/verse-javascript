@@ -57,10 +57,10 @@ define(['Int64'], function(Int64) {
             CMD: commands[opCode],
             SHARE: receivedView.getUint8(bufferPosition + 2),
             NODE_ID: receivedView.getUint32(bufferPosition + 3),
-            LAYER_ID: receivedView.getUint16(bufferPosition + 7)
+            LAYER_ID: receivedView.getUint16(bufferPosition + 7),
+            ITEM_ID: receivedView.getUint32(bufferPosition + 9)
         };
     };
-
 
 
     /*
@@ -72,7 +72,6 @@ define(['Int64'], function(Int64) {
 
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
         result.VALUES = [];
         result.VALUES[0] = receivedView.getUint8(bufferPosition + 13);
 
@@ -99,7 +98,6 @@ define(['Int64'], function(Int64) {
     getLayerSetUint16 = function getLayerSetUint16(opCode, receivedView, bufferPosition) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
         result.VALUES = [];
         result.VALUES[0] = receivedView.getUint16(bufferPosition + 13);
 
@@ -126,7 +124,6 @@ define(['Int64'], function(Int64) {
     getLayerSetUint32 = function getLayerSetUint32(opCode, receivedView, bufferPosition) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
         result.VALUES = [];
         result.VALUES[0] = receivedView.getUint32(bufferPosition + 13);
 
@@ -157,7 +154,6 @@ define(['Int64'], function(Int64) {
 
         result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
         result.VALUES = [];
 
         lo = receivedView.getUint32(bufferPosition + 13);
@@ -197,7 +193,6 @@ define(['Int64'], function(Int64) {
     getLayerSetFloat32 = function getLayerSetFloat32(opCode, receivedView, bufferPosition) {
          var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
         result.VALUES = [];
         result.VALUES[0] = '@TODO - data type Real16 not supported';
 
@@ -212,7 +207,6 @@ define(['Int64'], function(Int64) {
     getLayerSetFloat32 = function getLayerSetFloat32(opCode, receivedView, bufferPosition) {
          var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
         result.VALUES = [];
         result.VALUES[0] = receivedView.getFloat32(bufferPosition + 13);
 
@@ -239,7 +233,6 @@ define(['Int64'], function(Int64) {
     getLayerSetFloat64 = function getLayerSetFloat64(opCode, receivedView, bufferPosition) {
          var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
-        result.ITEM_ID = receivedView.getUint32(bufferPosition + 9);
         result.VALUES = [];
         result.VALUES[0] = receivedView.getFloat64(bufferPosition + 13);
 
@@ -266,7 +259,8 @@ define(['Int64'], function(Int64) {
     getLayerSubUnsub = function getLayerSubUnsub(opCode, receivedView, bufferPosition) {
         var result;
         result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
-        result.VERSION = receivedView.getUint32(bufferPosition + 9);
+        result.VERSION = result.ITEM_ID;
+        delete result.ITEM_ID;
         result.CRC32 = receivedView.getUint32(bufferPosition + 13);
         return result;
     };
@@ -278,6 +272,7 @@ define(['Int64'], function(Int64) {
         129: 'LAYER_DESTROY',
         130: 'LAYER_SUBSCRIBE',
         131: 'LAYER_UNSUBSCRIBE',
+        132: 'LAYER_UNSET',
         133: 'LAYER_SET_UINT8',
         134: 'LAYER_SET_UINT8',
         135: 'LAYER_SET_UINT8',
@@ -332,6 +327,7 @@ define(['Int64'], function(Int64) {
         },
         130: getLayerSubUnsub,
         131: getLayerSubUnsub,
+        132: getLayerCmdCommons,
         133: getLayerSetUint8,
         134: getLayerSetUint8,
         135: getLayerSetUint8,
