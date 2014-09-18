@@ -26,12 +26,12 @@
 
 /* globals define */
 
-define(['Int64'], function(Int64) {
+define(['message', 'Int64'], function(message, Int64) {
     'use strict';
 
     var commands, routines, layer, getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
         getLayerSetUint32, getLayerSetUint64, getLayerSetFloat16, getLayerSetFloat32, getLayerSetFloat64,
-        getLayerCmdCommons, getLayerSubUnsub;
+        getLayerCmdCommons, getLayerSubUnsub, sendLayerSubUnsub;
 
     /*
      * common function for layer Create and Destroy commands
@@ -265,6 +265,22 @@ define(['Int64'], function(Int64) {
         return result;
     };
 
+    /*
+     * Layer subscibe and unsubscribe commands for server
+     */
+
+    sendLayerSubUnsub = function sendLayerSubUnsub(opCode, nodeId, layerId) {
+        var msg, view;
+        msg = message.template(17, opCode);
+        view = new DataView(msg);
+        view.setUint8(3, 0); //share
+        view.setUint32(3, nodeId);
+        view.setUint16(7, layerId);
+        view.setUint32(9, 0); //Version
+        view.setUint32(13, 0); //CRC32
+        return msg;
+    };
+
 
     //command codes = opCodes
     commands = {
@@ -361,6 +377,26 @@ define(['Int64'], function(Int64) {
     };
 
     layer = {
+
+         /*
+         * subscribe layer commad OpCode 130
+         * @param nodeId int32
+         * @param layerId int16
+         */
+        subscribe: function(nodeId, layerId) {
+            return sendLayerSubUnsub(130, nodeId, layerId);
+        },
+
+        /*
+         * unsubscribe layer commad OpCode 131
+         * @param nodeId int32
+         * @param layerId int16
+         */
+
+        unsubscribe: function(nodeId, layerId) {
+            return sendLayerSubUnsub(131, nodeId, layerId);
+        },
+
 
 
         /*

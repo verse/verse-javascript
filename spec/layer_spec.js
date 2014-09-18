@@ -30,7 +30,7 @@
 
 define(["layer"], function(layer) {
 
-    describe("Layer command test suite", function() {
+    describe("Layer commands parsing test suite", function() {
         var view, messageLen, mockBuffer, mockView, result, opCode;
 
       
@@ -269,6 +269,45 @@ define(["layer"], function(layer) {
 
         
         
+    });
+
+    describe("Layer commands send to server test suite", function() {
+        var testNode, view, messageLen, mockBuffer, mockView, result;
+
+
+        describe("Layer Subscribe command", function() {
+            beforeEach(function() {
+                testNode = layer.subscribe(182, 31);
+                view = new DataView(testNode);
+            });
+
+            it("length of subscribe command should be equal to 17", function() {
+                expect(testNode.byteLength).toEqual(17);
+            });
+
+            it("first byte - opcode - should be 130", function() {
+                expect(view.getUint8(0)).toEqual(130);
+            });
+
+            it("second byte - message length - should be 17", function() {
+                expect(view.getUint8(1)).toEqual(17);
+            });
+
+            it("third byte - share - should be 0", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("Layer ID (byte 8) id should be 31", function() {
+                expect(view.getUint16(7)).toEqual(31);
+            });
+
+        });
+
     });
 
 
