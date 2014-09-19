@@ -37,13 +37,22 @@ module.exports = function(grunt) {
                     name: '../bower_components/almond/almond',
                     include: ['verse'],
                     insertRequire: ['verse'],
-                    out: 'build/verse.standalone.js',
+                    out: 'build/verse.standalone.min.js',
                     findNestedDependencies: true,
                     mainConfigFile: 'src/main-config.js',
-                    optimize: "none",
                     wrap: {
                         startFile: 'src/start.frag',
                         endFile: 'src/end.frag'
+                    },
+                    optimize: "uglify",
+                    uglify: {
+                        toplevel: true,
+                        ascii_only: true,
+                        beautify: false,
+                        max_line_length: 1000,
+
+                        //Skip the processor.ast_mangle() part of the uglify call (r.js 2.0.5+)
+                        no_mangle: true
                     }
                 }
             },
@@ -56,7 +65,7 @@ module.exports = function(grunt) {
                     wrap: true,
                     findNestedDependencies: true,
                     mainConfigFile: 'src/main-config.js',
-                    optimize: "none",
+                    optimize: "uglify",
                     uglify: {
                         toplevel: true,
                         ascii_only: true,

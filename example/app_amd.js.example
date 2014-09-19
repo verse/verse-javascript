@@ -49,7 +49,7 @@
 requirejs.config({
     baseUrl: '../build/',
     paths: {
-        verse: "verse.min"
+        verse: "verse.amd.min"
     }
 });
 
