@@ -9,6 +9,22 @@ Websocket support for Verse protocol. Keep in mind that this project is still **
 
 Verse 2.0 is network protocol for real-time sharing of 3D data. It is successor of old Verse protocol developed at KTH. Verse 2.0 is still in alpha version.
 
+## Usage
+
+```bash
+bower install verse
+```
+
+Verse Websocket module is provided in two versions. You can use it as [AMD](http://requirejs.org/docs/whyamd.html) for [RequireJs](http://requirejs.org/) or as a standalone library.
+
+Minified version of both modules is in the build dir.
+
+See example in the example dir. 
+
+Rename app_*.js.example to app.js and change the values to your config.
+
+Open index.html in your browser. Check console. 
+
 ## Requirements
 
 * RequireJS http://requirejs.org/
@@ -27,17 +43,7 @@ npm install
 bower install
 ```
 
-## Usage
 
-Verse Websocket module is provided as [AMD](http://requirejs.org/docs/whyamd.html) for [RequireJs](http://requirejs.org/). 
-
-You can find the minified version of verse module in the build dir.
-
-See example in the example dir. 
-
-Rename app_example.js to app.js and change the values to your config.
-
-Open index.html in your browser. Check console. 
 
 ## License
 
