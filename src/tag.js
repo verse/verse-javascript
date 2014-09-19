@@ -1,4 +1,5 @@
 /*
+ * Verse Websocket Asynchronous Module 
  *
  * The MIT License (MIT)
  *

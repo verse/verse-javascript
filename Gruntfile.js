@@ -41,11 +41,11 @@ module.exports = function(grunt) {
                     wrap: true,
                     findNestedDependencies: true,
                     mainConfigFile: 'src/main-config.js',
-                    optimize: "none",
+                    optimize: "uglify",
                     uglify: {
                         toplevel: true,
                         ascii_only: true,
-                        beautify: true,
+                        beautify: false,
                         max_line_length: 1000,
 
                         //How to pass uglifyjs defined symbols for AST symbol replacement,
