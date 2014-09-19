@@ -1,25 +1,25 @@
 {
-  "name": "verse",
-  "version": "0.0.1",
-  "authors": [
-    "Jiri Vrany <jiri.vrany@tul.cz>",
-    "Jiri Hnidek <jiri.hnidek@tul.cz>",
-  ],
-  "main": "build/verse.amd.min.js",
-  "license": "MIT",
-  "ignore": [
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests",
-    "spec",
-    "example/app.js",
-    "example/app_standalone.js"
-  ],
-  "dependencies": {
-    "requirejs": "~2.1.10"
-  },
-  "devDependencies": {
-    "almond": "~0.2.9"
-  }
+    "name": "verse",
+    "version": "0.0.1",
+    "authors": [
+        "Jiri Vrany <jiri.vrany@tul.cz>",
+        "Jiri Hnidek <jiri.hnidek@tul.cz>"
+    ],
+    "main": "build/verse.amd.min.js",
+    "license": "MIT",
+    "ignore": [
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests",
+        "spec",
+        "example/app.js",
+        "example/app_standalone.js"
+    ],
+    "dependencies": {
+        "requirejs": "~2.1.10"
+    },
+    "devDependencies": {
+        "almond": "~0.2.9"
+    }
 }
