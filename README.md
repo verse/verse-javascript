@@ -25,7 +25,7 @@ bower install
 
 ## Usage
 
-Verse Websocket module is provided as [http://requirejs.org/docs/whyamd.html](AMD) for [http://requirejs.org/](RequireJs). You can find the minified version in the build dir.
+Verse Websocket module is provided as [AMD](http://requirejs.org/docs/whyamd.html) for [RequireJs](http://requirejs.org/). You can find the minified version in the build dir.
 
 See example in the example dir. 
 
