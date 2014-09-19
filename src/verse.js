@@ -28,13 +28,13 @@
 /* globals define */
 
 
-define(['request', 'response', 'negotiation', 'node', 'user', 'taggroup', 'layer'],
+define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup', 'layer'],
     function(request, response, negotiation, node, user, tagGroup, layer) {
 
         'use strict';
         window.WebSocket = window.WebSocket || window.MozWebSocket;
         var myWebscoket,
-            wsocket,
+            verse,
             onSocketMessage,
             onSocketError,
             onSocketConnect,
@@ -142,7 +142,7 @@ define(['request', 'response', 'negotiation', 'node', 'user', 'taggroup', 'layer
                         confirmHost(responseData);
                         userInfo = cmd;
                     } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
-                        wsocket.subscribeNode(0);
+                        verse.subscribeNode(0);
                         /* pass the user info to callback function */
                         config.connectionAcceptedCallback(userInfo);
                     } else {
@@ -158,7 +158,7 @@ define(['request', 'response', 'negotiation', 'node', 'user', 'taggroup', 'layer
         /*
          * public API of Verse Websocket module
          */
-        wsocket = {
+        verse = {
             init: function(config) {
 
                 console.info('Connecting to URI:' + config.uri + ' ...');
@@ -220,6 +220,6 @@ define(['request', 'response', 'negotiation', 'node', 'user', 'taggroup', 'layer
 
 
 
-        return wsocket;
+        return verse;
 
     });

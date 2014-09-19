@@ -33,28 +33,42 @@
 / and your credentials for the server
 / 
 / then use bower install - see http://bower.io/ for further details
+        
+        uri: 'ws://verse.example.org:54321',
+        version: 'v1.verse.tul.cz',
+        username: 'verse_user',
+        passwd: 'verse_passwd',
+        dataCallback: dataHandler,
 */
 
 /* jshint devel: true, unused: true */
 /* global require */
 
-require(['wsocket'], function(wsocket) {
+requirejs.config({
+    baseUrl: '../src/'
+});
+
+
+require(['verse'], function(verse) {
     'use strict';
 
-    var config, dataHandler;
+    var config,  dataHandler;
 
-
-    dataHandler = function dataHandler(data) {
+   
+    dataHandler = function dataHandler (data) {
         if (data.CMD === 'NODE_CREATE') {
-            wsocket.subscribeNode(data.NODE_ID);
+            verse.subscribeNode(data.NODE_ID);
             console.log('subscribed node ' + data.NODE_ID);
-        } else if (data.CMD === 'TAG_GROUP_CREATE') {
-            wsocket.subscribeTagGroup(data.NODE_ID, data.TAG_GROUP_ID);
+        }
+        else if (data.CMD === 'TAG_GROUP_CREATE') {
+            verse.subscribeTagGroup(data.NODE_ID, data.TAG_GROUP_ID);
             console.info('subscribed tagGroup nodeId =' + data.NODE_ID + ' tagGroupId = ' + data.TAG_GROUP_ID);
-        } else if (data.CMD === 'LAYER_CREATE') {
-            wsocket.subscribeLayer(data.NODE_ID, data.LAYER_ID);
+        }
+        else if (data.CMD === 'LAYER_CREATE') {
+            verse.subscribeLayer(data.NODE_ID, data.LAYER_ID);
             console.info('subscribed Layer nodeId =' + data.NODE_ID + ' layerId = ' + data.LAYER_ID);
-        } else {
+        }
+        else {
             console.log(data);
         }
     };
@@ -87,13 +101,13 @@ require(['wsocket'], function(wsocket) {
 
     };
 
-    wsocket.init(config);
+    verse.init(config);
 
-    console.info(wsocket);
+    console.info(verse);
 
+    
+    
 
-
-
-
+   
 
 });

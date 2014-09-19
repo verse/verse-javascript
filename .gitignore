@@ -2,4 +2,5 @@ _SpecRunner.html
 node_modules
 bower_components
 src/app.js
+example/app.js
 .grunt
