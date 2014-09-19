@@ -31,31 +31,38 @@ module.exports = function(grunt) {
             tasks: ['default']
         },
         requirejs: {
-            compile: {
+            standalone: {
                 options: {
                     baseUrl: './src/',
-                    //name: '../bower_components/almond/almond',
+                    name: '../bower_components/almond/almond',
                     include: ['verse'],
                     insertRequire: ['verse'],
-                    out: 'build/verse.min.js',
+                    out: 'build/verse.standalone.js',
+                    findNestedDependencies: true,
+                    mainConfigFile: 'src/main-config.js',
+                    optimize: "none",
+                    wrap: {
+                        startFile: 'src/start.frag',
+                        endFile: 'src/end.frag'
+                    }
+                }
+            },
+            amd: {
+                options: {
+                    baseUrl: './src/',
+                    include: ['verse'],
+                    insertRequire: ['verse'],
+                    out: 'build/verse.amd.min.js',
                     wrap: true,
                     findNestedDependencies: true,
                     mainConfigFile: 'src/main-config.js',
-                    optimize: "uglify",
+                    optimize: "none",
                     uglify: {
                         toplevel: true,
                         ascii_only: true,
                         beautify: false,
                         max_line_length: 1000,
 
-                        //How to pass uglifyjs defined symbols for AST symbol replacement,
-                        //see "defines" options for ast_mangle in the uglifys docs.
-                        defines: {
-                            DEBUG: ['name', 'false']
-                        },
-
-                        //Custom value supported by r.js but done differently
-                        //in uglifyjs directly:
                         //Skip the processor.ast_mangle() part of the uglify call (r.js 2.0.5+)
                         no_mangle: true
                     }

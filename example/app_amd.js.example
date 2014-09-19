@@ -31,8 +31,10 @@
 / Sample app
 / add your verse websocket server uri and version
 / and your credentials for the server
-/ 
-/ then use bower install - see http://bower.io/ for further details
+/
+/
+/ This example app uses RequireJS for module loading
+/ You can install RequireJS by running bower install  - see http://bower.io/ for further details 
         
         uri: 'ws://verse.example.org:54321',
         version: 'v1.verse.tul.cz',

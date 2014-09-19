@@ -3,4 +3,5 @@ node_modules
 bower_components
 src/app.js
 example/app.js
+example/app_standalone.js
 .grunt
