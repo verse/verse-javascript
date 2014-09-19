@@ -34,14 +34,14 @@ module.exports = function(grunt) {
             compile: {
                 options: {
                     baseUrl: './src/',
-                    name: '../bower_components/almond/almond',
-                    include: ['wsocket'],
-                    insertRequire: ['wsocket'],
-                    out: 'build/verse.js',
+                    //name: '../bower_components/almond/almond',
+                    include: ['verse'],
+                    insertRequire: ['verse'],
+                    out: 'build/verse.min.js',
                     wrap: true,
                     findNestedDependencies: true,
                     mainConfigFile: 'src/main-config.js',
-                    optimize: "uglify",
+                    optimize: "none",
                     uglify: {
                         toplevel: true,
                         ascii_only: true,

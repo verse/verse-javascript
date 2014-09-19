@@ -45,9 +45,11 @@
 /* global require */
 
 requirejs.config({
-    baseUrl: '../src/'
+    baseUrl: '../build/',
+    paths: {
+        verse: "verse.min"
+    }
 });
-
 
 require(['verse'], function(verse) {
     'use strict';
