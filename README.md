@@ -11,7 +11,11 @@ Verse 2.0 is network protocol for real-time sharing of 3D data. It is successor 
 
 ## Requirements
 
-* Node.js http://nodejs.org
+* RequireJS http://requirejs.org/
+
+If you want to use the unlinked sources, and run the Grunt task you will need also:
+
+* Node.js v0.10+ http://nodejs.org
 * Bower http://bower.io
 
 ## Build
