@@ -1,17 +1,20 @@
 {
-  "name": "verse-javascript",
+  "name": "verse",
   "version": "0.0.1",
   "authors": [
-    "Jiri Vrany <jiri.vrany@tul.cz>"
+    "Jiri Vrany <jiri.vrany@tul.cz>",
+    "Jiri Hnidek <jiri.hnidek@tul.cz>",
   ],
-  "main": "src/app.js",
-  "license": "BSD",
+  "main": "build/verse.amd.min.js",
+  "license": "MIT",
   "ignore": [
-    "**/.*",
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "spec",
+    "example/app.js",
+    "example/app_standalone.js"
   ],
   "dependencies": {
     "requirejs": "~2.1.10"
