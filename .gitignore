@@ -1,7 +1,5 @@
 _SpecRunner.html
 node_modules
 bower_components
-src/app.js
-example/app.js
-example/app_standalone.js
+example/config.js
 .grunt

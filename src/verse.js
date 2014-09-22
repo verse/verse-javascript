@@ -144,7 +144,6 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                     } else if (cmd.CMD === 'USER_AUTH_FAILURE') {
                         config.errorCallback(cmd.CMD);
                         myWebscoket.close();
-            
                     } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
                         verse.subscribeNode(0);
                         /* pass the user info to callback function */
