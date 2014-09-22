@@ -56,7 +56,7 @@ define(["response"], function(response, negotiation) {
                 result = response.parse(mockBuffer);
 
                 expect(result[0]).toEqual({
-                    CMD: "auth_passwd"
+                    CMD: "AUTH_PASSWD"
                 });
             });
 

@@ -47,9 +47,10 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer'], function(negotiation
 
         if (opCode === 8) { /* Is it command usr_auth_fail */
             var method = receivedView.getUint8(bufferPosition + 1);
+
             if (method === 2) { /* Password method */
                 return {
-                    CMD: 'auth_passwd'
+                    CMD: 'AUTH_PASSWD'
                 };
             }
 
@@ -57,7 +58,7 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer'], function(negotiation
             var userId = receivedView.getUint16(bufferPosition + 1),
                 avatar = receivedView.getUint32(bufferPosition + 3);
             return {
-                CMD: 'auth_succ',
+                CMD: 'USER_AUTH_SUCCESS',
                 USER_ID: userId,
                 AVATAR_ID: avatar
             };
@@ -149,7 +150,7 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer'], function(negotiation
                 if (cmdLen > 2) {
                     result.push(checkOpCode(opCode, receivedView, bufferPosition));
                 } else {
-                    /* TODO end connection */
+                    result.push({CMD: 'USER_AUTH_FAILURE'});
                 }
 
                 bufferPosition += cmdLen - 1;

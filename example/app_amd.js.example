@@ -99,7 +99,16 @@ require(['verse'], function(verse) {
              */
             console.info('User ID: ' + userInfo.USER_ID);
             console.info('Avatar ID: ' + userInfo.AVATAR_ID);
+        },
+        errorCallback: function(error) {
+            /*
+             * Error callback 
+             * called when user auth fails
+             * @param error string command name
+             */
+            console.error(error);
         }
+
 
 
 

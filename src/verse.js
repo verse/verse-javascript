@@ -1,5 +1,5 @@
 /*
- * Verse Websocket Asynchronous Module 
+ * Verse Websocket Asynchronous Module
  *
  * The MIT License (MIT)
  *
@@ -56,8 +56,8 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
         /*
          *   hadler for websocket error event
          */
-        onSocketError = function onSocketError(event) {
-            console.error('Error:' + event.data);
+        onSocketError = function onSocketError(event, config) {
+            console.error('Websocket Error');
         };
 
         /*
@@ -66,7 +66,6 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
          * @param config object
          */
         onSocketConnect = function onSocketConnect(event, config) {
-            console.log('[Connected] ' + event.code);
             userAuthNone(config);
         };
 
@@ -137,11 +136,15 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                 responseData = response.parse(message.data);
 
                 responseData.forEach(function(cmd) {
-                    if (cmd.CMD === 'auth_passwd') {
+                    if (cmd.CMD === 'AUTH_PASSWD') {
                         userAuthData(config);
-                    } else if (cmd.CMD === 'auth_succ') {
+                    } else if (cmd.CMD === 'USER_AUTH_SUCCESS') {
                         confirmHost(responseData);
                         userInfo = cmd;
+                    } else if (cmd.CMD === 'USER_AUTH_FAILURE') {
+                        config.errorCallback(cmd.CMD);
+                        myWebscoket.close();
+            
                     } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
                         verse.subscribeNode(0);
                         /* pass the user info to callback function */
@@ -163,19 +166,27 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             init: function(config) {
 
                 console.info('Connecting to URI:' + config.uri + ' ...');
+                try {
+                    myWebscoket = new WebSocket(config.uri, config.version);
+                    myWebscoket.binaryType = 'arraybuffer';
 
-                myWebscoket = new WebSocket(config.uri, config.version);
-                myWebscoket.binaryType = 'arraybuffer';
+                    myWebscoket.addEventListener('error', function(event){
+                        onSocketError(event, config);
+                    });
+                    
+                    myWebscoket.addEventListener('close', function(event){
+                        onSocketClose(event, config);
+                    });
 
-                myWebscoket.addEventListener('error', onSocketError);
-                myWebscoket.addEventListener('close', onSocketClose);
-
-                myWebscoket.addEventListener('open', function(evnt) {
-                    onSocketConnect(evnt, config);
-                });
-                myWebscoket.addEventListener('message', function(msg) {
-                    onSocketMessage(msg, config);
-                });
+                    myWebscoket.addEventListener('open', function(evnt) {
+                        onSocketConnect(evnt, config);
+                    });
+                    myWebscoket.addEventListener('message', function(msg) {
+                        onSocketMessage(msg, config);
+                    });
+                } catch (e) {
+                    console.error('Sorry, the web socket at "%s" is un-available', config.uri);
+                }
             },
 
             /*
