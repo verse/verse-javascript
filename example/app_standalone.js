@@ -1,13 +1,10 @@
 /* global console, verse */
 
-(function(console, verse, undefined) {
+(function(console, verse, config) {
     'use strict';
 
-    var config,  dataHandler;
+    var settings,  dataHandler;
 
-    console.log(verse);
-
-   
     dataHandler = function dataHandler (data) {
         if (data.CMD === 'NODE_CREATE') {
             verse.subscribeNode(data.NODE_ID);
@@ -27,11 +24,11 @@
     };
 
 
-    config = {
-        uri: 'ws://verse.tul.cz:23456',
-        version: 'v1.verse.tul.cz',
-        username: 'albert',
-        passwd: '3jlkjooipoklkhlhlka',
+    settings = {
+        uri: config.uri,
+        version: config.version,
+        username: config.username,
+        passwd: config.passwd,
         dataCallback: dataHandler,
         connectionTerminatedCallback: function(event) {
             /*
@@ -54,11 +51,7 @@
 
     };
 
-    verse.init(config);
-
-    console.info(verse);
-
-    
+    verse.init(settings);
     
 
-})(console, verse);
+})(console, verse, config);
