@@ -4,30 +4,50 @@ module.exports = function(grunt) {
     // Project configuration.
     //neco
     grunt.initConfig({
-        jasmine: {
+        meta : {
+            specs : ['spec/**/*.js'],
             src: 'src/**/*.js',
+            example: 'example/**/*.js',
+            files: ['Gruntfile.js', '<%= meta.src %>', '<%= meta.specs %>', '<%= meta.example %>'],
+            bin : {
+                coverage: 'bin/coverage'
+            }
+        },
+        jasmine: {
+            src: '<%= meta.src %>',
             options: {
-                specs: 'spec/**/*.js',
-                template: require('grunt-template-jasmine-requirejs'),
+                specs: '<%= meta.specs %>',
+                template: require('grunt-template-jasmine-istanbul'),
                 templateOptions: {
-                    requireConfig: {
-                        baseUrl: 'src/'
+                    coverage: '<%= meta.bin.coverage %>/coverage.json',
+                    report: [
+                        {
+                            type: 'html',
+                            options: {
+                                dir: '<%= meta.bin.coverage %>/html'
+                            }
+                        },
+                        {
+                            type: 'text-summary'
+                        }
+                    ],
+                    template: require('grunt-template-jasmine-requirejs'),
+                    templateOptions: {
+                        requireConfig: {
+                            baseUrl: 'src/'
+                        }
                     }
-                }
+                }    
             }
         },
         jshint: {
-            all: [
-                'Gruntfile.js',
-                'src/**/*.js',
-                'spec/**/*.js'
-            ],
+            all: '<%= meta.files %>',
             options: {
                 jshintrc: '.jshintrc'
             }
         },
         watch: {
-            files: ['Gruntfile.js', 'src/**/*.js', 'spec/**/*.js'],
+            files: '<%= meta.files %>',
             tasks: ['default']
         },
         requirejs: {

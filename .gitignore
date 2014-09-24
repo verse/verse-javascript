@@ -1,5 +1,6 @@
 _SpecRunner.html
 node_modules
 bower_components
+bin
 example/config.js
 .grunt

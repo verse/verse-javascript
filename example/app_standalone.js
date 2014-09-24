@@ -1,4 +1,4 @@
-/* global console, verse */
+/* global console, verse, config */
 
 (function(console, verse, config) {
     'use strict';

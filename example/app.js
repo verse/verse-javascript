@@ -54,7 +54,7 @@ require(['verse', 'config'], function(verse, config) {
              *  callback function for end of session handling
              * called when onClose websocket event is fired
              */
-            console.info(event)
+            console.info(event);
             console.info('Connection Closed  Code: %s, Reason: %s', event.code, event.reason);
         },
         connectionAcceptedCallback: function(userInfo) {
