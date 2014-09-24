@@ -28,7 +28,10 @@ module.exports = function(grunt) {
                             }
                         },
                         {
-                            type: 'text-summary'
+                            type: 'lcov',
+                            options: {
+                                dir: '<%= meta.bin.coverage %>/lcov'
+                            }
                         }
                     ],
                     template: require('grunt-template-jasmine-requirejs'),
