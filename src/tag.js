@@ -241,9 +241,11 @@ define(['Int64'], function(Int64) {
         delete result.VALUES;
         result.VALUE = '';
 
-        strLength = receivedView.getUint8(11);
+        strLength = receivedView.getUint8(bufferPosition + 11);
+        
         for (i = 0; i < strLength; i++) {
             result.VALUE += String.fromCharCode(receivedView.getUint8(bufferPosition + 12 + i));
+        
         }
         
         return result;

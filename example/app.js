@@ -1,6 +1,6 @@
 /* jshint devel: true, unused: true */
 /* global require, requirejs */
-
+/*
 requirejs.config({
     baseUrl: '../build/',
     paths: {
@@ -8,7 +8,15 @@ requirejs.config({
         config: '../example/config'
     }
 });
+*/
 
+requirejs.config({
+    baseUrl: '../src/',
+    paths: {
+        verse: 'verse',
+        config: '../example/config'
+    }
+});
 
 require(['verse', 'config'], function(verse, config) {
     'use strict';
