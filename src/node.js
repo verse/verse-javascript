@@ -65,7 +65,7 @@ define(['message'], function(message) {
         33: function getNodeDestroy(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
-                NODE_ID: receivedView.getUint32(bufferPosition + 3)
+                NODE_ID: receivedView.getUint32(bufferPosition + 2)
             };
         },
         34: function getNodeSubscribe(opCode, receivedView, bufferPosition) {

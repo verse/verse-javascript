@@ -21,6 +21,8 @@ module.exports = function(grunt) {
             options: {
                 specs: '<%= meta.specs %>',
                 template: require('grunt-template-jasmine-istanbul'),
+                display: 'short',
+                summary: 'true',
                 templateOptions: {
                     coverage: '<%= meta.bin.coverage %>/coverage.json',
                     report: [{

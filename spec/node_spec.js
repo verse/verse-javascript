@@ -31,7 +31,7 @@
 define(["node"], function(node) {
 
     describe("Node commands test suite", function() {
-        var testNode, view, messageLen, mockBuffer, mockView, result;
+        var testNode, view, messageLen, mockBuffer, mockView, result, opCode;
 
 
         describe("node subscribe command", function() {
@@ -99,6 +99,32 @@ define(["node"], function(node) {
             });
         });
 
+        describe("got Node Destroy from server", function() {
+            beforeEach(function() {
+                
+                opCode = 33;
+                messageLen = 6;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, opCode); //node destroy
+                view.setUint8(1, messageLen); //len
+                view.setUint32(2, 123); //node ID 
+                
+
+            });
+
+            it("command should be parsed out as NODE_DESTROY, NODE_ID = 123 object", function() {
+                
+                mockView = new DataView(mockBuffer);
+                result = node.getNodeValues(opCode, mockView, 0, mockBuffer.byteLength);
+                
+                expect(result).toEqual({
+                    CMD: "NODE_DESTROY",
+                    NODE_ID: 123
+                });
+            });
+        });
 
     });
 
