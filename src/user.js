@@ -33,6 +33,19 @@ define(function() {
 
     var user = {
 
+
+        /*
+        * Parse received buffer for avatar and user id
+        */
+
+        getUserInfo: function getUserInfo(receivedView, bufferPosition) {
+            return {
+                CMD: 'USER_AUTH_SUCCESS',
+                USER_ID: receivedView.getUint16(bufferPosition + 2),
+                AVATAR_ID: receivedView.getUint32(bufferPosition + 4)
+            };
+        },
+
         
         /*
          * Pack command for user authentication

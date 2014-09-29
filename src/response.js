@@ -1,5 +1,5 @@
 /*
- * Verse Websocket Asynchronous Module 
+ * Verse Websocket Asynchronous Module
  *
  * The MIT License (MIT)
  *
@@ -27,7 +27,7 @@
 
 /* globals define */
 
-define(['negotiation', 'node', 'taggroup', 'tag', 'layer'], function(negotiation, node, tagGroup, tag, layer) {
+define(['negotiation', 'node', 'taggroup', 'tag', 'layer', 'user'], function(negotiation, node, tagGroup, tag, layer, user) {
     'use strict';
 
     var checkOpCode = function checkOpCode(opCode, receivedView, bufferPosition) {
@@ -45,23 +45,20 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer'], function(negotiation
             9: 'USER_AUTH_SUCCESS'
         };
 
-        if (opCode === 8) { /* Is it command usr_auth_fail */
+        if (opCode === 8) { 
+            /* Is it command usr_auth_fail */
             var method = receivedView.getUint8(bufferPosition + 1);
 
-            if (method === 2) { /* Password method */
+            if (method === 2) { 
+                /* Password method */
                 return {
                     CMD: 'AUTH_PASSWD'
                 };
             }
 
-        } else if (opCode === 9) { /*user authorized*/
-            var userId = receivedView.getUint16(bufferPosition + 1),
-                avatar = receivedView.getUint32(bufferPosition + 3);
-            return {
-                CMD: 'USER_AUTH_SUCCESS',
-                USER_ID: userId,
-                AVATAR_ID: avatar
-            };
+        } else if (opCode === 9) { 
+            /*user authorized*/
+            return user.getUserInfo(receivedView, bufferPosition - 1);
 
         } else if (opCode < 7) { //negotiation commands
             length = receivedView.getUint8(bufferPosition);
@@ -91,7 +88,7 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer'], function(negotiation
 
             return cmdValues;
 
-        }  else if (opCode > 127 && opCode < 162) { //Layer commands
+        } else if (opCode > 127 && opCode < 162) { //Layer commands
             length = receivedView.getUint8(bufferPosition);
             cmdValues = layer.getLayerValues(opCode, receivedView, bufferPosition - 1, length);
 
@@ -150,7 +147,9 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer'], function(negotiation
                 if (cmdLen > 2) {
                     result.push(checkOpCode(opCode, receivedView, bufferPosition));
                 } else {
-                    result.push({CMD: 'USER_AUTH_FAILURE'});
+                    result.push({
+                        CMD: 'USER_AUTH_FAILURE'
+                    });
                 }
 
                 bufferPosition += cmdLen - 1;
