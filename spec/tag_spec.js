@@ -33,7 +33,7 @@ define(["tag"], function(tag) {
     describe("Tag command test suite", function() {
         var view, messageLen, mockBuffer, mockView, result, opCode, mockString;
 
-      
+
 
         describe("got tagCreate from server", function() {
             beforeEach(function() {
@@ -72,14 +72,45 @@ define(["tag"], function(tag) {
             });
         });
 
-        describe("got tagSetUint8 3D from server", function() {
+        describe("got tagDestroy from server", function() {
             beforeEach(function() {
 
-                messageLen = 14;
+                messageLen = 11;
                 mockBuffer = new ArrayBuffer(messageLen);
                 view = new DataView(mockBuffer);
 
-                view.setUint8(0, 72); // tagSetUint8 3D command
+                view.setUint8(0, 69); //tagDestroy command
+                view.setUint8(1, 15); //length
+                view.setUint8(2, 0); //share is 0
+                view.setUint32(3, 6545); //Node ID
+                view.setUint16(7, 68); //TagGroupID
+                view.setUint16(9, 154); //TagID
+
+            });
+
+            it("command should be parsed out as TAG_DESTROY object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(69, mockView, 0, mockBuffer.byteLength);
+
+                expect(result).toEqual({
+                    CMD: "TAG_DESTROY",
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    TAG_GROUP_ID: 68,
+                    TAG_ID: 154
+                });
+            });
+        });
+
+        describe("got tagSetUint8 4D from server", function() {
+            beforeEach(function() {
+
+                messageLen = 15;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, 73); // tagSetUint8 3D command
                 view.setUint8(1, 14); // length
                 view.setUint8(2, 0); // share is 0
                 view.setUint32(3, 6545); // Node ID
@@ -88,13 +119,14 @@ define(["tag"], function(tag) {
                 view.setUint8(11, 15); // X Value
                 view.setUint8(12, 55); // Y Value
                 view.setUint8(13, 6); // Z Value
+                view.setUint8(14, 52); // Z Value
 
             });
 
             it("command should be parsed out as TAG_SET_UINT8 object", function() {
 
                 mockView = new DataView(mockBuffer);
-                result = tag.getTagValues(72, mockView, 0, mockBuffer.byteLength);
+                result = tag.getTagValues(73, mockView, 0, mockBuffer.byteLength);
 
                 expect(result).toEqual({
                     CMD: "TAG_SET_UINT8",
@@ -102,7 +134,43 @@ define(["tag"], function(tag) {
                     NODE_ID: 6545,
                     TAG_GROUP_ID: 68,
                     TAG_ID: 154,
-                    VALUES: [15, 55, 6]
+                    VALUES: [15, 55, 6, 52]
+                });
+            });
+        });
+
+        describe("got tagSetUint16 4D from server", function() {
+            beforeEach(function() {
+
+                messageLen = 19;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, 77); // tagSetUint8 3D command
+                view.setUint8(1, 14); // length
+                view.setUint8(2, 0); // share is 0
+                view.setUint32(3, 6545); // Node ID
+                view.setUint16(7, 68); // TagGroupID
+                view.setUint16(9, 154); // TagID
+                view.setUint16(11, 15); // X Value
+                view.setUint16(13, 55); // Y Value
+                view.setUint16(15, 6); // Z Value
+                view.setUint16(17, 52); // Z Value
+
+            });
+
+            it("command should be parsed out as TAG_SET_UINT16 object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(77, mockView, 0, mockBuffer.byteLength);
+
+                expect(result).toEqual({
+                    CMD: "TAG_SET_UINT16",
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    TAG_GROUP_ID: 68,
+                    TAG_ID: 154,
+                    VALUES: [15, 55, 6, 52]
                 });
             });
         });
@@ -143,14 +211,51 @@ define(["tag"], function(tag) {
             });
         });
 
-        describe("got tagSetReal32 2D from server", function() {
+        describe("got tagSetUint64 4D from server", function() {
             beforeEach(function() {
 
-                messageLen = 19;
+                messageLen = 43;
                 mockBuffer = new ArrayBuffer(messageLen);
                 view = new DataView(mockBuffer);
 
-                view.setUint8(0, 91); // tagSetReal32 2D command
+                view.setUint8(0, 85); // tagSetUint64 4D command
+                view.setUint8(1, messageLen); // length
+                view.setUint8(2, 0); // share is 0
+                view.setUint32(3, 6545); // Node ID
+                view.setUint16(7, 68); // TagGroupID
+                view.setUint16(9, 154); // TagID
+                view.setUint32(11, 155465); // 1 Value
+                view.setUint32(19, 5535654); // 2 Value
+                view.setUint32(27, 6455453); // 3 Value
+                view.setUint32(35, 54643); // 4 Value
+
+            });
+
+            it("command should be parsed out as TAG_SET_UINT64 4D object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = tag.getTagValues(85, mockView, 0, mockBuffer.byteLength);
+
+                expect(result).toEqual({
+                    CMD: "TAG_SET_UINT64",
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    TAG_GROUP_ID: 68,
+                    TAG_ID: 154,
+                    VALUES: [155465, 5535654, 6455453, 54643]
+                });
+            });
+        });
+
+
+        describe("got tagSetReal32 4D from server", function() {
+            beforeEach(function() {
+
+                messageLen = 28;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, 93); // tagSetReal32 2D command
                 view.setUint8(1, messageLen); // length
                 view.setUint8(2, 0); // share is 0
                 view.setUint32(3, 6545); // Node ID
@@ -158,32 +263,36 @@ define(["tag"], function(tag) {
                 view.setUint16(9, 154); // TagID
                 view.setFloat32(11, 15.3234); // 1 Value
                 view.setFloat32(15, 98.35654); // 2 Value
-
+                view.setFloat32(19, 98.35654); // 2 Value
+                view.setFloat32(23, 8.8454); // 2 Value    
 
             });
 
             it("command should be parsed out as TAG_SET_UINT64 2D object", function() {
 
                 mockView = new DataView(mockBuffer);
-                result = tag.getTagValues(91, mockView, 0, mockBuffer.byteLength);
+                result = tag.getTagValues(93, mockView, 0, mockBuffer.byteLength);
 
                 expect(result.CMD).toEqual("TAG_SET_REAL32");
             });
 
-            it("lenght of VALUES array should be 2", function() {
+            it("lenght of VALUES array should be 4", function() {
 
                 mockView = new DataView(mockBuffer);
-                result = tag.getTagValues(91, mockView, 0, mockBuffer.byteLength);
+                result = tag.getTagValues(93, mockView, 0, mockBuffer.byteLength);
 
-                expect(result.VALUES.length).toEqual(2);
+                expect(result.VALUES.length).toEqual(4);
             });
 
-            it("second of VALUES should be close to 98.35654", function() {
+            it("VALUES should be close to originals", function() {
 
                 mockView = new DataView(mockBuffer);
-                result = tag.getTagValues(91, mockView, 0, mockBuffer.byteLength);
+                result = tag.getTagValues(93, mockView, 0, mockBuffer.byteLength);
 
                 expect(result.VALUES[1]).toBeCloseTo(98.35654);
+                expect(result.VALUES[0]).toBeCloseTo(15.3234);
+                expect(result.VALUES[2]).toBeCloseTo(98.35654);
+                expect(result.VALUES[3]).toBeCloseTo(8.8454);
             });
 
         });
@@ -191,12 +300,12 @@ define(["tag"], function(tag) {
         describe("got tagSetReal64 4D from server", function() {
             beforeEach(function() {
 
-                opCode = 97;// tagSetReal64 4D command
+                opCode = 97; // tagSetReal64 4D command
                 messageLen = 43;
                 mockBuffer = new ArrayBuffer(messageLen);
                 view = new DataView(mockBuffer);
 
-                view.setUint8(0, opCode); 
+                view.setUint8(0, opCode);
                 view.setUint8(1, messageLen); // length
                 view.setUint8(2, 0); // share is 0
                 view.setUint32(3, 6545); // Node ID
@@ -235,7 +344,7 @@ define(["tag"], function(tag) {
             });
 
         });
-    
+
         describe("got tagSetString8 from server", function() {
             beforeEach(function() {
 
@@ -253,7 +362,7 @@ define(["tag"], function(tag) {
                 view.setUint16(9, 154); // TagID
                 view.setUint8(11, mockString.length); // string length
                 for (var i = 0; i < mockString.length; i++) {
-                    view.setUint8(12 + i, mockString.charCodeAt(i));                        
+                    view.setUint8(12 + i, mockString.charCodeAt(i));
                 }
 
             });
@@ -273,7 +382,7 @@ define(["tag"], function(tag) {
                 });
             });
 
-           
+
 
         });
 

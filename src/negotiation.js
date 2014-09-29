@@ -112,7 +112,7 @@ define(function() {
             };
 
 
-
+        /* istanbul ignore else  */    
         if (feature in stringFeatures) {
             value = parseStringValue(receivedView, length, bufferPosition);
             return {
@@ -121,6 +121,7 @@ define(function() {
             };
         }
 
+        /* istanbul ignore else  */
         if (feature in intFeatures) {
             return {
                 FEATURE: intFeatures[feature],
