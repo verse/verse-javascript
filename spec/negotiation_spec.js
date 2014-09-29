@@ -33,6 +33,62 @@ define(["negotiation"], function(negotiation) {
     describe("Negotiation", function() {
         var nego, view;
 
+        describe("rwin", function() {
+            beforeEach(function() {
+                nego = negotiation.rwin(negotiation.CHANGE_R, 155);
+                view = new DataView(nego);
+            });
+
+            it("length of fcid message should be equal to 4", function() {
+                expect(nego.byteLength).toEqual(4);
+            });
+
+            it("first byte - message type - should be 4 for CHANGE_R", function() {
+                expect(view.getUint8(0)).toEqual(4);
+            });
+
+            it("second byte - message length - should be 4 ", function() {
+                expect(view.getUint8(1)).toEqual(4);
+            });
+
+            it("third byte - feature type - should be 6 ", function() {
+                expect(view.getUint8(2)).toEqual(6);
+            });
+
+            it("fourth byte - rwin value - should be 15 ", function() {
+                expect(view.getUint8(3)).toEqual(155);
+            });
+
+        });
+
+        describe("compression", function() {
+            beforeEach(function() {
+                nego = negotiation.compression(negotiation.CHANGE_R, 2);
+                view = new DataView(nego);
+            });
+
+            it("length of fcid message should be equal to 4", function() {
+                expect(nego.byteLength).toEqual(4);
+            });
+
+            it("first byte - message type - should be 4 for CHANGE_R", function() {
+                expect(view.getUint8(0)).toEqual(4);
+            });
+
+            it("second byte - message length - should be 4 ", function() {
+                expect(view.getUint8(1)).toEqual(4);
+            });
+
+            it("third byte - feature type - should be 8 ", function() {
+                expect(view.getUint8(2)).toEqual(8);
+            });
+
+            it("fourth byte - compression value - should be 15 ", function() {
+                expect(view.getUint8(3)).toEqual(2);
+            });
+
+        });
+
 
         describe("fcid", function() {
             beforeEach(function() {
@@ -131,6 +187,31 @@ define(["negotiation"], function(negotiation) {
 
         });
 
+        describe("ded", function() {
+            var ded;
+
+            beforeEach(function() {
+                ded = 'hokuspokus';
+                nego = negotiation.ded(negotiation.CONFIRM_L, ded);
+                view = new DataView(nego);
+            });
+
+            it("length of ded message should be equal to 3 + 1 + 10 (ded length)", function() {
+                expect(nego.byteLength).toEqual(3 + 1 + 10);
+            });
+
+            it("first byte - message type - should be 5 for CONFIRM_L", function() {
+                expect(view.getUint8(0)).toEqual(5);
+            });
+
+
+            it("Last char of packed ded should be s", function() {
+                expect(view.getUint8(13)).toEqual("s".charCodeAt(0));
+            });
+
+        });
+
+
 
         describe("token", function() {
             var token;
@@ -157,7 +238,7 @@ define(["negotiation"], function(negotiation) {
                 expect(view.getUint8(2)).toEqual(4);
             });
 
-             it("First byte of packed string should be length of token string = 5", function() {
+            it("First byte of packed string should be length of token string = 5", function() {
                 expect(view.getUint8(3)).toEqual(5);
             });
 
@@ -172,7 +253,7 @@ define(["negotiation"], function(negotiation) {
         });
 
 
-         describe("fps", function() {
+        describe("fps", function() {
             var fps_val;
 
             beforeEach(function() {
@@ -202,7 +283,7 @@ define(["negotiation"], function(negotiation) {
             });
 
         });
-        
+
 
     });
 

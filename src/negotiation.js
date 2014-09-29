@@ -1,5 +1,5 @@
 /*
- * Verse Websocket Asynchronous Module 
+ * Verse Websocket Asynchronous Module
  *
  * The MIT License (MIT)
  *
@@ -57,7 +57,7 @@ define(function() {
         /* Pack the payload */
         for (i = 0; i < payload.length; i++) {
             //console.info(payload[i]);
-            
+
             view.setUint8(4 + i, payload.charCodeAt(i));
         }
 
@@ -113,21 +113,18 @@ define(function() {
 
 
 
-        if (feature in stringFeatures) { /* got token */
+        if (feature in stringFeatures) {
             value = parseStringValue(receivedView, length, bufferPosition);
             return {
                 FEATURE: stringFeatures[feature],
                 VALUE: value
             };
-        } else if (feature in intFeatures){
+        }
+
+        if (feature in intFeatures) {
             return {
                 FEATURE: intFeatures[feature],
                 VALUE: receivedView.getUint8(7)
-            };
-        } else {
-            return {
-                FEATURE: feature,
-                VALUE: 'TBD'
             };
         }
     };
@@ -148,8 +145,8 @@ define(function() {
     };
 
     /*
-    * negotiation module
-    */ 
+     * negotiation module
+     */
 
     negotiation = {
 
