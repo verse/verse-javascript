@@ -73,6 +73,36 @@ define(["layer"], function(layer) {
             });
         });
 
+         describe("got layerDestroy from server", function() {
+            beforeEach(function() {
+
+                opCode = 129;
+                messageLen = 9;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, opCode); //opCode
+                view.setUint8(1, 15); //length
+                view.setUint8(2, 0); //share is 0
+                view.setUint32(3, 6545); //Node ID
+                view.setUint16(7, 154); //Layer ID
+                
+            });
+
+            it("command should be parsed out as LAYER_DESTROY object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = layer.getLayerValues(opCode, mockView, 0, mockBuffer.byteLength);
+
+                expect(result).toEqual({
+                    CMD: "LAYER_DESTROY",
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    LAYER_ID: 154
+                });
+            });
+        });
+
         describe("got layerSubscribe from server", function() {
             beforeEach(function() {
 
@@ -107,11 +137,11 @@ define(["layer"], function(layer) {
             });
         });
 
-        describe("got layerSetUint8 3D from server", function() {
+        describe("got layerSetUint8 4D from server", function() {
             beforeEach(function() {
 
-                messageLen = 16;
-                opCode = 135;
+                messageLen = 17;
+                opCode = 136;
                 mockBuffer = new ArrayBuffer(messageLen);
                 view = new DataView(mockBuffer);
 
@@ -124,6 +154,7 @@ define(["layer"], function(layer) {
                 view.setUint8(13, 15); // X Value
                 view.setUint8(14, 55); // Y Value
                 view.setUint8(15, 6); // Z Value
+                view.setUint8(16, 22); // Z Value
 
             });
 
@@ -138,7 +169,7 @@ define(["layer"], function(layer) {
                     NODE_ID: 6545,
                     LAYER_ID: 68,
                     ITEM_ID: 154,
-                    VALUES: [15, 55, 6]
+                    VALUES: [15, 55, 6, 22]
                 });
             });
         });
@@ -202,7 +233,7 @@ define(["layer"], function(layer) {
 
             });
 
-            it("command should be parsed out as LAYER_SET_UINT16 object", function() {
+            it("command should be parsed out as LAYER_SET_UINT32 object", function() {
 
                 mockView = new DataView(mockBuffer);
                 result = layer.getLayerValues(opCode, mockView, 0, mockBuffer.byteLength);
@@ -216,6 +247,91 @@ define(["layer"], function(layer) {
                     VALUES: [15, 55, 6, 16]
                 });
             });
+        });
+
+        describe("got layerSetUint64 4D from server", function() {
+            beforeEach(function() {
+
+                messageLen = 46;
+                opCode = 148;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, opCode); //opCode
+                view.setUint8(1, messageLen); //length
+                view.setUint8(2, 0); //share is 0
+                view.setUint32(3, 6545); //Node ID
+                view.setUint16(7, 68); //Layer ID
+                view.setUint32(9, 154); // Item ID
+                view.setUint32(13, 15); // X Value
+                view.setUint32(21, 55); // Y Value
+                view.setUint32(29, 6); // Z Value
+                view.setUint32(37, 16); // 4 Value
+
+            });
+
+            it("command should be parsed out as LAYER_SET_UINT64 object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = layer.getLayerValues(opCode, mockView, 0, mockBuffer.byteLength);
+
+                expect(result).toEqual({
+                    CMD: "LAYER_SET_UINT64",
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    LAYER_ID: 68,
+                    ITEM_ID: 154,
+                    VALUES: [15, 55, 6, 16]
+                });
+            });
+        });
+
+        describe("got layerSetReal32 4D from server", function() {
+            beforeEach(function() {
+
+                opCode = 156;// layerSetReal64 4D command
+                messageLen = 29;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, opCode); //opCode
+                view.setUint8(1, messageLen); //length
+                view.setUint8(2, 0); //share is 0
+                view.setUint32(3, 6545); //Node ID
+                view.setUint16(7, 68); //Layer ID
+                view.setUint32(9, 154); // Item ID
+                view.setFloat32(13, 125.453457876465465463234); // 1 Value
+                view.setFloat32(17, 125.453457876465465463234); // 1 Value
+                view.setFloat32(21, 125.453457876465465463234); // 1 Value
+                view.setFloat32(25, 125.453457876465465463234); // 1 Value
+
+
+            });
+
+            it("command should be parsed out as LAYER_SET_REAL32 4D object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = layer.getLayerValues(opCode, mockView, 0, mockBuffer.byteLength);
+
+                expect(result.CMD).toEqual("LAYER_SET_REAL32");
+            });
+
+            it("lenght of VALUES array should be 4", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = layer.getLayerValues(opCode, mockView, 0, mockBuffer.byteLength);
+
+                expect(result.VALUES.length).toEqual(4);
+            });
+
+            it("second of VALUES should be close to 125.453457876465465463234", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = layer.getLayerValues(opCode, mockView, 0, mockBuffer.byteLength);
+
+                expect(result.VALUES[3]).toBeCloseTo(125.453457876465465463234);
+            });
+
         });
 
         
@@ -287,6 +403,39 @@ define(["layer"], function(layer) {
 
             it("first byte - opcode - should be 130", function() {
                 expect(view.getUint8(0)).toEqual(130);
+            });
+
+            it("second byte - message length - should be 17", function() {
+                expect(view.getUint8(1)).toEqual(17);
+            });
+
+            it("third byte - share - should be 0", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("Layer ID (byte 8) id should be 31", function() {
+                expect(view.getUint16(7)).toEqual(31);
+            });
+
+        });
+
+        describe("Layer UnSubscribe command", function() {
+            beforeEach(function() {
+                testNode = layer.unsubscribe(182, 31);
+                view = new DataView(testNode);
+            });
+
+            it("length of the command should be equal to 17", function() {
+                expect(testNode.byteLength).toEqual(17);
+            });
+
+            it("first byte - opcode - should be 131", function() {
+                expect(view.getUint8(0)).toEqual(131);
             });
 
             it("second byte - message length - should be 17", function() {
