@@ -110,7 +110,7 @@ define(['response'], function(response) {
         });
 
 
-        describe('got confirm_r  CCID from server', function() {
+        describe('got negotiation confirm_r  CCID from server', function() {
             beforeEach(function() {
                 var message_type = 6,
                     feature_type = 2;
@@ -125,7 +125,7 @@ define(['response'], function(response) {
                 view.setUint8(4, message_type);
                 view.setUint8(5, messageLen - 4);
                 view.setUint8(6, feature_type);
-                view.setUint8(7, 18);   
+                view.setUint8(7, 18);
 
             });
 
@@ -140,7 +140,7 @@ define(['response'], function(response) {
             });
         });
 
-         describe('got user info from server', function() {
+        describe('got user info from server', function() {
             var opCode;
 
             beforeEach(function() {
@@ -155,7 +155,7 @@ define(['response'], function(response) {
                 view.setUint8(4, opCode);
                 view.setUint8(5, messageLen - 4);
                 view.setUint16(6, 858);
-                view.setUint32(8, 203);   
+                view.setUint32(8, 203);
 
             });
 
@@ -171,6 +171,178 @@ define(['response'], function(response) {
             });
         });
 
+        describe('got Node Create server', function() {
+            var opCode;
+
+            beforeEach(function() {
+                messageLen = 15 + 4;
+                opCode = 32;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                // First 4 bits are reserved for version of protocol 
+                view.setUint8(0, 1 << 4);
+                view.setUint16(2, messageLen);
+                view.setUint8(4, opCode); //node create command
+                view.setUint8(5, messageLen - 4); //mes len
+                view.setUint16(7, 125); //user ID
+                view.setUint32(9, 0); //parent ID
+                view.setUint32(13, 1); //node ID 
+                view.setUint16(17, 62); //custom type  
+
+            });
+
+            it('command should be parsed out as NODE_CREATE object', function() {
+
+                result = response.parse(mockBuffer);
+
+                expect(result[0]).toEqual({
+                    CMD: 'NODE_CREATE',
+                    SHARE: 0,
+                    USER_ID: 125,
+                    PARENT_ID: 0,
+                    NODE_ID: 1,
+                    CUSTOM_TYPE: 62
+                });
+            });
+        });
+
+        describe('got TagGroupCreate from server', function() {
+            
+            beforeEach(function() {
+                messageLen = 17 + 4;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                // First 4 bits are reserved for version of protocol 
+                view.setUint8(0, 1 << 4);
+                view.setUint16(2, messageLen);
+                view.setUint8(4, 64); //tagGroupCreate command
+                view.setUint8(5, 17); //length
+                view.setUint8(6, 0); //share is 0
+                view.setUint32(7, 115); //Node ID
+                view.setUint16(11, 68); //TagGroupID
+                view.setUint16(13, 62); //custom type 
+
+            });
+
+            it('command should be parsed out as TAG_GROUP_CREATE object', function() {
+
+                result = response.parse(mockBuffer);
+
+                expect(result[0]).toEqual({
+                    CMD: 'TAG_GROUP_CREATE',
+                    SHARE: 0,
+                    NODE_ID: 115,
+                    TAG_GROUP_ID: 68,
+                    CUSTOM_TYPE: 62
+                });
+            });
+        });
+
+        describe('got TagCreate from server', function() {
+            
+            beforeEach(function() {
+                messageLen = 15 + 4;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                // First 4 bits are reserved for version of protocol 
+                view.setUint8(0, 1 << 4);
+                view.setUint16(2, messageLen);
+                view.setUint8(4, 68); //tagCreate command
+                view.setUint8(5, 15); //length
+                view.setUint8(6, 0); //share is 0
+                view.setUint32(7, 6545); //Node ID
+                view.setUint16(11, 68); //TagGroupID
+                view.setUint16(13, 154); //TagID
+                view.setUint8(15, 3); //Data Type
+                view.setUint8(16, 5); //Count
+                view.setUint16(17, 298); //custom type
+
+            });
+
+            it('command should be parsed out as TAG_CREATE object', function() {
+
+                result = response.parse(mockBuffer);
+
+                expect(result[0]).toEqual({
+                    CMD: 'TAG_CREATE',
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    TAG_GROUP_ID: 68,
+                    TAG_ID: 154,
+                    DATA_TYPE: 3,
+                    COUNT: 5,
+                    CUSTOM_TYPE: 298
+                });
+            });
+        });
+
+        describe('got LayerCreate from server', function() {
+            
+            beforeEach(function() {
+                messageLen = 15 + 4;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                // First 4 bits are reserved for version of protocol 
+                view.setUint8(0, 1 << 4);
+                view.setUint16(2, messageLen);
+                view.setUint8(4, 128); //layer create command
+                view.setUint8(5, 15); //length
+                view.setUint8(6, 0); //share is 0
+                view.setUint32(7, 6545); //Node ID
+                view.setUint16(11, 68); //Parent Layer ID
+                view.setUint16(13, 154); //Layer ID
+                view.setUint8(15, 3); //Data Type
+                view.setUint8(16, 5); //Count
+                view.setUint16(17, 298); //custom type
+
+            });
+
+            it('command should be parsed out as LAYER_CREATE object', function() {
+
+                result = response.parse(mockBuffer);
+
+                expect(result[0]).toEqual({
+                    CMD: 'LAYER_CREATE',
+                    SHARE: 0,
+                    NODE_ID: 6545,
+                    PARENT_LAYER_ID: 68,
+                    LAYER_ID: 154,
+                    DATA_TYPE: 3,
+                    COUNT: 5,
+                    CUSTOM_TYPE: 298
+                });
+            });
+        });
+
+        describe('got weird command from server', function() {
+            
+            beforeEach(function() {
+                messageLen = 5 + 4;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                // First 4 bits are reserved for version of protocol 
+                view.setUint8(0, 1 << 4);
+                view.setUint16(2, messageLen);
+                view.setUint8(4, 222); //layer create command
+                view.setUint8(5, 5); //length
+               
+            });
+
+            it('command should be parsed out as command code and message object', function() {
+
+                result = response.parse(mockBuffer);
+
+                expect(result[0]).toEqual({
+                    CMD: 222,
+                    MESSAGE: '@TODO - opCode not implemented'
+                });
+            });
+        });
 
     });
 });

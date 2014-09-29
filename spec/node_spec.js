@@ -75,7 +75,8 @@ define(["node"], function(node) {
                 view = new DataView(mockBuffer);
 
                 view.setUint8(0, 32); //node create command
-                view.setUint8(1, 0); //share 0
+                view.setUint8(1, messageLen); //mes len
+                view.setUint8(2, 0); //share
                 view.setUint16(3, 125); //user ID
                 view.setUint32(5, 0); //parent ID
                 view.setUint32(9, 1); //node ID 
