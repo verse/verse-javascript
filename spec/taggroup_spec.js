@@ -34,7 +34,7 @@ define(["taggroup"], function(tagGroup) {
         var testNode, view, messageLen, mockBuffer, mockView, result;
 
 
-        describe("received tag group subscribe command", function() {
+        describe("Prepare TagGroupUnsubscribe command", function() {
             beforeEach(function() {
                 testNode = tagGroup.subscribe(182, 31);
                 view = new DataView(testNode);
@@ -69,33 +69,109 @@ define(["taggroup"], function(tagGroup) {
 
         });
 
+        describe("Prepare tagGroupUnsubscribe command", function() {
+            beforeEach(function() {
+                testNode = tagGroup.unsubscribe(182, 31);
+                view = new DataView(testNode);
+            });
+
+
+            it("first byte - opCode - should be 67", function() {
+                expect(view.getUint8(0)).toEqual(67);
+            });
+
+        });
+
+
         describe("got TagGroupCreate from server", function() {
             beforeEach(function() {
-                
+
                 messageLen = 11;
                 mockBuffer = new ArrayBuffer(messageLen);
                 view = new DataView(mockBuffer);
 
                 view.setUint8(0, 64); //tagGroupCreate command
-                view.setUint8(1, 17); //length
+                view.setUint8(1, messageLen); //length
                 view.setUint8(2, 0); //share is 0
                 view.setUint32(3, 115); //Node ID
                 view.setUint16(7, 68); //TagGroupID
-                view.setUint16(9, 62);//custom type  
+                view.setUint16(9, 62); //custom type  
 
             });
 
             it("command should be parsed out as TAG_GROUP_CREATE, NODE_ID = 111 object", function() {
-                
+
                 mockView = new DataView(mockBuffer);
                 result = tagGroup.getTagGroupValues(64, mockView, 0, mockBuffer.byteLength);
-                
+
                 expect(result).toEqual({
                     CMD: "TAG_GROUP_CREATE",
                     SHARE: 0,
                     NODE_ID: 115,
                     TAG_GROUP_ID: 68,
                     CUSTOM_TYPE: 62
+                });
+            });
+        });
+
+        describe("got TagGroupDestroy from server", function() {
+            beforeEach(function() {
+
+                messageLen = 9;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, 65); //tagGroupDestroy command
+                view.setUint8(1, messageLen); //length
+                view.setUint8(2, 0); //share is 0
+                view.setUint32(3, 115); //Node ID
+                view.setUint16(7, 68); //TagGroupID
+         
+            });
+
+            it("command should be parsed out as TAG_GROUP_DESTROY object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = tagGroup.getTagGroupValues(65, mockView, 0, mockBuffer.byteLength);
+
+                expect(result).toEqual({
+                    CMD: "TAG_GROUP_DESTROY",
+                    SHARE: 0,
+                    NODE_ID: 115,
+                    TAG_GROUP_ID: 68
+                });
+            });
+        });
+
+        describe("got TagGroupSubscribe from server", function() {
+            beforeEach(function() {
+
+                messageLen = 17;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                view.setUint8(0, 66); //tagGroupSubscribe command
+                view.setUint8(1, messageLen); //length
+                view.setUint8(2, 0); //share is 0
+                view.setUint32(3, 115); //Node ID
+                view.setUint16(7, 68); //TagGroupID
+                view.setUint32(9, 1215); //VERSION
+                view.setUint32(13, 8115); //CRC32
+         
+            });
+
+            it("command should be parsed out as TAG_GROUP_SUBSCRIBE object", function() {
+
+                mockView = new DataView(mockBuffer);
+                result = tagGroup.getTagGroupValues(66, mockView, 0, mockBuffer.byteLength);
+
+                expect(result).toEqual({
+                    CMD: "TAG_GROUP_SUBSCRIBE",
+                    SHARE: 0,
+                    NODE_ID: 115,
+                    TAG_GROUP_ID: 68,
+                    VERSION: 1215,
+                    CRC32: 8115
                 });
             });
         });
