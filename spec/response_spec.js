@@ -109,6 +109,64 @@ define(['response'], function(response) {
             });
         });
 
+        describe('got BAD VERSION from server', function() {
+            beforeEach(function() {
+                var message_type = 8;
+
+                messageLen = 4 + 2;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                /* First 4 bits are reserved for version of protocol */
+                view.setUint8(0, 3 << 4);
+                view.setUint16(2, messageLen);
+                view.setUint8(4, message_type);
+                view.setUint8(5, messageLen - 4);
+
+            });
+
+            it('version check should be falsy', function() {
+                result = response.checkHeader(mockBuffer);
+
+                expect(result).toBe(false);
+            });
+        });
+
+
+
+
+        describe('got USER AUTH FAIL from server', function() {
+            beforeEach(function() {
+                var message_type = 8;
+
+                messageLen = 4 + 2;
+                mockBuffer = new ArrayBuffer(messageLen);
+                view = new DataView(mockBuffer);
+
+                /* First 4 bits are reserved for version of protocol */
+                view.setUint8(0, 1 << 4);
+                view.setUint16(2, messageLen);
+                view.setUint8(4, message_type);
+                view.setUint8(5, messageLen - 4);
+
+            });
+
+            it('command should be parsed out as AUTH FAIL', function() {
+                result = response.parse(mockBuffer);
+
+                expect(result[0]).toEqual({
+                    CMD: 'USER_AUTH_FAILURE'
+                });
+            });
+
+             it('version check should be true', function() {
+                result = response.checkHeader(mockBuffer);
+
+                expect(result).toBe(true);
+            });
+        });
+
+
 
         describe('got negotiation confirm_r  CCID from server', function() {
             beforeEach(function() {
@@ -208,7 +266,7 @@ define(['response'], function(response) {
         });
 
         describe('got TagGroupCreate from server', function() {
-            
+
             beforeEach(function() {
                 messageLen = 17 + 4;
                 mockBuffer = new ArrayBuffer(messageLen);
@@ -241,7 +299,7 @@ define(['response'], function(response) {
         });
 
         describe('got TagCreate from server', function() {
-            
+
             beforeEach(function() {
                 messageLen = 15 + 4;
                 mockBuffer = new ArrayBuffer(messageLen);
@@ -280,7 +338,7 @@ define(['response'], function(response) {
         });
 
         describe('got LayerCreate from server', function() {
-            
+
             beforeEach(function() {
                 messageLen = 15 + 4;
                 mockBuffer = new ArrayBuffer(messageLen);
@@ -319,7 +377,7 @@ define(['response'], function(response) {
         });
 
         describe('got weird command from server', function() {
-            
+
             beforeEach(function() {
                 messageLen = 5 + 4;
                 mockBuffer = new ArrayBuffer(messageLen);
@@ -330,7 +388,7 @@ define(['response'], function(response) {
                 view.setUint16(2, messageLen);
                 view.setUint8(4, 222); //layer create command
                 view.setUint8(5, 5); //length
-               
+
             });
 
             it('command should be parsed out as command code and message object', function() {

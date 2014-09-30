@@ -49,6 +49,7 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer', 'user'], function(neg
             /* Is it command usr_auth_fail */
             var method = receivedView.getUint8(bufferPosition + 1);
 
+            /* istanbul ignore else */
             if (method === 2) { 
                 /* Password method */
                 return {
@@ -112,8 +113,12 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer', 'user'], function(neg
 
 
     var response = {
+
+        /*
+        * Check version of protocol in message header
+        */
         checkHeader: function(buffer) {
-            /* TODO: do communication here :-) */
+            
             var receivedView = new DataView(buffer);
             var bufferPosition = 0;
 
@@ -124,11 +129,15 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer', 'user'], function(neg
             if (version !== 1) {
                 return false;
             }
-
-            return true;
-
+            else {
+                return true;    
+            }
         },
 
+        /*
+        * Parse received message 
+        * @return verse command object
+        */
         parse: function(buffer) {
             var opCode, cmdLen, result;
             var receivedView = new DataView(buffer);
