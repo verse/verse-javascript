@@ -60,14 +60,17 @@ define(['Int64'], function(Int64) {
 
         result.VALUES[0] = receivedView.getUint8(bufferPosition + 11);
 
+        /* istanbul ignore else  */
         if (opCode > 70) {
             result.VALUES[1] = receivedView.getUint8(bufferPosition + 12);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 71) {
             result.VALUES[2] = receivedView.getUint8(bufferPosition + 13);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 72) {
             result.VALUES[3] = receivedView.getUint8(bufferPosition + 14);   
         }
@@ -80,19 +83,23 @@ define(['Int64'], function(Int64) {
     * @param opCode int from interval 74 - 77
     */
 
+
     getTagSetUint16 = function getTagSetUint16(opCode, receivedView, bufferPosition) {
         var result = getTagSetCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES[0] = receivedView.getUint16(bufferPosition + 11);
 
+        /* istanbul ignore else  */
         if (opCode > 74) {
             result.VALUES[1] = receivedView.getUint16(bufferPosition + 13);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 75) {
             result.VALUES[2] = receivedView.getUint16(bufferPosition + 15);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 76) {
             result.VALUES[3] = receivedView.getUint16(bufferPosition + 17);   
         }
@@ -110,14 +117,17 @@ define(['Int64'], function(Int64) {
 
         result.VALUES[0] = receivedView.getUint32(bufferPosition + 11);
 
+        /* istanbul ignore else  */
         if (opCode > 78) {
             result.VALUES[1] = receivedView.getUint32(bufferPosition + 15);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 79) {
             result.VALUES[2] = receivedView.getUint32(bufferPosition + 19);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 80) {
             result.VALUES[3] = receivedView.getUint32(bufferPosition + 23);   
         }
@@ -142,6 +152,7 @@ define(['Int64'], function(Int64) {
         bigNumber = new Int64(hi, lo);
         result.VALUES[0] = bigNumber.valueOf();
 
+        /* istanbul ignore else  */
         if (opCode > 82) {
             lo = receivedView.getUint32(bufferPosition + 19);
             hi = receivedView.getUint32(bufferPosition + 23); 
@@ -149,6 +160,7 @@ define(['Int64'], function(Int64) {
             result.VALUES[1] = bigNumber.valueOf();
         }
 
+        /* istanbul ignore else  */
         if (opCode > 83) {
             lo = receivedView.getUint32(bufferPosition + 27);
             hi = receivedView.getUint32(bufferPosition + 31); 
@@ -156,6 +168,7 @@ define(['Int64'], function(Int64) {
             result.VALUES[2] = bigNumber.valueOf();
         }
 
+        /* istanbul ignore else  */    
         if (opCode > 84) {
             lo = receivedView.getUint32(bufferPosition + 35);
             hi = receivedView.getUint32(bufferPosition + 39); 
@@ -171,10 +184,11 @@ define(['Int64'], function(Int64) {
     * @param opCode int from interval 90 - 93
     */
 
+    /* istanbul ignore next */
     getTagSetFloat16 = function getTagSetFloat16(opCode, receivedView, bufferPosition) {
         var result = getTagSetCommons(opCode, receivedView, bufferPosition);
 
-        result.VALUES[0] = '@TODO > Float16 not supported';
+        result.VALUES[0] = 'Float16 not supported in JS';
 
         return result;
     };
@@ -189,14 +203,17 @@ define(['Int64'], function(Int64) {
 
         result.VALUES[0] = receivedView.getFloat32(bufferPosition + 11);
 
+        /* istanbul ignore else  */
         if (opCode > 90) {
             result.VALUES[1] = receivedView.getFloat32(bufferPosition + 15);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 91) {
             result.VALUES[2] = receivedView.getFloat32(bufferPosition + 19);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 92) {
             result.VALUES[3] = receivedView.getFloat32(bufferPosition + 23);   
         }
@@ -214,14 +231,17 @@ define(['Int64'], function(Int64) {
 
         result.VALUES[0] = receivedView.getFloat64(bufferPosition + 11);
 
+        /* istanbul ignore else  */
         if (opCode > 94) {
             result.VALUES[1] = receivedView.getFloat64(bufferPosition + 19);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 95) {
             result.VALUES[2] = receivedView.getFloat64(bufferPosition + 27);   
         }
 
+        /* istanbul ignore else  */
         if (opCode > 96) {
             result.VALUES[3] = receivedView.getFloat64(bufferPosition + 35);   
         }

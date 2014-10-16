@@ -28,7 +28,7 @@
  */
 
 /* globals define */
-
+/* istanbul ignore next  */
 define(function() {
     'use strict';
 

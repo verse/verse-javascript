@@ -1,5 +1,5 @@
 /*
- * Verse Websocket Asynchronous Module 
+ * Verse Websocket Asynchronous Module
  *
  * The MIT License (MIT)
  *
@@ -76,14 +76,17 @@ define(['message', 'Int64'], function(message, Int64) {
         result.VALUES = [];
         result.VALUES[0] = receivedView.getUint8(bufferPosition + 13);
 
+        /* istanbul ignore else */
         if (opCode > 133) {
             result.VALUES[1] = receivedView.getUint8(bufferPosition + 14);
         }
 
+        /* istanbul ignore else */
         if (opCode > 134) {
             result.VALUES[2] = receivedView.getUint8(bufferPosition + 15);
         }
 
+        /* istanbul ignore else */
         if (opCode > 135) {
             result.VALUES[3] = receivedView.getUint8(bufferPosition + 16);
         }
@@ -102,14 +105,17 @@ define(['message', 'Int64'], function(message, Int64) {
         result.VALUES = [];
         result.VALUES[0] = receivedView.getUint16(bufferPosition + 13);
 
+        /* istanbul ignore else */
         if (opCode > 137) {
             result.VALUES[1] = receivedView.getUint16(bufferPosition + 15);
         }
 
-        if (opCode > 138) {
+        /* istanbul ignore else */
+        if (opCode > 138) { 
             result.VALUES[2] = receivedView.getUint16(bufferPosition + 17);
         }
 
+        /* istanbul ignore else */
         if (opCode > 139) {
             result.VALUES[3] = receivedView.getUint16(bufferPosition + 19);
         }
@@ -128,14 +134,17 @@ define(['message', 'Int64'], function(message, Int64) {
         result.VALUES = [];
         result.VALUES[0] = receivedView.getUint32(bufferPosition + 13);
 
+        /* istanbul ignore else */
         if (opCode > 141) {
             result.VALUES[1] = receivedView.getUint32(bufferPosition + 17);
         }
 
+        /* istanbul ignore else */
         if (opCode > 142) {
             result.VALUES[2] = receivedView.getUint32(bufferPosition + 21);
         }
 
+        /* istanbul ignore else */
         if (opCode > 143) {
             result.VALUES[3] = receivedView.getUint32(bufferPosition + 25);
         }
@@ -144,11 +153,11 @@ define(['message', 'Int64'], function(message, Int64) {
     };
 
     /*
-    * common function for all SetUint64 opCodes
-    * WARNING > conversion by valueOf fails if the number is bigger than 2^53
-    * @param opCode int from interval 145 - 148
-    *
-    */
+     * common function for all SetUint64 opCodes
+     * WARNING > conversion by valueOf fails if the number is bigger than 2^53
+     * @param opCode int from interval 145 - 148
+     *
+     */
 
     getLayerSetUint64 = function getLayerSetUint64(opCode, receivedView, bufferPosition) {
         var result, hi, lo, bigNumber;
@@ -158,27 +167,30 @@ define(['message', 'Int64'], function(message, Int64) {
         result.VALUES = [];
 
         lo = receivedView.getUint32(bufferPosition + 13);
-        hi = receivedView.getUint32(bufferPosition + 17); 
+        hi = receivedView.getUint32(bufferPosition + 17);
         bigNumber = new Int64(hi, lo);
         result.VALUES[0] = bigNumber.valueOf();
 
+        /* istanbul ignore else */
         if (opCode > 145) {
             lo = receivedView.getUint32(bufferPosition + 21);
-            hi = receivedView.getUint32(bufferPosition + 25); 
+            hi = receivedView.getUint32(bufferPosition + 25);
             bigNumber = new Int64(hi, lo);
             result.VALUES[1] = bigNumber.valueOf();
         }
 
+        /* istanbul ignore else */
         if (opCode > 146) {
             lo = receivedView.getUint32(bufferPosition + 29);
-            hi = receivedView.getUint32(bufferPosition + 33); 
+            hi = receivedView.getUint32(bufferPosition + 33);
             bigNumber = new Int64(hi, lo);
             result.VALUES[2] = bigNumber.valueOf();
         }
 
+        /* istanbul ignore else */
         if (opCode > 147) {
             lo = receivedView.getUint32(bufferPosition + 37);
-            hi = receivedView.getUint32(bufferPosition + 41); 
+            hi = receivedView.getUint32(bufferPosition + 41);
             bigNumber = new Int64(hi, lo);
             result.VALUES[3] = bigNumber.valueOf();
         }
@@ -191,8 +203,9 @@ define(['message', 'Int64'], function(message, Int64) {
      * @param opCode int from interval 149 - 152
      */
 
+    /* istanbul ignore next */
     getLayerSetFloat16 = function getLayerSetFloat16(opCode, receivedView, bufferPosition) {
-         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
+        var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES = [];
         result.VALUES[0] = '@TODO - data type Real16 not supported';
@@ -206,19 +219,22 @@ define(['message', 'Int64'], function(message, Int64) {
      */
 
     getLayerSetFloat32 = function getLayerSetFloat32(opCode, receivedView, bufferPosition) {
-         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
+        var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES = [];
         result.VALUES[0] = receivedView.getFloat32(bufferPosition + 13);
 
+        /* istanbul ignore else */
         if (opCode > 153) {
             result.VALUES[1] = receivedView.getFloat32(bufferPosition + 17);
         }
 
+        /* istanbul ignore else */
         if (opCode > 154) {
             result.VALUES[2] = receivedView.getFloat32(bufferPosition + 21);
         }
 
+        /* istanbul ignore else */
         if (opCode > 155) {
             result.VALUES[3] = receivedView.getFloat32(bufferPosition + 25);
         }
@@ -232,19 +248,22 @@ define(['message', 'Int64'], function(message, Int64) {
      */
 
     getLayerSetFloat64 = function getLayerSetFloat64(opCode, receivedView, bufferPosition) {
-         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
+        var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES = [];
         result.VALUES[0] = receivedView.getFloat64(bufferPosition + 13);
 
+        /* istanbul ignore else */
         if (opCode > 157) {
             result.VALUES[1] = receivedView.getFloat64(bufferPosition + 21);
         }
 
+        /* istanbul ignore else */
         if (opCode > 158) {
             result.VALUES[2] = receivedView.getFloat64(bufferPosition + 29);
         }
 
+        /* istanbul ignore else */
         if (opCode > 159) {
             result.VALUES[3] = receivedView.getFloat64(bufferPosition + 37);
         }
@@ -252,7 +271,7 @@ define(['message', 'Int64'], function(message, Int64) {
         return result;
     };
 
-     /*
+    /*
      * common function for Subscribe and UnSubscribe commands
      * @param opCode int from interval 130 - 131
      */
@@ -319,7 +338,7 @@ define(['message', 'Int64'], function(message, Int64) {
         159: 'LAYER_SET_REAL64',
         160: 'LAYER_SET_REAL64',
         161: 'LAYER_UNSET_DATA'
-        
+
     };
 
     /*
@@ -337,10 +356,12 @@ define(['message', 'Int64'], function(message, Int64) {
 
         },
         129: function getLayerDestroy(opCode, receivedView, bufferPosition) {
-            var result;
-            result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
-
-            return result;
+            return {
+                CMD: commands[opCode],
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                NODE_ID: receivedView.getUint32(bufferPosition + 3),
+                LAYER_ID: receivedView.getUint16(bufferPosition + 7)
+            };
         },
         130: getLayerSubUnsub,
         131: getLayerSubUnsub,
@@ -373,13 +394,13 @@ define(['message', 'Int64'], function(message, Int64) {
         158: getLayerSetFloat64,
         159: getLayerSetFloat64,
         160: getLayerSetFloat64
-        
+
 
     };
 
     layer = {
 
-         /*
+        /*
          * subscribe layer commad OpCode 130
          * @param nodeId int32
          * @param layerId int16

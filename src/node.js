@@ -39,7 +39,7 @@ define(['message'], function(message) {
         34: 'NODE_SUBSCRIBE',
         35: 'NODE_UNSUBSCRIBE',
         37: 'NODE_LINK',
-        38: 'NODE_PERMISIONS',
+        38: 'NODE_PERMISSIONS',
         39: 'NODE_UMASK',
         40: 'NODE_OWNER',
         41: 'NODE_LOCK',
@@ -65,7 +65,7 @@ define(['message'], function(message) {
         33: function getNodeDestroy(opCode, receivedView, bufferPosition) {
             return {
                 CMD: commands[opCode],
-                NODE_ID: receivedView.getUint32(bufferPosition + 3)
+                NODE_ID: receivedView.getUint32(bufferPosition + 2)
             };
         },
         34: function getNodeSubscribe(opCode, receivedView, bufferPosition) {
@@ -88,8 +88,8 @@ define(['message'], function(message) {
             return {
                 CMD: commands[opCode],
                 SHARE: receivedView.getUint8(bufferPosition + 2),
-                PARENT_ID: receivedView.getUint32(bufferPosition + 3),
-                CHILD_ID: receivedView.getUint32(bufferPosition + 7)
+                PARENT_NODE_ID: receivedView.getUint32(bufferPosition + 3),
+                CHILD_NODE_ID: receivedView.getUint32(bufferPosition + 7)
             };
         },
         38: function getNodePermissions(opCode, receivedView, bufferPosition) {
@@ -130,7 +130,16 @@ define(['message'], function(message) {
                 AVATAR_ID: receivedView.getUint32(bufferPosition + 3),
                 NODE_ID: receivedView.getUint32(bufferPosition + 7)
             };
+        },
+        43: function getNodePriority(opCode, receivedView, bufferPosition) {
+            return {
+                CMD: commands[opCode],
+                SHARE: receivedView.getUint8(bufferPosition + 2),
+                PRIORITY: receivedView.getUint8(bufferPosition + 3),
+                NODE_ID: receivedView.getUint32(bufferPosition + 4)
+            };
         }
+
 
     };
 

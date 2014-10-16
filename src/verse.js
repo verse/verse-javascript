@@ -166,7 +166,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
                 console.info('Connecting to URI:' + config.uri + ' ...');
                 try {
-                    myWebscoket = new WebSocket(config.uri, config.version);
+                    myWebscoket = new window.WebSocket(config.uri, config.version);
                     myWebscoket.binaryType = 'arraybuffer';
 
                     myWebscoket.addEventListener('error', function(event){
