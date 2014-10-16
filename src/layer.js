@@ -191,7 +191,7 @@ define(['message', 'Int64'], function(message, Int64) {
      * @param opCode int from interval 149 - 152
      */
 
-    getLayerSetFloat32 = function getLayerSetFloat32(opCode, receivedView, bufferPosition) {
+    getLayerSetFloat16 = function getLayerSetFloat16(opCode, receivedView, bufferPosition) {
          var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES = [];
