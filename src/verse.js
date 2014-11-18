@@ -135,9 +135,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
 
                 responseData = response.parse(message.data);
-                console.log(responseData);
                 
-
                 responseData.NEGO.forEach(function(cmd) {
                     if (cmd.CMD === 'AUTH_PASSWD') {
                         userAuthData(config);
@@ -159,14 +157,16 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                     config.nodeCallback(responseData.NODE);
                 }
 
-                if (responseData.TAG.length > 0) {
-                    config.tagCallback(responseData.TAG);
-                }  
-
                 if (responseData.TAG_GROUP.length > 0) {
                     config.tagGroupCallback(responseData.TAG_GROUP);
                 }
 
+
+                if (responseData.TAG.length > 0) {
+                    config.tagCallback(responseData.TAG);
+                }  
+
+                
                 if (responseData.LAYER.length > 0) {
                     config.layerCallback(responseData.LAYER);
                 }        
