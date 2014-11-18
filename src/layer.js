@@ -42,9 +42,9 @@ define(['message', 'Int64'], function(message, Int64) {
         return {
             CMD: commands[opCode],
             SHARE: receivedView.getUint8(bufferPosition + 2),
-            NODE_ID: receivedView.getUint32(bufferPosition + 3),
-            PARENT_LAYER_ID: receivedView.getUint16(bufferPosition + 7),
-            LAYER_ID: receivedView.getUint16(bufferPosition + 9)
+            NODE_ID: receivedView.getUint32(bufferPosition + 3, false),
+            PARENT_LAYER_ID: receivedView.getUint16(bufferPosition + 7, false),
+            LAYER_ID: receivedView.getUint16(bufferPosition + 9, false)
         };
     };
 
@@ -57,9 +57,9 @@ define(['message', 'Int64'], function(message, Int64) {
         return {
             CMD: commands[opCode],
             SHARE: receivedView.getUint8(bufferPosition + 2),
-            NODE_ID: receivedView.getUint32(bufferPosition + 3),
-            LAYER_ID: receivedView.getUint16(bufferPosition + 7),
-            ITEM_ID: receivedView.getUint32(bufferPosition + 9)
+            NODE_ID: receivedView.getUint32(bufferPosition + 3, false),
+            LAYER_ID: receivedView.getUint16(bufferPosition + 7, false),
+            ITEM_ID: receivedView.getUint32(bufferPosition + 9, false)
         };
     };
 
@@ -103,21 +103,21 @@ define(['message', 'Int64'], function(message, Int64) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES = [];
-        result.VALUES[0] = receivedView.getUint16(bufferPosition + 13);
+        result.VALUES[0] = receivedView.getUint16(bufferPosition + 13, false);
 
         /* istanbul ignore else */
         if (opCode > 137) {
-            result.VALUES[1] = receivedView.getUint16(bufferPosition + 15);
+            result.VALUES[1] = receivedView.getUint16(bufferPosition + 15, false);
         }
 
         /* istanbul ignore else */
         if (opCode > 138) { 
-            result.VALUES[2] = receivedView.getUint16(bufferPosition + 17);
+            result.VALUES[2] = receivedView.getUint16(bufferPosition + 17, false);
         }
 
         /* istanbul ignore else */
         if (opCode > 139) {
-            result.VALUES[3] = receivedView.getUint16(bufferPosition + 19);
+            result.VALUES[3] = receivedView.getUint16(bufferPosition + 19, false);
         }
 
         return result;
@@ -132,21 +132,21 @@ define(['message', 'Int64'], function(message, Int64) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES = [];
-        result.VALUES[0] = receivedView.getUint32(bufferPosition + 13);
+        result.VALUES[0] = receivedView.getUint32(bufferPosition + 13, false);
 
         /* istanbul ignore else */
         if (opCode > 141) {
-            result.VALUES[1] = receivedView.getUint32(bufferPosition + 17);
+            result.VALUES[1] = receivedView.getUint32(bufferPosition + 17, false);
         }
 
         /* istanbul ignore else */
         if (opCode > 142) {
-            result.VALUES[2] = receivedView.getUint32(bufferPosition + 21);
+            result.VALUES[2] = receivedView.getUint32(bufferPosition + 21, false);
         }
 
         /* istanbul ignore else */
         if (opCode > 143) {
-            result.VALUES[3] = receivedView.getUint32(bufferPosition + 25);
+            result.VALUES[3] = receivedView.getUint32(bufferPosition + 25, false);
         }
 
         return result;
@@ -166,31 +166,31 @@ define(['message', 'Int64'], function(message, Int64) {
 
         result.VALUES = [];
 
-        lo = receivedView.getUint32(bufferPosition + 13);
-        hi = receivedView.getUint32(bufferPosition + 17);
+        lo = receivedView.getUint32(bufferPosition + 13, false);
+        hi = receivedView.getUint32(bufferPosition + 17, false);
         bigNumber = new Int64(hi, lo);
         result.VALUES[0] = bigNumber.valueOf();
 
         /* istanbul ignore else */
         if (opCode > 145) {
-            lo = receivedView.getUint32(bufferPosition + 21);
-            hi = receivedView.getUint32(bufferPosition + 25);
+            lo = receivedView.getUint32(bufferPosition + 21, false);
+            hi = receivedView.getUint32(bufferPosition + 25, false);
             bigNumber = new Int64(hi, lo);
             result.VALUES[1] = bigNumber.valueOf();
         }
 
         /* istanbul ignore else */
         if (opCode > 146) {
-            lo = receivedView.getUint32(bufferPosition + 29);
-            hi = receivedView.getUint32(bufferPosition + 33);
+            lo = receivedView.getUint32(bufferPosition + 29, false);
+            hi = receivedView.getUint32(bufferPosition + 33, false);
             bigNumber = new Int64(hi, lo);
             result.VALUES[2] = bigNumber.valueOf();
         }
 
         /* istanbul ignore else */
         if (opCode > 147) {
-            lo = receivedView.getUint32(bufferPosition + 37);
-            hi = receivedView.getUint32(bufferPosition + 41);
+            lo = receivedView.getUint32(bufferPosition + 37, false);
+            hi = receivedView.getUint32(bufferPosition + 41, false);
             bigNumber = new Int64(hi, lo);
             result.VALUES[3] = bigNumber.valueOf();
         }
@@ -222,21 +222,21 @@ define(['message', 'Int64'], function(message, Int64) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES = [];
-        result.VALUES[0] = receivedView.getFloat32(bufferPosition + 13);
+        result.VALUES[0] = receivedView.getFloat32(bufferPosition + 13, false);
 
         /* istanbul ignore else */
         if (opCode > 153) {
-            result.VALUES[1] = receivedView.getFloat32(bufferPosition + 17);
+            result.VALUES[1] = receivedView.getFloat32(bufferPosition + 17, false);
         }
 
         /* istanbul ignore else */
         if (opCode > 154) {
-            result.VALUES[2] = receivedView.getFloat32(bufferPosition + 21);
+            result.VALUES[2] = receivedView.getFloat32(bufferPosition + 21, false);
         }
 
         /* istanbul ignore else */
         if (opCode > 155) {
-            result.VALUES[3] = receivedView.getFloat32(bufferPosition + 25);
+            result.VALUES[3] = receivedView.getFloat32(bufferPosition + 25, false);
         }
 
         return result;
@@ -251,21 +251,21 @@ define(['message', 'Int64'], function(message, Int64) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
         result.VALUES = [];
-        result.VALUES[0] = receivedView.getFloat64(bufferPosition + 13);
+        result.VALUES[0] = receivedView.getFloat64(bufferPosition + 13, false);
 
         /* istanbul ignore else */
         if (opCode > 157) {
-            result.VALUES[1] = receivedView.getFloat64(bufferPosition + 21);
+            result.VALUES[1] = receivedView.getFloat64(bufferPosition + 21, false);
         }
 
         /* istanbul ignore else */
         if (opCode > 158) {
-            result.VALUES[2] = receivedView.getFloat64(bufferPosition + 29);
+            result.VALUES[2] = receivedView.getFloat64(bufferPosition + 29, false);
         }
 
         /* istanbul ignore else */
         if (opCode > 159) {
-            result.VALUES[3] = receivedView.getFloat64(bufferPosition + 37);
+            result.VALUES[3] = receivedView.getFloat64(bufferPosition + 37, false);
         }
 
         return result;
@@ -294,10 +294,10 @@ define(['message', 'Int64'], function(message, Int64) {
         msg = message.template(17, opCode);
         view = new DataView(msg);
         view.setUint8(3, 0); //share
-        view.setUint32(3, nodeId);
-        view.setUint16(7, layerId);
-        view.setUint32(9, 0); //Version
-        view.setUint32(13, 0); //CRC32
+        view.setUint32(3, nodeId, false);
+        view.setUint16(7, layerId, false);
+        view.setUint32(9, 0, false); //Version
+        view.setUint32(13, 0, false); //CRC32
         return msg;
     };
 
@@ -351,7 +351,7 @@ define(['message', 'Int64'], function(message, Int64) {
             result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
             result.DATA_TYPE = receivedView.getUint8(bufferPosition + 11);
             result.COUNT = receivedView.getUint8(bufferPosition + 12);
-            result.CUSTOM_TYPE = receivedView.getUint16(bufferPosition + 13);
+            result.CUSTOM_TYPE = receivedView.getUint16(bufferPosition + 13, false);
             return result;
 
         },
@@ -359,8 +359,8 @@ define(['message', 'Int64'], function(message, Int64) {
             return {
                 CMD: commands[opCode],
                 SHARE: receivedView.getUint8(bufferPosition + 2),
-                NODE_ID: receivedView.getUint32(bufferPosition + 3),
-                LAYER_ID: receivedView.getUint16(bufferPosition + 7)
+                NODE_ID: receivedView.getUint32(bufferPosition + 3, false),
+                LAYER_ID: receivedView.getUint16(bufferPosition + 7, false)
             };
         },
         130: getLayerSubUnsub,
