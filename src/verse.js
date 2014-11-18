@@ -155,8 +155,22 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
                 });
                 /* call the callbacks from config */
-                config.nodeCallback(responseData.NODE);
-                
+                if (responseData.NODE.length > 0) {
+                    config.nodeCallback(responseData.NODE);
+                }
+
+                if (responseData.TAG.length > 0) {
+                    config.tagCallback(responseData.TAG);
+                }  
+
+                if (responseData.TAG_GROUP.length > 0) {
+                    config.tagGroupCallback(responseData.TAG_GROUP);
+                }
+
+                if (responseData.LAYER.length > 0) {
+                    config.layerCallback(responseData.LAYER);
+                }        
+
                 
             }
         };
