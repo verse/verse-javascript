@@ -55,7 +55,7 @@ define(['response'], function(response) {
             it('first value in result array should be command auth password for password mock message', function() {
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.NEGO[0]).toEqual({
                     CMD: 'AUTH_PASSWD'
                 });
             });
@@ -101,7 +101,7 @@ define(['response'], function(response) {
             it('command should be parsed out as CHANGE_R', function() {
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.NEGO[0]).toEqual({
                     CMD: 'CHANGE_R',
                     FEATURE: 'TOKEN',
                     VALUE: dataString
@@ -154,7 +154,7 @@ define(['response'], function(response) {
             it('command should be parsed out as AUTH FAIL', function() {
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.NEGO[0]).toEqual({
                     CMD: 'USER_AUTH_FAILURE'
                 });
             });
@@ -190,7 +190,7 @@ define(['response'], function(response) {
             it('command should be parsed out as CONFIRM_R, CCID, 18 object', function() {
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.NEGO[0]).toEqual({
                     CMD: 'CONFIRM_R',
                     FEATURE: 'CCID',
                     VALUE: 18
@@ -221,7 +221,7 @@ define(['response'], function(response) {
 
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.NEGO[0]).toEqual({
                     CMD: 'USER_AUTH_SUCCESS',
                     USER_ID: 858,
                     AVATAR_ID: 203
@@ -254,7 +254,7 @@ define(['response'], function(response) {
 
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.NODE[0]).toEqual({
                     CMD: 'NODE_CREATE',
                     SHARE: 0,
                     USER_ID: 125,
@@ -288,7 +288,7 @@ define(['response'], function(response) {
 
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.TAG_GROUP[0]).toEqual({
                     CMD: 'TAG_GROUP_CREATE',
                     SHARE: 0,
                     NODE_ID: 115,
@@ -324,7 +324,7 @@ define(['response'], function(response) {
 
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.TAG[0]).toEqual({
                     CMD: 'TAG_CREATE',
                     SHARE: 0,
                     NODE_ID: 6545,
@@ -363,7 +363,7 @@ define(['response'], function(response) {
 
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.LAYER[0]).toEqual({
                     CMD: 'LAYER_CREATE',
                     SHARE: 0,
                     NODE_ID: 6545,
@@ -395,7 +395,7 @@ define(['response'], function(response) {
 
                 result = response.parse(mockBuffer);
 
-                expect(result[0]).toEqual({
+                expect(result.NEGO[0]).toEqual({
                     CMD: 222,
                     MESSAGE: '@TODO - opCode not implemented'
                 });
