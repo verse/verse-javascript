@@ -45,21 +45,27 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer', 'user'], function(neg
             9: 'USER_AUTH_SUCCESS'
         };
 
-        if (opCode === 8) { 
+        if (opCode === 8) {
             /* Is it command usr_auth_fail */
             var method = receivedView.getUint8(bufferPosition + 1);
 
             /* istanbul ignore else */
-            if (method === 2) { 
+            if (method === 2) {
                 /* Password method */
                 return {
-                    CMD: 'AUTH_PASSWD'
+                    'group': 'NEGO',
+                    'cmd': {
+                        CMD: 'AUTH_PASSWD'
+                    }
                 };
             }
 
-        } else if (opCode === 9) { 
+        } else if (opCode === 9) {
             /*user authorized*/
-            return user.getUserInfo(receivedView, bufferPosition - 1);
+            return {
+                'group': 'NEGO',
+                'cmd': user.getUserInfo(receivedView, bufferPosition - 1)
+            };
 
         } else if (opCode < 7) { //negotiation commands
             length = receivedView.getUint8(bufferPosition);
@@ -67,38 +73,56 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer', 'user'], function(neg
 
             cmdValues = negotiation.getFeatureValues(feature, receivedView, bufferPosition, length);
             return {
-                CMD: opCodes[opCode],
-                FEATURE: cmdValues.FEATURE,
-                VALUE: cmdValues.VALUE
+                'group': 'NEGO',
+                'cmd': {
+                    CMD: opCodes[opCode],
+                    FEATURE: cmdValues.FEATURE,
+                    VALUE: cmdValues.VALUE
+                }
             };
         } else if (opCode > 31 && opCode < 44) { //node commands
             length = receivedView.getUint8(bufferPosition);
             cmdValues = node.getNodeValues(opCode, receivedView, bufferPosition - 1, length);
 
-            return cmdValues;
+            return {
+                'group': 'NODE',
+                'cmd': cmdValues
+            };
 
         } else if (opCode > 63 && opCode < 68) { //TagGroup commands
             length = receivedView.getUint8(bufferPosition);
             cmdValues = tagGroup.getTagGroupValues(opCode, receivedView, bufferPosition - 1, length);
 
-            return cmdValues;
+            return {
+                'group': 'TAG_GROUP',
+                'cmd': cmdValues
+            };
 
         } else if (opCode > 67 && opCode < 99) { //Tag commands
             length = receivedView.getUint8(bufferPosition);
             cmdValues = tag.getTagValues(opCode, receivedView, bufferPosition - 1, length);
 
-            return cmdValues;
+            return {
+                'group': 'TAG',
+                'cmd': cmdValues
+            };
 
         } else if (opCode > 127 && opCode < 162) { //Layer commands
             length = receivedView.getUint8(bufferPosition);
             cmdValues = layer.getLayerValues(opCode, receivedView, bufferPosition - 1, length);
 
-            return cmdValues;
+            return {
+                'group': 'LAYER',
+                'cmd': cmdValues
+            };
 
         } else {
             return {
-                CMD: opCode,
-                MESSAGE: '@TODO - opCode not implemented'
+                'group': 'NEGO',
+                'cmd': {
+                    CMD: opCode,
+                    MESSAGE: '@TODO - opCode not implemented'
+                }
             };
         }
 
@@ -115,10 +139,10 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer', 'user'], function(neg
     var response = {
 
         /*
-        * Check version of protocol in message header
-        */
+         * Check version of protocol in message header
+         */
         checkHeader: function(buffer) {
-            
+
             var receivedView = new DataView(buffer);
             var bufferPosition = 0;
 
@@ -128,25 +152,30 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer', 'user'], function(neg
 
             if (version !== 1) {
                 return false;
-            }
-            else {
-                return true;    
+            } else {
+                return true;
             }
         },
 
         /*
-        * Parse received message 
-        * @return verse command object
-        */
+         * Parse received message
+         * @return verse command object
+         */
         parse: function(buffer) {
-            var opCode, cmdLen, result;
+            var opCode, cmdLen, result, payload;
             var receivedView = new DataView(buffer);
             var bufferPosition = 2;
 
             var message_len = receivedView.getUint16(bufferPosition);
             bufferPosition += 2;
 
-            result = [];
+            result = {
+                TAG: [],
+                NODE: [],
+                LAYER: [],
+                TAG_GROUP: [],
+                NEGO: []
+            };
             while (bufferPosition < message_len - 1) {
                 opCode = receivedView.getUint8(bufferPosition);
 
@@ -154,9 +183,10 @@ define(['negotiation', 'node', 'taggroup', 'tag', 'layer', 'user'], function(neg
                 cmdLen = receivedView.getUint8(bufferPosition);
 
                 if (cmdLen > 2) {
-                    result.push(checkOpCode(opCode, receivedView, bufferPosition));
+                    payload = checkOpCode(opCode, receivedView, bufferPosition);
+                    result[payload.group].push(payload.cmd);
                 } else {
-                    result.push({
+                    result.NEGO.push({
                         CMD: 'USER_AUTH_FAILURE'
                     });
                 }

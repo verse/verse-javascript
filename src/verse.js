@@ -108,11 +108,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
          * @param responseData list of objects
          */
 
-        confirmHost = function confirmHost(responseData) {
+        confirmHost = function confirmHost(hostInfo) {
             var buf = negotiation.url(negotiation.CHANGE_R, myWebscoket.url);
-            buf = request.buffer_push(buf, negotiation.token(negotiation.CONFIRM_R, responseData[1].VALUE));
+            buf = request.buffer_push(buf, negotiation.token(negotiation.CONFIRM_R, hostInfo[1].VALUE));
             buf = request.buffer_push(buf, negotiation.token(negotiation.CHANGE_R, '^DD31*$cZ6#t'));
-            buf = request.buffer_push(buf, negotiation.ded(negotiation.CONFIRM_L, responseData[2].VALUE));
+            buf = request.buffer_push(buf, negotiation.ded(negotiation.CONFIRM_L, hostInfo[2].VALUE));
 
             buf = request.message(buf);
 
@@ -133,13 +133,16 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                     return;
                 }
 
-                responseData = response.parse(message.data);
 
-                responseData.forEach(function(cmd) {
+                responseData = response.parse(message.data);
+                console.log(responseData);
+                
+
+                responseData.NEGO.forEach(function(cmd) {
                     if (cmd.CMD === 'AUTH_PASSWD') {
                         userAuthData(config);
                     } else if (cmd.CMD === 'USER_AUTH_SUCCESS') {
-                        confirmHost(responseData);
+                        confirmHost(responseData.NEGO);
                         userInfo = cmd;
                     } else if (cmd.CMD === 'USER_AUTH_FAILURE') {
                         config.errorCallback(cmd.CMD);
@@ -148,12 +151,13 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                         verse.subscribeNode(0);
                         /* pass the user info to callback function */
                         config.connectionAcceptedCallback(userInfo);
-                    } else {
-                        /* call the callback function from config */
-                        config.dataCallback(cmd);
-                    }
+                    } 
 
                 });
+                /* call the callbacks from config */
+                config.nodeCallback(responseData.NODE);
+                
+                
             }
         };
 
