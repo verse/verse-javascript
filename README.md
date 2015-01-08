@@ -22,7 +22,9 @@ Minified version of both modules is in the build dir.
 
 See example in the example dir. 
 
-Choose standalone or amd *version* and then rename *version*.config.js to config.js and open *version*.html file in your browser. Check console. Do something nice...
+Choose standalone or amd *version* and then rename *version*.config.js to config.js. 
+
+Add you config values and open *version*.html file in your browser. Check console. Do something nice...
 
 ## Requirements
 
