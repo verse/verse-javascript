@@ -3,25 +3,51 @@
 (function(console, verse, config) {
     'use strict';
 
-    var settings,  dataHandler;
+    var settings, nodeHandler, tagHandler, tagGroupHandler, layerHandler;
 
-    dataHandler = function dataHandler (data) {
-        if (data.CMD === 'NODE_CREATE') {
-            verse.subscribeNode(data.NODE_ID);
-            console.log('subscribed node ' + data.NODE_ID);
-        }
-        else if (data.CMD === 'TAG_GROUP_CREATE') {
-            verse.subscribeTagGroup(data.NODE_ID, data.TAG_GROUP_ID);
-            console.info('subscribed tagGroup nodeId =' + data.NODE_ID + ' tagGroupId = ' + data.TAG_GROUP_ID);
-        }
-        else if (data.CMD === 'LAYER_CREATE') {
-            verse.subscribeLayer(data.NODE_ID, data.LAYER_ID);
-            console.info('subscribed Layer nodeId =' + data.NODE_ID + ' layerId = ' + data.LAYER_ID);
-        }
-        else {
-            console.log(data);
-        }
+
+    nodeHandler = function nodeHandler(data) {
+        data.forEach(function(cmd) {
+            if (cmd.CMD === 'NODE_CREATE') {
+                verse.subscribeNode(cmd.NODE_ID);
+                console.log('subscribed node ' + cmd.NODE_ID);
+            } else {
+                console.log(cmd);
+            }
+        });
+
     };
+
+    tagGroupHandler = function tagGroupHandler(data) {
+        data.forEach(function(cmd) {
+            if (cmd.CMD === 'TAG_GROUP_CREATE') {
+                verse.subscribeTagGroup(cmd.NODE_ID, cmd.TAG_GROUP_ID);
+                console.info('subscribed tagGroup nodeId =' + cmd.NODE_ID + ' tagGroupId = ' + cmd.TAG_GROUP_ID);
+            } else {
+                console.log(cmd);
+            }
+        });
+
+    };
+
+    layerHandler = function layerHandler(data) {
+        data.forEach(function(cmd) {
+            if (cmd.CMD === 'LAYER_CREATE') {
+                verse.subscribeLayer(cmd.NODE_ID, cmd.LAYER_ID);
+                console.info('subscribed Layer nodeId =' + cmd.NODE_ID + ' layerId = ' + cmd.LAYER_ID);
+            } else {
+                console.log(cmd);
+            }
+        });
+
+    };
+
+    tagHandler = function tagHandler(data) {
+        console.log(data);
+    };
+
+
+
 
 
     settings = {
@@ -29,13 +55,17 @@
         version: config.version,
         username: config.username,
         passwd: config.passwd,
-        dataCallback: dataHandler,
+        nodeCallback: nodeHandler,
+        layerCallback: layerHandler,
+        tagCallback: tagHandler,
+        tagGroupCallback: tagGroupHandler,
         connectionTerminatedCallback: function(event) {
             /*
              *  callback function for end of session handling
              * called when onClose websocket event is fired
              */
-            console.info('[Disconnected], Code:' + event.code + ', Reason: ' + event.reason);
+            console.info(event);
+            console.info('Connection Closed  Code: %s, Reason: %s', event.code, event.reason);
         },
         connectionAcceptedCallback: function(userInfo) {
             /*
@@ -45,6 +75,14 @@
              */
             console.info('User ID: ' + userInfo.USER_ID);
             console.info('Avatar ID: ' + userInfo.AVATAR_ID);
+        },
+        errorCallback: function(error) {
+            /*
+             * Error callback
+             * called when user auth fails
+             * @param error string command name
+             */
+            console.error(error);
         }
 
 
@@ -52,6 +90,5 @@
     };
 
     verse.init(settings);
-    
 
 })(console, verse, config);
