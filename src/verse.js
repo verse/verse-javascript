@@ -95,9 +95,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
          * Second step of negotiation process
          * Send command user auth with type PASSWORD
          */
-
         userAuthData = function userAuthData(config) {
-
             var buf = user.auth(config.username, 2, config.passwd);
             buf = request.message(buf);
             myWebscoket.send(buf);
@@ -132,7 +130,6 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                     myWebscoket.close();
                     return;
                 }
-
 
                 responseData = response.parse(message.data);
                 
@@ -180,6 +177,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
          * public API of Verse Websocket module
          */
         verse = {
+
             init: function(config) {
 
                 console.info('Connecting to URI:' + config.uri + ' ...');
@@ -215,7 +213,16 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                 var buf = node.subscribe(nodeId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
+            },
 
+            /*
+             * create new node on server
+             * @param customType int16
+             */
+            createNode: function createNode(userId, avatarId, customType) {
+                var buf = node.create(userId, avatarId, customType);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
             },
 
             /*
@@ -228,7 +235,6 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                 var buf = tagGroup.subscribe(nodeId, tagGroupId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
-
             },
 
             /*
@@ -241,7 +247,6 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                 var buf = layer.subscribe(nodeId, layerId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
-
             }
 
         };

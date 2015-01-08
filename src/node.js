@@ -164,9 +164,25 @@ define(['message'], function(message) {
             return result;
 
 
-        }
+        },
 
-
+        /*
+         * create node command
+         * @param user_id - ID of current user
+         * @param avatar_id - ID of current avatar
+         * @param custom_type - custom type of node
+         */
+        create: function(user_id, avatar_id, custom_type) {
+            var msg, view;
+            msg = message.template(15, 32);
+            view = new DataView(msg);
+            view.setUint8(2, 0);
+            view.setUint16(3, user_id);
+            view.setUint32(5, avatar_id);
+            view.setUint32(9, 4294967295);
+            view.setUint16(13, custom_type);
+            return msg;
+        } 
 
 
 
