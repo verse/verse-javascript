@@ -22,9 +22,9 @@ Minified version of both modules is in the build dir.
 
 See example in the example dir. 
 
-Rename app_*.js.example to app.js and change the values to your config.
+Choose standalone or amd *version* and then rename *version*.config.js to config.js. 
 
-Open index.html in your browser. Check console. 
+Add you config values and open *version*.html file in your browser. Check console. Do something nice...
 
 ## Requirements
 
