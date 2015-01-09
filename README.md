@@ -18,13 +18,10 @@ bower install verse
 
 Verse Websocket module is provided in two versions. You can use it as [AMD](http://requirejs.org/docs/whyamd.html) for [RequireJs](http://requirejs.org/) or as a standalone library.
 
-Minified version of both modules is in the build dir.
+Minified versions of both modules can be found in the `./build` directory.
 
-See example in the example dir. 
-
-Choose standalone or amd *version* and then rename *version*.config.js to config.js. 
-
-Add you config values and open *version*.html file in your browser. Check console. Do something nice...
+See examples in the `./example` directory. Choose standalone or amd *version* and then rename *version*.config.js
+to `config.js`. Add you config values and open *version*.html file in your browser. Check console, do something nice...
 
 ## Requirements
 
@@ -43,8 +40,6 @@ cd verse-javascript
 npm install
 bower install
 ```
-
-
 
 ## License
 
