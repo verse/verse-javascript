@@ -27,8 +27,8 @@
 
 
 var config = {
-    uri: 'ws://verse.example.com:12345',
-    version: 'v1.verse.example.com',
+    uri: 'ws://verse.example.com:23456',
+    version: 'v1.verse.tul.cz',
     username: 'verseuser',
     passwd: 'verysecretpassword'
 };
