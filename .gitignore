@@ -3,4 +3,5 @@ node_modules
 bower_components
 bin
 example/config.js
+example/index.html
 .grunt
