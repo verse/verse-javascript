@@ -217,10 +217,22 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * create new node on server
-             * @param customType int16
+             * @param userId uint16
+             * @param avatarId uint32
+             * @param customType uint16
              */
             createNode: function createNode(userId, avatarId, customType) {
                 var buf = node.create(userId, avatarId, customType);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
+             * destroy existing node on server
+             * @param nodeId uint32
+             */
+            destroyNode: function destroyNode(nodeId) {
+                var buf = node.destroy(nodeId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
             },

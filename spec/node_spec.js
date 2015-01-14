@@ -107,6 +107,30 @@ define(["node"], function(node) {
         });
 
 
+        describe("node destroy command", function() {
+            beforeEach(function() {
+                testNode = node.destroy(65550);
+                view = new DataView(testNode);
+            });
+
+            it("length of node destroy command should be equal to 6 ", function() {
+                expect(testNode.byteLength).toEqual(6);
+            });
+
+            it("first item (1 Byte) - opcode - should be", function() {
+                expect(view.getUint8(0)).toEqual(33);
+            });
+
+            it("second item (1 Byte) - message length - should be 6 ", function() {
+                expect(view.getUint8(1)).toEqual(6);
+            });
+
+            it("third item (4 Bytes) - node ID - should be 65550 ", function() {
+                expect(view.getUint32(2)).toEqual(65550);
+            });
+        });
+
+
         describe("got Node Create from server", function() {
             beforeEach(function() {
                 

@@ -182,7 +182,19 @@ define(['message'], function(message) {
             view.setUint32(9, 4294967295);
             view.setUint16(13, custom_type);
             return msg;
-        } 
+        },
+
+        /*
+         * destroy node command
+         * @param node_id - ID of node to be destroyed
+         */
+        destroy: function(node_id) {
+            var msg, view;
+            msg = message.template(6, 33);
+            view = new DataView(msg);
+            view.setUint32(2, node_id);
+            return msg;
+        }
 
 
 
