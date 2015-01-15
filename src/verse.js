@@ -52,10 +52,10 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
 
         /*
-         *   hadler for websocket error event
+         *  hadler for websocket error event
          */
         onSocketError = function onSocketError(event, config) {
-            console.error('Websocket Error');
+            console.error('Websocket Error: ', event);
         };
 
         /*
