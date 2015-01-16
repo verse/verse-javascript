@@ -67,6 +67,102 @@ define(["node"], function(node) {
         });
 
 
+        describe("node unsubscribe command", function() {
+            beforeEach(function() {
+                testNode = node.unsubscribe(41);
+                view = new DataView(testNode);
+            });
+
+            it("length of unsubscribe command should be equal to 14", function() {
+                expect(testNode.byteLength).toEqual(14);
+            });
+
+            it("first byte - opcode - should be 35", function() {
+                expect(view.getUint8(0)).toEqual(35);
+            });
+
+            it("second byte - message length - should be 14 ", function() {
+                expect(view.getUint8(1)).toEqual(14);
+            });
+
+            it("third byte nodeId should be 41 for this test ", function() {
+                expect(view.getUint32(2)).toEqual(41);
+            });
+
+            it("version (byte 7) should be 0 as not supported ", function() {
+                expect(view.getUint32(6)).toEqual(0);
+            });
+
+            it("CRC32 (byte 11) should be 0 as not supported  ", function() {
+                expect(view.getUint32(10)).toEqual(0);
+            });
+
+        });
+
+        describe("node create command", function() {
+            beforeEach(function() {
+                testNode = node.create(1000, 65540, 2000);
+                view = new DataView(testNode);
+            });
+
+            it("length of node create command should be equal to 15 ", function() {
+                expect(testNode.byteLength).toEqual(15);
+            });
+
+            it("first item (1 Byte) - opcode - should be", function() {
+                expect(view.getUint8(0)).toEqual(32);
+            });
+
+            it("second item (1 Byte) - message length - should be 15 ", function() {
+                expect(view.getUint8(1)).toEqual(15);
+            });
+
+            it("third item (1 Byte) - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("4th item (2 Byte) - user ID - should be 1000 ", function() {
+                expect(view.getUint16(3)).toEqual(1000);
+            });
+
+            it("5th item (4 Byte) - parent ID - should be 65540 ", function() {
+                expect(view.getUint32(5)).toEqual(65540);
+            });
+
+            it("6th item (4 Byte) - node ID - should be 4294967295 ", function() {
+                expect(view.getUint32(9)).toEqual(4294967295);
+            });
+
+            it("7th item (2 Byte) - custom type - should be 2000 ", function() {
+                expect(view.getUint16(13)).toEqual(2000);
+            });
+        });
+
+
+        describe("node destroy command", function() {
+            beforeEach(function() {
+                testNode = node.destroy(65550);
+                view = new DataView(testNode);
+            });
+
+            it("length of node destroy command should be equal to 6 ", function() {
+                expect(testNode.byteLength).toEqual(6);
+            });
+
+            it("first item (1 Byte) - opcode - should be", function() {
+                expect(view.getUint8(0)).toEqual(33);
+            });
+
+            it("second item (1 Byte) - message length - should be 6 ", function() {
+                expect(view.getUint8(1)).toEqual(6);
+            });
+
+            it("third item (4 Bytes) - node ID - should be 65550 ", function() {
+                expect(view.getUint32(2)).toEqual(65550);
+            });
+        });
+
+
         describe("got Node Create from server", function() {
             beforeEach(function() {
                 

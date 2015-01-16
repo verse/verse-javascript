@@ -6,4 +6,5 @@ before_install:
   - npm install -g grunt-cli
   - npm install -g codeclimate-test-reporter
 after_script:
-  - CODECLIMATE_REPO_TOKEN=d327e34ae99ad8667420de617100b5da36ce61eccdf76b9e39f47f58f3ae896a codeclimate < bin/coverage/lcov/lcov.info
+  # Following system variable CODECLIMATE_REPO_TOKEN can be changed at Travis CI web site.
+  - CODECLIMATE_REPO_TOKEN="${CODECLIMATE_REPO_TOKEN}" codeclimate < bin/coverage/lcov/lcov.info

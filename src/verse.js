@@ -45,19 +45,17 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             confirmHost,
             userAuthData;
 
-
         window.onbeforeunload = function() {
             myWebscoket.onclose = function() {}; // disable onclose handler first
             myWebscoket.close();
         };
 
 
-
         /*
-         *   hadler for websocket error event
+         *  hadler for websocket error event
          */
         onSocketError = function onSocketError(event, config) {
-            console.error('Websocket Error');
+            console.error('Websocket Error: ', event);
         };
 
         /*
@@ -95,9 +93,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
          * Second step of negotiation process
          * Send command user auth with type PASSWORD
          */
-
         userAuthData = function userAuthData(config) {
-
             var buf = user.auth(config.username, 2, config.passwd);
             buf = request.message(buf);
             myWebscoket.send(buf);
@@ -133,9 +129,8 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                     return;
                 }
 
-
                 responseData = response.parse(message.data);
-                
+
                 responseData.NEGO.forEach(function(cmd) {
                     if (cmd.CMD === 'AUTH_PASSWD') {
                         userAuthData(config);
@@ -146,12 +141,12 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                         config.errorCallback(cmd.CMD);
                         myWebscoket.close();
                     } else if ((cmd.CMD === 'CONFIRM_R') && (cmd.FEATURE === 'HOST_URL')) {
-                        verse.subscribeNode(0);
+                        verse.nodeSubscribe(0);
                         /* pass the user info to callback function */
                         config.connectionAcceptedCallback(userInfo);
-                    } 
-
+                    }
                 });
+
                 /* call the callbacks from config */
                 if (responseData.NODE.length > 0) {
                     config.nodeCallback(responseData.NODE);
@@ -161,25 +156,21 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                     config.tagGroupCallback(responseData.TAG_GROUP);
                 }
 
-
                 if (responseData.TAG.length > 0) {
                     config.tagCallback(responseData.TAG);
-                }  
-
+                }
                 
                 if (responseData.LAYER.length > 0) {
                     config.layerCallback(responseData.LAYER);
-                }        
-
-                
+                }
             }
         };
-
 
         /*
          * public API of Verse Websocket module
          */
         verse = {
+
             init: function(config) {
 
                 console.info('Connecting to URI:' + config.uri + ' ...');
@@ -190,7 +181,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                     myWebscoket.addEventListener('error', function(event){
                         onSocketError(event, config);
                     });
-                    
+
                     myWebscoket.addEventListener('close', function(event){
                         onSocketClose(event, config);
                     });
@@ -198,6 +189,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                     myWebscoket.addEventListener('open', function(evnt) {
                         onSocketConnect(evnt, config);
                     });
+
                     myWebscoket.addEventListener('message', function(msg) {
                         onSocketMessage(msg, config);
                     });
@@ -207,15 +199,45 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * create new node on server
+             * @param userId uint16
+             * @param avatarId uint32
+             * @param customType uint16
+             */
+            nodeCreate: function nodeCreate(userId, avatarId, customType) {
+                var buf = node.create(userId, avatarId, customType);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
+             * destroy existing node on server
+             * @param nodeId uint32
+             */
+            nodeDestroy: function nodeDestroy(nodeId) {
+                var buf = node.destroy(nodeId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe node on server
              * @param nodeId int
              */
-
-            subscribeNode: function subscribeNode(nodeId) {
+            nodeSubscribe: function nodeSubscribe(nodeId) {
                 var buf = node.subscribe(nodeId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
+            },
 
+            /*
+             * unsubscribe from node on server
+             * @param nodeId int
+             */
+            nodeUnSubscribe: function nodeUnSubscribe(nodeId) {
+                var buf = node.unsubscribe(nodeId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
             },
 
             /*
@@ -223,12 +245,10 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
              * @param nodeId int32
              * @param tagGroupId int16
              */
-
-            subscribeTagGroup: function subscribeNode(nodeId, tagGroupId) {
+            tagGroupSubscribe: function tagGroupSubscribe(nodeId, tagGroupId) {
                 var buf = tagGroup.subscribe(nodeId, tagGroupId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
-
             },
 
             /*
@@ -236,18 +256,13 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
              * @param nodeId int32
              * @param layerId int16
              */
-
-            subscribeLayer: function subscribeNode(nodeId, layerId) {
+            layerSubscribe: function layerSubscribe(nodeId, layerId) {
                 var buf = layer.subscribe(nodeId, layerId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
-
             }
 
         };
-
-
-
 
         return verse;
 
