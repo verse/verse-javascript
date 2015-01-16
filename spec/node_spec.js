@@ -33,72 +33,6 @@ define(["node"], function(node) {
     describe("Node commands test suite", function() {
         var testNode, view, messageLen, mockBuffer, mockView, result, opCode;
 
-
-        describe("node subscribe command", function() {
-            beforeEach(function() {
-                testNode = node.subscribe(41);
-                view = new DataView(testNode);
-            });
-
-            it("length of subscribe command should be equal to 14", function() {
-                expect(testNode.byteLength).toEqual(14);
-            });
-
-            it("first byte - opcode - should be 34", function() {
-                expect(view.getUint8(0)).toEqual(34);
-            });
-
-            it("second byte - message length - should be 14 ", function() {
-                expect(view.getUint8(1)).toEqual(14);
-            });
-
-            it("third byte nodeId should be 41 for this test ", function() {
-                expect(view.getUint32(2)).toEqual(41);
-            });
-
-            it("version (byte 7) should be 0 as not supported ", function() {
-                expect(view.getUint32(6)).toEqual(0);
-            });
-
-            it("CRC32 (byte 11) should be 0 as not supported  ", function() {
-                expect(view.getUint32(10)).toEqual(0);
-            });
-
-        });
-
-
-        describe("node unsubscribe command", function() {
-            beforeEach(function() {
-                testNode = node.unsubscribe(41);
-                view = new DataView(testNode);
-            });
-
-            it("length of unsubscribe command should be equal to 14", function() {
-                expect(testNode.byteLength).toEqual(14);
-            });
-
-            it("first byte - opcode - should be 35", function() {
-                expect(view.getUint8(0)).toEqual(35);
-            });
-
-            it("second byte - message length - should be 14 ", function() {
-                expect(view.getUint8(1)).toEqual(14);
-            });
-
-            it("third byte nodeId should be 41 for this test ", function() {
-                expect(view.getUint32(2)).toEqual(41);
-            });
-
-            it("version (byte 7) should be 0 as not supported ", function() {
-                expect(view.getUint32(6)).toEqual(0);
-            });
-
-            it("CRC32 (byte 11) should be 0 as not supported  ", function() {
-                expect(view.getUint32(10)).toEqual(0);
-            });
-
-        });
-
         describe("node create command", function() {
             beforeEach(function() {
                 testNode = node.create(1000, 65540, 2000);
@@ -138,7 +72,6 @@ define(["node"], function(node) {
             });
         });
 
-
         describe("node destroy command", function() {
             beforeEach(function() {
                 testNode = node.destroy(65550);
@@ -162,6 +95,99 @@ define(["node"], function(node) {
             });
         });
 
+        describe("node subscribe command", function() {
+            beforeEach(function() {
+                testNode = node.subscribe(41);
+                view = new DataView(testNode);
+            });
+
+            it("length of subscribe command should be equal to 14", function() {
+                expect(testNode.byteLength).toEqual(14);
+            });
+
+            it("first byte - opcode - should be 34", function() {
+                expect(view.getUint8(0)).toEqual(34);
+            });
+
+            it("second byte - message length - should be 14 ", function() {
+                expect(view.getUint8(1)).toEqual(14);
+            });
+
+            it("third byte nodeId should be 41 for this test ", function() {
+                expect(view.getUint32(2)).toEqual(41);
+            });
+
+            it("version (byte 7) should be 0 as not supported ", function() {
+                expect(view.getUint32(6)).toEqual(0);
+            });
+
+            it("CRC32 (byte 11) should be 0 as not supported  ", function() {
+                expect(view.getUint32(10)).toEqual(0);
+            });
+
+        });
+
+        describe("node unsubscribe command", function() {
+            beforeEach(function() {
+                testNode = node.unsubscribe(1042);
+                view = new DataView(testNode);
+            });
+
+            it("length of unsubscribe command should be equal to 14", function() {
+                expect(testNode.byteLength).toEqual(14);
+            });
+
+            it("first byte - opcode - should be 35", function() {
+                expect(view.getUint8(0)).toEqual(35);
+            });
+
+            it("second byte - message length - should be 14 ", function() {
+                expect(view.getUint8(1)).toEqual(14);
+            });
+
+            it("third byte nodeId should be 41 for this test ", function() {
+                expect(view.getUint32(2)).toEqual(1042);
+            });
+
+            it("version (byte 7) should be 0 as not supported ", function() {
+                expect(view.getUint32(6)).toEqual(0);
+            });
+
+            it("CRC32 (byte 11) should be 0 as not supported  ", function() {
+                expect(view.getUint32(10)).toEqual(0);
+            });
+        });
+
+        describe("node link command", function() {
+            beforeEach(function() {
+                testNode = node.link(3, 10043);
+                view = new DataView(testNode);
+            });
+
+            it("length of link command should be equal to 11", function() {
+                expect(testNode.byteLength).toEqual(11);
+            });
+
+            it("first byte - opcode - should be 37", function() {
+                expect(view.getUint8(0)).toEqual(37);
+            });
+
+            it("second byte - message length - should be 11 ", function() {
+                expect(view.getUint8(1)).toEqual(11);
+            });
+
+            it("third byte - share - should be 0 for this test ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("parent node ID (byte 4) should be 3 ", function() {
+                expect(view.getUint32(3)).toEqual(3);
+            });
+
+            it("child node ID (byte 8) should be 10043 ", function() {
+                expect(view.getUint32(7)).toEqual(10043);
+            });
+        });
 
         describe("got Node Create from server", function() {
             beforeEach(function() {

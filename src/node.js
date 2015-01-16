@@ -209,9 +209,24 @@ define(['message'], function(message) {
             view.setUint32(6, 0);
             view.setUint32(10, 0);
             return msg;
+        },
+
+        /*
+         * link two nodes
+         * @param parent_id - node ID of parent node
+         * @param child_id - node ID of child node
+         */
+        link: function(parent_id, child_id) {
+            var msg, view;
+            msg = message.template(11, 37);
+            view = new DataView(msg);
+            view.setUint8(2, 0); // share
+            view.setUint32(3, parent_id);
+            view.setUint32(7, child_id);
+            return msg;
         }
 
-        /* TODO: node_link, node_perm, node_umask, node_owner, node_lock, node_unlock, node_prio */
+        /* TODO: node_perm, node_umask, node_owner, node_lock, node_unlock, node_prio */
     };
 
     return node;

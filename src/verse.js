@@ -241,6 +241,17 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * link two nodes
+             * @param parenNodeId uint32
+             * @param childNodeId uint32
+             */
+            nodeLink: function nodeLink(parenNodeId, childNodeId) {
+                var buf = node.link(parenNodeId, childNodeId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe tag_group on server
              * @param nodeId int32
              * @param tagGroupId int16
