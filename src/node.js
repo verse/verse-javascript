@@ -154,34 +154,6 @@ define(['message'], function(message) {
         },
 
         /*
-         * subscribe node commad
-         * @param id - node id
-         */
-        subscribe: function(id) {
-            var msg, view;
-            msg = message.template(14, 34);
-            view = new DataView(msg);
-            view.setUint32(2, id);
-            view.setUint32(6, 0);
-            view.setUint32(10, 0);
-            return msg;
-        },
-
-        /*
-         * unsubscribe node commad
-         * @param id - node id
-         */
-        unsubscribe: function(id) {
-            var msg, view;
-            msg = message.template(14, 35);
-            view = new DataView(msg);
-            view.setUint32(2, id);
-            view.setUint32(6, 0);
-            view.setUint32(10, 0);
-            return msg;
-        },
-
-        /*
          * create node command
          * @param user_id - ID of current user
          * @param avatar_id - ID of current avatar
@@ -209,8 +181,37 @@ define(['message'], function(message) {
             view = new DataView(msg);
             view.setUint32(2, node_id);
             return msg;
+        },
+
+        /*
+         * subscribe node commad
+         * @param id - node id
+         */
+        subscribe: function(id) {
+            var msg, view;
+            msg = message.template(14, 34);
+            view = new DataView(msg);
+            view.setUint32(2, id);
+            view.setUint32(6, 0);
+            view.setUint32(10, 0);
+            return msg;
+        },
+
+        /*
+         * unsubscribe node commad
+         * @param id - node id
+         */
+        unsubscribe: function(id) {
+            var msg, view;
+            msg = message.template(14, 35);
+            view = new DataView(msg);
+            view.setUint32(2, id);
+            view.setUint32(6, 0);
+            view.setUint32(10, 0);
+            return msg;
         }
 
+        /* TODO: node_link, node_perm, node_umask, node_owner, node_lock, node_unlock, node_prio */
     };
 
     return node;
