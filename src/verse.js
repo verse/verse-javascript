@@ -199,17 +199,6 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
-             * subscribe node on server
-             * @param nodeId int
-             */
-
-            nodeSubscribe: function nodeSubscribe(nodeId) {
-                var buf = node.subscribe(nodeId);
-                buf = request.message(buf);
-                myWebscoket.send(buf);
-            },
-
-            /*
              * create new node on server
              * @param userId uint16
              * @param avatarId uint32
@@ -232,11 +221,30 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * subscribe node on server
+             * @param nodeId int
+             */
+            nodeSubscribe: function nodeSubscribe(nodeId) {
+                var buf = node.subscribe(nodeId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
+             * unsubscribe from node on server
+             * @param nodeId int
+             */
+            nodeUnSubscribe: function nodeUnSubscribe(nodeId) {
+                var buf = node.unsubscribe(nodeId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe tag_group on server
              * @param nodeId int32
              * @param tagGroupId int16
              */
-
             tagGroupSubscribe: function tagGroupSubscribe(nodeId, tagGroupId) {
                 var buf = tagGroup.subscribe(nodeId, tagGroupId);
                 buf = request.message(buf);

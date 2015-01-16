@@ -144,6 +144,14 @@ define(['message'], function(message) {
     };
 
     node = {
+ 
+        /*
+         * method for getting values of node
+         */
+        getNodeValues: function getNodeValues(opCode, receivedView, bufferPosition, length) {
+            var result = routines[opCode](opCode, receivedView, bufferPosition, length);
+            return result;
+        },
 
         /*
          * subscribe node commad
@@ -159,11 +167,18 @@ define(['message'], function(message) {
             return msg;
         },
 
-        getNodeValues: function getNodeValues(opCode, receivedView, bufferPosition, length) {
-            var result = routines[opCode](opCode, receivedView, bufferPosition, length);
-            return result;
-
-
+        /*
+         * unsubscribe node commad
+         * @param id - node id
+         */
+        unsubscribe: function(id) {
+            var msg, view;
+            msg = message.template(14, 35);
+            view = new DataView(msg);
+            view.setUint32(2, id);
+            view.setUint32(6, 0);
+            view.setUint32(10, 0);
+            return msg;
         },
 
         /*
@@ -195,8 +210,6 @@ define(['message'], function(message) {
             view.setUint32(2, node_id);
             return msg;
         }
-
-
 
     };
 

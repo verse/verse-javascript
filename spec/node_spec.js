@@ -67,6 +67,38 @@ define(["node"], function(node) {
         });
 
 
+        describe("node unsubscribe command", function() {
+            beforeEach(function() {
+                testNode = node.unsubscribe(41);
+                view = new DataView(testNode);
+            });
+
+            it("length of unsubscribe command should be equal to 14", function() {
+                expect(testNode.byteLength).toEqual(14);
+            });
+
+            it("first byte - opcode - should be 35", function() {
+                expect(view.getUint8(0)).toEqual(35);
+            });
+
+            it("second byte - message length - should be 14 ", function() {
+                expect(view.getUint8(1)).toEqual(14);
+            });
+
+            it("third byte nodeId should be 41 for this test ", function() {
+                expect(view.getUint32(2)).toEqual(41);
+            });
+
+            it("version (byte 7) should be 0 as not supported ", function() {
+                expect(view.getUint32(6)).toEqual(0);
+            });
+
+            it("CRC32 (byte 11) should be 0 as not supported  ", function() {
+                expect(view.getUint32(10)).toEqual(0);
+            });
+
+        });
+
         describe("node create command", function() {
             beforeEach(function() {
                 testNode = node.create(1000, 65540, 2000);
