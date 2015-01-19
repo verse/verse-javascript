@@ -298,9 +298,23 @@ define(['message'], function(message) {
             view.setUint32(3, avatar_id);
             view.setUint32(7, node_id);
             return msg;
+        },
+
+        /*
+         * set priority of node
+         * @param node_id - ID of node
+         * @param priority - new priority of node
+         */
+        prio: function(node_id, priority) {
+            var msg, view;
+            msg = message.template(8, 43);
+            view = new DataView(msg);
+            view.setUint8(2, 0); // share
+            view.setUint8(3, priority);
+            view.setUint32(4, node_id);
+            return msg;
         }
 
-        /* TODO: node_unlock, node_prio */
     };
 
     return node;

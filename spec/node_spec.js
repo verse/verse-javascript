@@ -101,7 +101,7 @@ define(["node"], function(node) {
                 view = new DataView(testNode);
             });
 
-            it("length of subscribe command should be equal to 14", function() {
+            it("length of node subscribe command should be equal to 14", function() {
                 expect(testNode.byteLength).toEqual(14);
             });
 
@@ -133,7 +133,7 @@ define(["node"], function(node) {
                 view = new DataView(testNode);
             });
 
-            it("length of unsubscribe command should be equal to 14", function() {
+            it("length of node unsubscribe command should be equal to 14", function() {
                 expect(testNode.byteLength).toEqual(14);
             });
 
@@ -164,7 +164,7 @@ define(["node"], function(node) {
                 view = new DataView(testNode);
             });
 
-            it("length of link command should be equal to 11", function() {
+            it("length of node link command should be equal to 11", function() {
                 expect(testNode.byteLength).toEqual(11);
             });
 
@@ -195,7 +195,7 @@ define(["node"], function(node) {
                 view = new DataView(testNode);
             });
 
-            it("length of permission command should be equal to 10", function() {
+            it("length of node permission command should be equal to 10", function() {
                 expect(testNode.byteLength).toEqual(10);
             });
 
@@ -230,7 +230,7 @@ define(["node"], function(node) {
                 view = new DataView(testNode);
             });
 
-            it("length of umask command should be equal to 3", function() {
+            it("length of node umask command should be equal to 3", function() {
                 expect(testNode.byteLength).toEqual(3);
             });
 
@@ -253,7 +253,7 @@ define(["node"], function(node) {
                 view = new DataView(testNode);
             });
 
-            it("length of lock command should be equal to 11", function() {
+            it("length of node lock command should be equal to 11", function() {
                 expect(testNode.byteLength).toEqual(11);
             });
 
@@ -284,7 +284,7 @@ define(["node"], function(node) {
                 view = new DataView(testNode);
             });
 
-            it("length of unlock command should be equal to 11", function() {
+            it("length of node unlock command should be equal to 11", function() {
                 expect(testNode.byteLength).toEqual(11);
             });
 
@@ -306,6 +306,37 @@ define(["node"], function(node) {
 
             it("node ID (byte 8) should be 10047 ", function() {
                 expect(view.getUint32(7)).toEqual(10047);
+            });
+        });
+
+        describe("node priority command", function() {
+            beforeEach(function() {
+                testNode = node.prio(65548, 130); // node_id, priority
+                view = new DataView(testNode);
+            });
+
+            it("length of node priority command should be equal to 8", function() {
+                expect(testNode.byteLength).toEqual(8);
+            });
+
+            it("first byte - opcode - should be 43", function() {
+                expect(view.getUint8(0)).toEqual(43);
+            });
+
+            it("second byte - message length - should be 8 ", function() {
+                expect(view.getUint8(1)).toEqual(8);
+            });
+
+            it("third byte - share - should be 0 for this test ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("priority (byte 4) should be 130 ", function() {
+                expect(view.getUint8(3)).toEqual(130);
+            });
+
+            it("node ID (byte 5) should be 65548 ", function() {
+                expect(view.getUint32(4)).toEqual(65548);
             });
         });
 

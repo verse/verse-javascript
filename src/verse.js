@@ -307,6 +307,17 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * set new priority of the node
+             * @param nodeId uint32
+             * @param priority uint8
+             */
+            nodePrio: function nodePrio(nodeId, priority) {
+                var buf = node.prio(nodeId, priority);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe tag_group on server
              * @param nodeId int32
              * @param tagGroupId int16
