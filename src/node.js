@@ -268,9 +268,39 @@ define(['message'], function(message) {
             view.setUint16(3, user_id);
             view.setUint32(5, node_id);
             return msg;
+        },
+
+        /*
+         * lock node
+         * @param avatar_id - ID of your avatar
+         * @param node_id - ID of node
+         */
+        lock: function(avatar_id, node_id) {
+            var msg, view;
+            msg = message.template(11, 41);
+            view = new DataView(msg);
+            view.setUint8(2, 0); // share
+            view.setUint32(3, avatar_id);
+            view.setUint32(7, node_id);
+            return msg;
+        },
+
+        /*
+         * unlock node
+         * @param avatar_id - ID of your avatar
+         * @param node_id - ID of node
+         */
+        unlock: function(avatar_id, node_id) {
+            var msg, view;
+            msg = message.template(11, 42);
+            view = new DataView(msg);
+            view.setUint8(2, 0); // share
+            view.setUint32(3, avatar_id);
+            view.setUint32(7, node_id);
+            return msg;
         }
 
-        /* TODO: node_lock, node_unlock, node_prio */
+        /* TODO: node_unlock, node_prio */
     };
 
     return node;

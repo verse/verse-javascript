@@ -274,6 +274,39 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * change owner of the node
+             * @param nodeId uint32
+             * @param userId uint32
+             */
+            nodeOwner: function nodeOwner(nodeId, userId) {
+                var buf = node.owner(nodeId, userId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
+             * lock the node
+             * @param nodeId uint32
+             * @param avatarId uint32 - it has to be your avatar ID
+             */
+            nodeLock: function nodeLock(nodeId, avatarId) {
+                var buf = node.lock(nodeId, avatarId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
+             * unlock the node
+             * @param nodeId uint32
+             * @param avatarId uint32 - it has to be also your avatar ID
+             */
+            nodeUnLock: function nodeUnLock(nodeId, avatarId) {
+                var buf = node.unlock(nodeId, avatarId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe tag_group on server
              * @param nodeId int32
              * @param tagGroupId int16
