@@ -253,9 +253,24 @@ define(['message'], function(message) {
             view = new DataView(msg);
             view.setUint8(2, permission);
             return msg;
+        },
+
+        /*
+         * set new node owner
+         * @param node_id - ID of node
+         * @param user_id - ID of new owner
+         */
+        owner: function(node_id, user_id) {
+            var msg, view;
+            msg = message.template(9, 40);
+            view = new DataView(msg);
+            view.setUint8(2, 0); // share
+            view.setUint16(3, user_id);
+            view.setUint32(5, node_id);
+            return msg;
         }
 
-        /* TODO: node_owner, node_lock, node_unlock, node_prio */
+        /* TODO: node_lock, node_unlock, node_prio */
     };
 
     return node;
