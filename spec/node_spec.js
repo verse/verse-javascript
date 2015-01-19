@@ -247,6 +247,37 @@ define(["node"], function(node) {
             });
         });
 
+        describe("node owner command", function() {
+            beforeEach(function() {
+                testNode = node.owner(10045, 1001); // node_id, user_id
+                view = new DataView(testNode);
+            });
+
+            it("length of node lock command should be equal to 9", function() {
+                expect(testNode.byteLength).toEqual(9);
+            });
+
+            it("first byte - opcode - should be 40", function() {
+                expect(view.getUint8(0)).toEqual(40);
+            });
+
+            it("second byte - message length - should be 9 ", function() {
+                expect(view.getUint8(1)).toEqual(9);
+            });
+
+            it("third byte - share - should be 0 for this test ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("user ID (byte 4) should be 1001 ", function() {
+                expect(view.getUint16(3)).toEqual(1001);
+            });
+
+            it("node ID (byte 6) should be 10045 ", function() {
+                expect(view.getUint32(5)).toEqual(10045);
+            });
+        });
+
         describe("node lock command", function() {
             beforeEach(function() {
                 testNode = node.lock(65540, 10046); // avatar_id, node_id
