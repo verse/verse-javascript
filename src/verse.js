@@ -252,6 +252,18 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * change permission of node
+             * @param nodeId uint32
+             * @param userId uint16
+             * @param permission uint8
+             */
+            nodePerm: function nodePerm(nodeId, userId, perm) {
+                var buf = node.perm(nodeId, userId, perm);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe tag_group on server
              * @param nodeId int32
              * @param tagGroupId int16

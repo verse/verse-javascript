@@ -187,11 +187,11 @@ define(['message'], function(message) {
          * subscribe node commad
          * @param id - node id
          */
-        subscribe: function(id) {
+        subscribe: function(node_id) {
             var msg, view;
             msg = message.template(14, 34);
             view = new DataView(msg);
-            view.setUint32(2, id);
+            view.setUint32(2, node_id);
             view.setUint32(6, 0);
             view.setUint32(10, 0);
             return msg;
@@ -201,11 +201,11 @@ define(['message'], function(message) {
          * unsubscribe node commad
          * @param id - node id
          */
-        unsubscribe: function(id) {
+        unsubscribe: function(node_id) {
             var msg, view;
             msg = message.template(14, 35);
             view = new DataView(msg);
-            view.setUint32(2, id);
+            view.setUint32(2, node_id);
             view.setUint32(6, 0);
             view.setUint32(10, 0);
             return msg;
@@ -216,17 +216,34 @@ define(['message'], function(message) {
          * @param parent_id - node ID of parent node
          * @param child_id - node ID of child node
          */
-        link: function(parent_id, child_id) {
+        link: function(parent_node_id, child_node_id) {
             var msg, view;
             msg = message.template(11, 37);
             view = new DataView(msg);
             view.setUint8(2, 0); // share
-            view.setUint32(3, parent_id);
-            view.setUint32(7, child_id);
+            view.setUint32(3, parent_node_id);
+            view.setUint32(7, child_node_id);
+            return msg;
+        },
+
+        /*
+         * permission of node
+         * @param node_id
+         * @param user_id
+         * @param permission
+         */
+        perm: function(node_id, user_id, permission) {
+            var msg, view;
+            msg = message.template(10, 38);
+            view = new DataView(msg);
+            view.setUint8(2, 0); // share
+            view.setUint16(3, user_id);
+            view.setUint8(5, permission);
+            view.setUint32(6, node_id);
             return msg;
         }
 
-        /* TODO: node_perm, node_umask, node_owner, node_lock, node_unlock, node_prio */
+        /* TODO: node_umask, node_owner, node_lock, node_unlock, node_prio */
     };
 
     return node;

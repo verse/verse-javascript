@@ -189,6 +189,41 @@ define(["node"], function(node) {
             });
         });
 
+        describe("node permission command", function() {
+            beforeEach(function() {
+                testNode = node.perm(10044, 1001, 1);
+                view = new DataView(testNode);
+            });
+
+            it("length of permission command should be equal to 10", function() {
+                expect(testNode.byteLength).toEqual(10);
+            });
+
+            it("first byte - opcode - should be 38", function() {
+                expect(view.getUint8(0)).toEqual(38);
+            });
+
+            it("second byte - message length - should be 10 ", function() {
+                expect(view.getUint8(1)).toEqual(10);
+            });
+
+            it("third byte - share - should be 0 for this test ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("user ID (byte 4) should be 1001 ", function() {
+                expect(view.getUint16(3)).toEqual(1001);
+            });
+
+            it("permission (byte 6) should be 1 ", function() {
+                expect(view.getUint8(5)).toEqual(1);
+            });
+
+            it("node ID (byte 7) should be 10044 ", function() {
+                expect(view.getUint32(6)).toEqual(10044);
+            });
+        });
+
         describe("got Node Create from server", function() {
             beforeEach(function() {
                 
