@@ -264,6 +264,16 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * change umask of new created nodes
+             * @param permission uint8
+             */
+            nodeUmask: function nodeUmask(permission) {
+                var buf = node.umask(permission);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe tag_group on server
              * @param nodeId int32
              * @param tagGroupId int16

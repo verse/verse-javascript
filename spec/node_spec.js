@@ -224,6 +224,29 @@ define(["node"], function(node) {
             });
         });
 
+        describe("node umask command", function() {
+            beforeEach(function() {
+                testNode = node.umask(1);
+                view = new DataView(testNode);
+            });
+
+            it("length of umask command should be equal to 3", function() {
+                expect(testNode.byteLength).toEqual(3);
+            });
+
+            it("first byte - opcode - should be 39", function() {
+                expect(view.getUint8(0)).toEqual(39);
+            });
+
+            it("second byte - message length - should be 3 ", function() {
+                expect(view.getUint8(1)).toEqual(3);
+            });
+
+            it("third byte - permission - should be 1 for this test ", function() {
+                expect(view.getUint8(2)).toEqual(1);
+            });
+        });
+
         describe("got Node Create from server", function() {
             beforeEach(function() {
                 

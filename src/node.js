@@ -241,9 +241,21 @@ define(['message'], function(message) {
             view.setUint8(5, permission);
             view.setUint32(6, node_id);
             return msg;
+        },
+
+        /*
+         * set umask of new node
+         * @param permission
+         */
+        umask: function(permission) {
+            var msg, view;
+            msg = message.template(3, 39);
+            view = new DataView(msg);
+            view.setUint8(2, permission);
+            return msg;
         }
 
-        /* TODO: node_umask, node_owner, node_lock, node_unlock, node_prio */
+        /* TODO: node_owner, node_lock, node_unlock, node_prio */
     };
 
     return node;
