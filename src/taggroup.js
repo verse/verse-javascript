@@ -35,7 +35,6 @@ define(['message'], function(message) {
     /*
      * subscibe and ubsucribe tagGroup
      */
-
     sendSubUnsub = function sendSubUnsub(opCode, nodeId, tagGroupId) {
         var msg, view;
         msg = message.template(17, opCode);
@@ -71,7 +70,6 @@ define(['message'], function(message) {
     /*
      * routines - parsing functions for node commands from server
      */
-
     routines = {
         64: function getTagGroupCreate(opCode, receivedView, bufferPosition) {
             return {
@@ -98,6 +96,22 @@ define(['message'], function(message) {
     tagGroup = {
 
         /*
+         * create tagGroup commad
+         * @param nodeId int32
+         * @param tagGroupId int16
+         */
+        create: function(nodeId, customType) {
+            var msg, view;
+            msg = message.template(11, 64);
+            view = new DataView(msg);
+            view.setUint8(3, 0); //share
+            view.setUint32(3, nodeId);
+            view.setUint16(7, 65535); // tagGroup ID will be defined by server
+            view.setUint16(9, customType);
+            return msg;
+        },
+
+        /*
          * subscribe tagGroup commad OpCode 46
          * @param nodeId int32
          * @param tagGroupId int16
@@ -111,7 +125,6 @@ define(['message'], function(message) {
          * @param nodeId int32
          * @param tagGroupId int16
          */
-
         unsubscribe: function(nodeId, tagGroupId) {
             return sendSubUnsub(67, nodeId, tagGroupId);
         },
@@ -119,7 +132,6 @@ define(['message'], function(message) {
         /*
          * parse received buffer for tagGroup command values
          */
-
         getTagGroupValues: function getTagGroupValues(opCode, receivedView, bufferPosition, length) {
             var result = routines[opCode](opCode, receivedView, bufferPosition, length);
             return result;

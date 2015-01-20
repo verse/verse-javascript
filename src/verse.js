@@ -198,6 +198,8 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                 }
             },
 
+            /* Node Commands */
+
             /*
              * create new node on server
              * @param userId uint16
@@ -313,6 +315,19 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
              */
             nodePrio: function nodePrio(nodeId, priority) {
                 var buf = node.prio(nodeId, priority);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /* Tag Group Commands */
+
+            /*
+             * create tag_group on server
+             * @param nodeId int32
+             * @param customType int16
+             */
+            tagGroupCreate: function tagGroupCreate(nodeId, customType) {
+                var buf = tagGroup.create(nodeId, customType);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
             },

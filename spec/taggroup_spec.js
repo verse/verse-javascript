@@ -31,17 +31,51 @@
 define(["taggroup"], function(tagGroup) {
 
     describe("Tag Group commands test suite", function() {
-        var testNode, view, messageLen, mockBuffer, mockView, result;
+        var testCommand, view, messageLen, mockBuffer, mockView, result;
 
+        describe("Prepare TagGroup Create command", function() {
+            beforeEach(function() {
+                testCommand = tagGroup.create(182, 17); // node_id, tg custom_type
+                view = new DataView(testCommand);
+            });
+
+            it("length of subscribe command should be equal to 11", function() {
+                expect(testCommand.byteLength).toEqual(11);
+            });
+
+            it("first byte - opcode - should be 64", function() {
+                expect(view.getUint8(0)).toEqual(64);
+            });
+
+            it("second byte - message length - should be 11 ", function() {
+                expect(view.getUint8(1)).toEqual(11);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("tagGroup (byte 8) id should be 65535", function() {
+                expect(view.getUint16(7)).toEqual(65535);
+            });
+
+            it("custom_type (byte 10) id should be 17", function() {
+                expect(view.getUint16(9)).toEqual(17);
+            });
+        });
 
         describe("Prepare TagGroupUnsubscribe command", function() {
             beforeEach(function() {
-                testNode = tagGroup.subscribe(182, 31);
-                view = new DataView(testNode);
+                testCommand = tagGroup.subscribe(182, 31);
+                view = new DataView(testCommand);
             });
 
             it("length of subscribe command should be equal to 17", function() {
-                expect(testNode.byteLength).toEqual(17);
+                expect(testCommand.byteLength).toEqual(17);
             });
 
             it("first byte - opcode - should be 66", function() {
@@ -64,22 +98,18 @@ define(["taggroup"], function(tagGroup) {
             it("tagGroup (byte 8) id should be 31", function() {
                 expect(view.getUint16(7)).toEqual(31);
             });
-
-
-
         });
 
         describe("Prepare tagGroupUnsubscribe command", function() {
             beforeEach(function() {
-                testNode = tagGroup.unsubscribe(182, 31);
-                view = new DataView(testNode);
+                testCommand = tagGroup.unsubscribe(182, 31);
+                view = new DataView(testCommand);
             });
 
 
             it("first byte - opCode - should be 67", function() {
                 expect(view.getUint8(0)).toEqual(67);
             });
-
         });
 
 
