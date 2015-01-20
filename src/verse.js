@@ -29,8 +29,8 @@
 /* globals define */
 
 
-define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup', 'layer'],
-    function(request, response, negotiation, node, user, tagGroup, layer) {
+define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup', 'tag', 'layer'],
+    function(request, response, negotiation, node, user, tagGroup, tag, layer) {
 
         'use strict';
         window.WebSocket = window.WebSocket || window.MozWebSocket;
@@ -323,8 +323,8 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * create tag_group on server
-             * @param nodeId int32
-             * @param customType int16
+             * @param nodeId uint32
+             * @param customType uint16
              */
             tagGroupCreate: function tagGroupCreate(nodeId, customType) {
                 var buf = tagGroup.create(nodeId, customType);
@@ -334,8 +334,8 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * destroy existing tag_group on server
-             * @param nodeId int32
-             * @param tagGroupId int16
+             * @param nodeId uint32
+             * @param tagGroupId uint16
              */
             tagGroupDestroy: function tagGroupDestroy(nodeId, tagGroupId) {
                 var buf = tagGroup.destroy(nodeId, tagGroupId);
@@ -345,8 +345,8 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * subscribe tag_group on server
-             * @param nodeId int32
-             * @param tagGroupId int16
+             * @param nodeId uint32
+             * @param tagGroupId uint16
              */
             tagGroupSubscribe: function tagGroupSubscribe(nodeId, tagGroupId) {
                 var buf = tagGroup.subscribe(nodeId, tagGroupId);
@@ -356,11 +356,28 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * subscribe tag_group on server
-             * @param nodeId int32
-             * @param tagGroupId int16
+             * @param nodeId uint32
+             * @param tagGroupId uint16
              */
             tagGroupUnSubscribe: function tagGroupUnSubscribe(nodeId, tagGroupId) {
                 var buf = tagGroup.unsubscribe(nodeId, tagGroupId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /* Tag Commands */
+
+            /*
+             * create new tag at verse server
+             * @param nodeId uint32
+             * @param tagGroupId uint16
+             * @param tagGroupId uint16
+             * @param dataType uint8
+             * @param count uint8
+             * @param customType uint16
+             */
+            tagCreate: function tagCreate(nodeId, tagGroupId, dataType, count, customType) {
+                var buf = tag.create(nodeId, tagGroupId, dataType, count, customType);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
             },

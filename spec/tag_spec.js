@@ -31,9 +31,54 @@
 define(["tag"], function(tag) {
 
     describe("Tag command test suite", function() {
-        var view, messageLen, mockBuffer, mockView, result, opCode, mockString;
+        var testCommand, view, messageLen, mockBuffer, mockView, result, opCode, mockString;
 
+        describe("Prepare Tag create command", function() {
+            beforeEach(function() {
+                testCommand = tag.create(182, 17, 3, 4, 298); // node_id, tg_id, data_type, count custom_type
+                view = new DataView(testCommand);
+            });
 
+            it("length of create command should be equal to 15", function() {
+                expect(testCommand.byteLength).toEqual(15);
+            });
+
+            it("first byte - opcode - should be 68", function() {
+                expect(view.getUint8(0)).toEqual(68);
+            });
+
+            it("second byte - message length - should be 15 ", function() {
+                expect(view.getUint8(1)).toEqual(15);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("tagGroup (byte 8) id should be 17", function() {
+                expect(view.getUint16(7)).toEqual(17);
+            });
+
+            it("tag (byte 10) id should be 65535", function() {
+                expect(view.getUint16(9)).toEqual(65535);
+            });
+
+            it("data type (byte 12) id should be 3", function() {
+                expect(view.getUint8(11)).toEqual(3);
+            });
+
+            it("data type (byte 13) id should be 4", function() {
+                expect(view.getUint8(12)).toEqual(4);
+            });
+
+            it("custom_type (byte 14) id should be 298", function() {
+                expect(view.getUint16(13)).toEqual(298);
+            });
+        });
 
         describe("got tagCreate from server", function() {
             beforeEach(function() {
@@ -49,7 +94,7 @@ define(["tag"], function(tag) {
                 view.setUint16(7, 68); //TagGroupID
                 view.setUint16(9, 154); //TagID
                 view.setUint8(11, 3); //Data Type
-                view.setUint8(12, 5); //Count
+                view.setUint8(12, 4); //Count
                 view.setUint16(13, 298); //custom type
 
             });
@@ -66,7 +111,7 @@ define(["tag"], function(tag) {
                     TAG_GROUP_ID: 68,
                     TAG_ID: 154,
                     DATA_TYPE: 3,
-                    COUNT: 5,
+                    COUNT: 4,
                     CUSTOM_TYPE: 298
                 });
             });

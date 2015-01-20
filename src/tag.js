@@ -27,7 +27,7 @@
 
 /* globals define */
 
-define(['Int64'], function(Int64) {
+define(['Int64', 'message'], function(Int64, message) {
     'use strict';
 
     var commands, routines, tag, getTagSetCommons, getTagSetUint8, getTagSetUint16,
@@ -37,7 +37,6 @@ define(['Int64'], function(Int64) {
     /*
     * common function for all tagSet commands 
     */
-
     getTagSetCommons = function getTagSetCommons(opCode, receivedView, bufferPosition) {
         return {
             CMD: commands[opCode],
@@ -53,7 +52,6 @@ define(['Int64'], function(Int64) {
     * common function for all SetUint8 opCodes
     * @param opCode int from interval 70 - 73
     */
-
     getTagSetUint8 = function getTagSetUint8(opCode, receivedView, bufferPosition) {
         
         var result = getTagSetCommons(opCode, receivedView, bufferPosition);
@@ -82,8 +80,6 @@ define(['Int64'], function(Int64) {
     * common function for all SetUint16 opCodes
     * @param opCode int from interval 74 - 77
     */
-
-
     getTagSetUint16 = function getTagSetUint16(opCode, receivedView, bufferPosition) {
         var result = getTagSetCommons(opCode, receivedView, bufferPosition);
 
@@ -141,7 +137,6 @@ define(['Int64'], function(Int64) {
     * @param opCode int from interval 82 - 85
     *
     */
-
     getTagSetUint64 = function getTagSetUint64(opCode, receivedView, bufferPosition) {
         var result, hi, lo, bigNumber;
 
@@ -183,7 +178,6 @@ define(['Int64'], function(Int64) {
     * common function for all SetReal32 opCodes
     * @param opCode int from interval 90 - 93
     */
-
     /* istanbul ignore next */
     getTagSetFloat16 = function getTagSetFloat16(opCode, receivedView, bufferPosition) {
         var result = getTagSetCommons(opCode, receivedView, bufferPosition);
@@ -197,7 +191,6 @@ define(['Int64'], function(Int64) {
     * common function for all SetReal32 opCodes
     * @param opCode int from interval 90 - 93
     */
-
     getTagSetFloat32 = function getTagSetFloat32(opCode, receivedView, bufferPosition) {
         var result = getTagSetCommons(opCode, receivedView, bufferPosition);
 
@@ -225,7 +218,6 @@ define(['Int64'], function(Int64) {
     * common function for all SetReal64 opCodes
     * @param opCode int from interval 94 - 97
     */
-
     getTagSetFloat64 = function getTagSetFloat64(opCode, receivedView, bufferPosition) {
         var result = getTagSetCommons(opCode, receivedView, bufferPosition);
 
@@ -253,7 +245,6 @@ define(['Int64'], function(Int64) {
     * common function for all SetReal64 opCodes
     * @param opCode int from interval 94 - 97
     */
-
     getTagSetString8 = function getTagSetString8(opCode, receivedView, bufferPosition) {
         var i, strLength, result;
 
@@ -312,7 +303,6 @@ define(['Int64'], function(Int64) {
     /*
      * routines - parsing functions for tag commands from server
      */
-
     routines = {
         68: function getTagCreate(opCode, receivedView, bufferPosition) {
             var result;
@@ -365,14 +355,29 @@ define(['Int64'], function(Int64) {
 
     tag = {
 
-
         /*
          * parse received buffer for tag command VALUES
          */
-
         getTagValues: function getTagValues(opCode, receivedView, bufferPosition, length) {
             var result = routines[opCode](opCode, receivedView, bufferPosition, length);
             return result;
+        },
+
+        /*
+         * create new tag at verse server
+         */
+        create: function(nodeId, tagGroupId, dataType, count, customType) {
+            var msg, view;
+            msg = message.template(15, 68);
+            view = new DataView(msg);
+            view.setUint8(3, 0); //share
+            view.setUint32(3, nodeId);
+            view.setUint16(7, tagGroupId);
+            view.setUint16(9, 65535); // tag ID will be defined by server
+            view.setUint8(11, dataType);
+            view.setUint8(12, count);
+            view.setUint16(13, customType);
+            return msg;
         }
 
     };
