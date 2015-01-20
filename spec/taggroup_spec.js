@@ -33,13 +33,13 @@ define(["taggroup"], function(tagGroup) {
     describe("Tag Group commands test suite", function() {
         var testCommand, view, messageLen, mockBuffer, mockView, result;
 
-        describe("Prepare TagGroup Create command", function() {
+        describe("Prepare TagGroup create command", function() {
             beforeEach(function() {
                 testCommand = tagGroup.create(182, 17); // node_id, tg custom_type
                 view = new DataView(testCommand);
             });
 
-            it("length of subscribe command should be equal to 11", function() {
+            it("length of create command should be equal to 11", function() {
                 expect(testCommand.byteLength).toEqual(11);
             });
 
@@ -65,6 +65,37 @@ define(["taggroup"], function(tagGroup) {
 
             it("custom_type (byte 10) id should be 17", function() {
                 expect(view.getUint16(9)).toEqual(17);
+            });
+        });
+
+        describe("Prepare TagGroup destroy command", function() {
+            beforeEach(function() {
+                testCommand = tagGroup.destroy(183, 457); // node_id, tag_group_id
+                view = new DataView(testCommand);
+            });
+
+            it("length of destroy command should be equal to 9", function() {
+                expect(testCommand.byteLength).toEqual(9);
+            });
+
+            it("first byte - opcode - should be 65", function() {
+                expect(view.getUint8(0)).toEqual(65);
+            });
+
+            it("second byte - message length - should be 9 ", function() {
+                expect(view.getUint8(1)).toEqual(9);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("tagGroup (byte 8) id should be 457", function() {
+                expect(view.getUint16(7)).toEqual(457);
             });
         });
 

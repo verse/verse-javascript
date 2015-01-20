@@ -333,6 +333,17 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * destroy existing tag_group on server
+             * @param nodeId int32
+             * @param tagGroupId int16
+             */
+            tagGroupDestroy: function tagGroupDestroy(nodeId, tagGroupId) {
+                var buf = tagGroup.destroy(nodeId, tagGroupId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe tag_group on server
              * @param nodeId int32
              * @param tagGroupId int16

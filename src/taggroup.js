@@ -96,9 +96,9 @@ define(['message'], function(message) {
     tagGroup = {
 
         /*
-         * create tagGroup commad
+         * commad to create tag group at server
          * @param nodeId int32
-         * @param tagGroupId int16
+         * @param customType int16
          */
         create: function(nodeId, customType) {
             var msg, view;
@@ -108,6 +108,21 @@ define(['message'], function(message) {
             view.setUint32(3, nodeId);
             view.setUint16(7, 65535); // tagGroup ID will be defined by server
             view.setUint16(9, customType);
+            return msg;
+        },
+
+        /*
+         * command to destroy tag group at server
+         * @param nodeId int32
+         * @param tagGroupId int16
+         */
+        destroy: function(nodeId, tagGroupId) {
+            var msg, view;
+            msg = message.template(9, 65);
+            view = new DataView(msg);
+            view.setUint8(3, 0); //share
+            view.setUint32(3, nodeId);
+            view.setUint16(7, tagGroupId);
             return msg;
         },
 
