@@ -329,6 +329,17 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * subscribe tag_group on server
+             * @param nodeId int32
+             * @param tagGroupId int16
+             */
+            tagGroupUnSubscribe: function tagGroupUnSubscribe(nodeId, tagGroupId) {
+                var buf = tagGroup.unsubscribe(nodeId, tagGroupId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe layer on server
              * @param nodeId int32
              * @param layerId int16
