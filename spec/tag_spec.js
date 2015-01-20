@@ -80,6 +80,42 @@ define(["tag"], function(tag) {
             });
         });
 
+        describe("Prepare Tag destroy command", function() {
+            beforeEach(function() {
+                testCommand = tag.destroy(183, 18, 2); // node_id, tg_id, tag_id
+                view = new DataView(testCommand);
+            });
+
+            it("length of tag destroy command should be equal to 11", function() {
+                expect(testCommand.byteLength).toEqual(11);
+            });
+
+            it("first byte - opcode - should be 69", function() {
+                expect(view.getUint8(0)).toEqual(69);
+            });
+
+            it("second byte - message length - should be 11 ", function() {
+                expect(view.getUint8(1)).toEqual(11);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 183", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("tagGroup (byte 8) id should be 17", function() {
+                expect(view.getUint16(7)).toEqual(18);
+            });
+
+            it("tag (byte 10) id should be 2", function() {
+                expect(view.getUint16(9)).toEqual(2);
+            });
+
+        });
+
         describe("got tagCreate from server", function() {
             beforeEach(function() {
 

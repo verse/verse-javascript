@@ -383,6 +383,21 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * destroy existing tag at verse server
+             * @param nodeId uint32
+             * @param tagGroupId uint16
+             * @param tagGroupId uint16
+             * @param tagId uint16
+             */
+            tagDestroy: function tagDestroy(nodeId, tagGroupId, tagId) {
+                var buf = tag.destroy(nodeId, tagGroupId, tagId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /* Layer Commands */
+
+            /*
              * subscribe layer on server
              * @param nodeId int32
              * @param layerId int16
