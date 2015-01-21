@@ -27,7 +27,7 @@ require(['verse', 'config'], function(verse, config) {
     nodeHandler = function nodeHandler(data) {
         data.forEach(function(cmd) {
             if (cmd.CMD === 'NODE_CREATE') {
-                verse.subscribeNode(cmd.NODE_ID);
+                verse.nodeSubscribe(cmd.NODE_ID);
                 console.log('subscribed node ' + cmd.NODE_ID);
             } else {
                 console.log(cmd);
@@ -39,7 +39,7 @@ require(['verse', 'config'], function(verse, config) {
     tagGroupHandler = function tagGroupHandler(data) {
         data.forEach(function(cmd) {
             if (cmd.CMD === 'TAG_GROUP_CREATE') {
-                verse.subscribeTagGroup(cmd.NODE_ID, cmd.TAG_GROUP_ID);
+                verse.tagGroupSubscribe(cmd.NODE_ID, cmd.TAG_GROUP_ID);
                 console.info('subscribed tagGroup nodeId =' + cmd.NODE_ID + ' tagGroupId = ' + cmd.TAG_GROUP_ID);
             } else {
                 console.log(cmd);
@@ -51,7 +51,7 @@ require(['verse', 'config'], function(verse, config) {
     layerHandler = function layerHandler(data) {
         data.forEach(function(cmd) {
             if (cmd.CMD === 'LAYER_CREATE') {
-                verse.subscribeLayer(cmd.NODE_ID, cmd.LAYER_ID);
+                verse.layerSubscribe(cmd.NODE_ID, cmd.LAYER_ID);
                 console.info('subscribed Layer nodeId =' + cmd.NODE_ID + ' layerId = ' + cmd.LAYER_ID);
             } else {
                 console.log(cmd);
