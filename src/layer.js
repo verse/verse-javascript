@@ -37,7 +37,6 @@ define(['message', 'Int64'], function(message, Int64) {
     /*
      * common function for layer Create and Destroy commands
      */
-
     getLayerCreateCommons = function getLayerCreateCommons(opCode, receivedView, bufferPosition) {
         return {
             CMD: commands[opCode],
@@ -52,7 +51,6 @@ define(['message', 'Int64'], function(message, Int64) {
     /*
      * common parsing function for most of layer commands
      */
-
     getLayerCmdCommons = function getLayerCmdCommons(opCode, receivedView, bufferPosition) {
         return {
             CMD: commands[opCode],
@@ -68,7 +66,6 @@ define(['message', 'Int64'], function(message, Int64) {
      * common function for all SetUint8 opCodes
      * @param opCode int from interval 133 - 136
      */
-
     getLayerSetUint8 = function getLayerSetUint8(opCode, receivedView, bufferPosition) {
 
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
@@ -98,7 +95,6 @@ define(['message', 'Int64'], function(message, Int64) {
      * common function for all SetUint16 opCodes
      * @param opCode int from interval 137 - 140
      */
-
     getLayerSetUint16 = function getLayerSetUint16(opCode, receivedView, bufferPosition) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
@@ -127,7 +123,6 @@ define(['message', 'Int64'], function(message, Int64) {
      * common function for all SetUint32 opCodes
      * @param opCode int from interval 141 - 144
      */
-
     getLayerSetUint32 = function getLayerSetUint32(opCode, receivedView, bufferPosition) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
@@ -158,7 +153,6 @@ define(['message', 'Int64'], function(message, Int64) {
      * @param opCode int from interval 145 - 148
      *
      */
-
     getLayerSetUint64 = function getLayerSetUint64(opCode, receivedView, bufferPosition) {
         var result, hi, lo, bigNumber;
 
@@ -202,7 +196,6 @@ define(['message', 'Int64'], function(message, Int64) {
      * common function for all SetReal16 opCodes
      * @param opCode int from interval 149 - 152
      */
-
     /* istanbul ignore next */
     getLayerSetFloat16 = function getLayerSetFloat16(opCode, receivedView, bufferPosition) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
@@ -217,7 +210,6 @@ define(['message', 'Int64'], function(message, Int64) {
      * common function for all SetReal32 opCodes
      * @param opCode int from interval 153 - 156
      */
-
     getLayerSetFloat32 = function getLayerSetFloat32(opCode, receivedView, bufferPosition) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
@@ -246,7 +238,6 @@ define(['message', 'Int64'], function(message, Int64) {
      * common function for all SetReal64 opCodes
      * @param opCode int from interval 157 - 160
      */
-
     getLayerSetFloat64 = function getLayerSetFloat64(opCode, receivedView, bufferPosition) {
         var result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
 
@@ -275,7 +266,6 @@ define(['message', 'Int64'], function(message, Int64) {
      * common function for Subscribe and UnSubscribe commands
      * @param opCode int from interval 130 - 131
      */
-
     getLayerSubUnsub = function getLayerSubUnsub(opCode, receivedView, bufferPosition) {
         var result;
         result = getLayerCmdCommons(opCode, receivedView, bufferPosition);
@@ -288,7 +278,6 @@ define(['message', 'Int64'], function(message, Int64) {
     /*
      * Layer subscibe and unsubscribe commands for server
      */
-
     sendLayerSubUnsub = function sendLayerSubUnsub(opCode, nodeId, layerId) {
         var msg, view;
         msg = message.template(17, opCode);
@@ -344,7 +333,6 @@ define(['message', 'Int64'], function(message, Int64) {
     /*
      * routines - parsing functions for tag commands from server
      */
-
     routines = {
         128: function getLayerCreate(opCode, receivedView, bufferPosition) {
             var result;
@@ -414,17 +402,13 @@ define(['message', 'Int64'], function(message, Int64) {
          * @param nodeId int32
          * @param layerId int16
          */
-
         unsubscribe: function(nodeId, layerId) {
             return sendLayerSubUnsub(131, nodeId, layerId);
         },
 
-
-
         /*
          * parse received buffer for tag command VALUES
          */
-
         getLayerValues: function getLayerValues(opCode, receivedView, bufferPosition, length) {
             var result = routines[opCode](opCode, receivedView, bufferPosition, length);
             return result;
