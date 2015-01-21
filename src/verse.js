@@ -398,9 +398,23 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             /* Layer Commands */
 
             /*
+             * create new layer on server
+             * @param nodeId uint32
+             * @param parentLayerId uint16
+             * @param dataType uint8
+             * @param count uint8
+             * @param customType uint16
+             */
+            layerCreate: function layerCreate(nodeId, parentLayerId, dataType, count, customType) {
+                var buf = layer.create(nodeId, parentLayerId, dataType, count, customType);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe layer on server
-             * @param nodeId int32
-             * @param layerId int16
+             * @param nodeId uint32
+             * @param layerId uint16
              */
             layerSubscribe: function layerSubscribe(nodeId, layerId) {
                 var buf = layer.subscribe(nodeId, layerId);
@@ -410,8 +424,8 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * unsubscribe from layer on server
-             * @param nodeId int32
-             * @param layerId int16
+             * @param nodeId uint32
+             * @param layerId uint16
              */
             layerUnSubscribe: function layerUnSubscribe(nodeId, layerId) {
                 var buf = layer.unsubscribe(nodeId, layerId);

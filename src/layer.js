@@ -382,11 +382,28 @@ define(['message', 'Int64'], function(message, Int64) {
         158: getLayerSetFloat64,
         159: getLayerSetFloat64,
         160: getLayerSetFloat64
-
-
     };
 
     layer = {
+
+        /*
+         * create new layer at verse server
+         * @param nodeId int32
+         * @param layerId int16
+         */
+        create: function(nodeId, parentLayerId, dataType, count, customType) {
+            var msg, view;
+            msg = message.template(15, 128);
+            view = new DataView(msg);
+            view.setUint8(3, 0); //share
+            view.setUint32(3, nodeId);
+            view.setUint16(7, parentLayerId);
+            view.setUint16(9, 65535);   // Layer ID will be set by server
+            view.setUint8(11, dataType);
+            view.setUint8(12, count);
+            view.setUint16(13, customType);
+            return msg;
+        },
 
         /*
          * subscribe layer commad OpCode 130

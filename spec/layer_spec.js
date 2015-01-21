@@ -388,17 +388,64 @@ define(["layer"], function(layer) {
     });
 
     describe("Layer commands send to server test suite", function() {
-        var testNode, view, messageLen, mockBuffer, mockView, result;
+        var testCommand, view, messageLen, mockBuffer, mockView, result;
 
+        describe("Layer Create command", function() {
+            beforeEach(function() {
+                // node_id, parent_layer_id, data_type, count, custom_type
+                testCommand = layer.create(182, 31, 3, 2, 315);
+                view = new DataView(testCommand);
+            });
+
+            it("length of create command should be equal to 15", function() {
+                expect(testCommand.byteLength).toEqual(15);
+            });
+
+            it("first byte - opcode - should be 128", function() {
+                expect(view.getUint8(0)).toEqual(128);
+            });
+
+            it("second byte - message length - should be 15", function() {
+                expect(view.getUint8(1)).toEqual(15);
+            });
+
+            it("third byte - share - should be 0", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("Parent layer ID (byte 8) should be 31", function() {
+                expect(view.getUint16(7)).toEqual(31);
+            });
+
+            it("Layer ID (byte 10) should be 65535", function() {
+                expect(view.getUint16(9)).toEqual(65535);
+            });
+
+            it("Data type (byte 12) should be 3", function() {
+                expect(view.getUint8(11)).toEqual(3);
+            });
+
+            it("Count (byte 13) should be 2", function() {
+                expect(view.getUint8(12)).toEqual(2);
+            });
+
+            it("Count (byte 14) should be 315", function() {
+                expect(view.getUint16(13)).toEqual(315);
+            });
+        });
 
         describe("Layer Subscribe command", function() {
             beforeEach(function() {
-                testNode = layer.subscribe(182, 31);
-                view = new DataView(testNode);
+                testCommand = layer.subscribe(182, 31);
+                view = new DataView(testCommand);
             });
 
             it("length of subscribe command should be equal to 17", function() {
-                expect(testNode.byteLength).toEqual(17);
+                expect(testCommand.byteLength).toEqual(17);
             });
 
             it("first byte - opcode - should be 130", function() {
@@ -413,7 +460,6 @@ define(["layer"], function(layer) {
                 expect(view.getUint8(2)).toEqual(0);
             });
 
-
             it("fourth byte node ID should be 182", function() {
                 expect(view.getUint32(3)).toEqual(182);
             });
@@ -421,17 +467,16 @@ define(["layer"], function(layer) {
             it("Layer ID (byte 8) id should be 31", function() {
                 expect(view.getUint16(7)).toEqual(31);
             });
-
         });
 
         describe("Layer UnSubscribe command", function() {
             beforeEach(function() {
-                testNode = layer.unsubscribe(182, 31);
-                view = new DataView(testNode);
+                testCommand = layer.unsubscribe(182, 31);
+                view = new DataView(testCommand);
             });
 
             it("length of the command should be equal to 17", function() {
-                expect(testNode.byteLength).toEqual(17);
+                expect(testCommand.byteLength).toEqual(17);
             });
 
             it("first byte - opcode - should be 131", function() {
