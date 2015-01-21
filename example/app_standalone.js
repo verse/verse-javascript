@@ -15,7 +15,14 @@
                 // Test creating new node, when node of avatar was created by server
                 if (cmd.NODE_ID === avatarID) {
                     verse.nodeCreate(userID, avatarID, 2000);
-                    console.log('created node with custom_type: 2000');
+                    console.log('creating node with custom_type: 2000');
+                    verse.nodeCreate(userID, avatarID, 2001);
+                    console.log('creating node with custom_type: 2001');
+                }
+                // Test of destroying existing node on the server
+                if (cmd.PARENT_ID === avatarID && cmd.CUSTOM_TYPE === 2001) {
+                    verse.nodeDestroy(cmd.NODE_ID);
+                    console.log('destroying node with custom_type: 2001');
                 }
             }
         });
