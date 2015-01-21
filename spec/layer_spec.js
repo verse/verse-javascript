@@ -438,6 +438,37 @@ define(["layer"], function(layer) {
             });
         });
 
+        describe("Layer destroy command", function() {
+            beforeEach(function() {
+                testCommand = layer.destroy(183, 32); // node_id, layer_id
+                view = new DataView(testCommand);
+            });
+
+            it("length of destroy command should be equal to 9", function() {
+                expect(testCommand.byteLength).toEqual(9);
+            });
+
+            it("first byte - opcode - should be 129", function() {
+                expect(view.getUint8(0)).toEqual(129);
+            });
+
+            it("second byte - message length - should be 9", function() {
+                expect(view.getUint8(1)).toEqual(9);
+            });
+
+            it("third byte - share - should be 0", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 183", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("Layer ID (byte 8) should be 32", function() {
+                expect(view.getUint16(7)).toEqual(32);
+            });
+        });
+
         describe("Layer Subscribe command", function() {
             beforeEach(function() {
                 testCommand = layer.subscribe(182, 31);

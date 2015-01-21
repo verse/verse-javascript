@@ -388,8 +388,11 @@ define(['message', 'Int64'], function(message, Int64) {
 
         /*
          * create new layer at verse server
-         * @param nodeId int32
-         * @param layerId int16
+         * @param nodeId uint32
+         * @param parentLayerId uint16
+         * @param dataType uint8
+         * @param count uint8
+          @param customType uint16
          */
         create: function(nodeId, parentLayerId, dataType, count, customType) {
             var msg, view;
@@ -402,6 +405,21 @@ define(['message', 'Int64'], function(message, Int64) {
             view.setUint8(11, dataType);
             view.setUint8(12, count);
             view.setUint16(13, customType);
+            return msg;
+        },
+
+        /*
+         * destroy existing layer at verse server
+         * @param nodeId int32
+         * @param layerId int16
+         */
+        destroy: function(nodeId, layerId) {
+            var msg, view;
+            msg = message.template(9, 129);
+            view = new DataView(msg);
+            view.setUint8(3, 0); //share
+            view.setUint32(3, nodeId);
+            view.setUint16(7, layerId);
             return msg;
         },
 

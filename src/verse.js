@@ -412,6 +412,17 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
             },
 
             /*
+             * destroy existing layer on server
+             * @param nodeId uint32
+             * @param layerId uint16
+             */
+            layerDestroy: function layerDestroy(nodeId, layerId) {
+                var buf = layer.destroy(nodeId, layerId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
              * subscribe layer on server
              * @param nodeId uint32
              * @param layerId uint16
