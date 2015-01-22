@@ -4,7 +4,7 @@
     'use strict';
 
     var settings, nodeHandler, tagHandler, tagGroupHandler, layerHandler, userID, avatarID;
-    var testNodeId;
+    var testNodeId, testTagGroupId;
 
     nodeHandler = function nodeHandler(data) {
         data.forEach(function(cmd) {
@@ -24,7 +24,9 @@
                 }
                 // Test of creating new tag group and layer
                 if (cmd.PARENT_ID === avatarID && cmd.CUSTOM_TYPE === 2000) {
-                    // Create tag grou[] for testing tag commands
+                    // Save node_id of test node (node created by this client with custom_type 2000)
+                    testNodeId = cmd.NODE_ID;
+                    // Create tag group for testing tag commands
                     verse.tagGroupCreate(cmd.NODE_ID, 3000);
                     console.log('creating tag group with custom_type: 3000');
                     // Create node for testing destroying tag group
@@ -36,10 +38,6 @@
                     // Create layer for testing destroying layer
                     verse.layerCreate(cmd.NODE_ID, -1, 3, 2, 4001);
                     console.log('creating layer with custom_type: 4001');
-                }
-                // Save node_id of test node (node created by this client with custom_type 2000)
-                if (cmd.PARENT_ID === avatarID && cmd.CUSTOM_TYPE === 2000) {
-                    testNodeId = cmd.NODE_ID;
                 }
                 // Test of destroying existing node on the server
                 if (cmd.PARENT_ID === avatarID && cmd.CUSTOM_TYPE === 2001) {
@@ -57,9 +55,21 @@
                 // Subscribe to every tag group
                 verse.tagGroupSubscribe(cmd.NODE_ID, cmd.TAG_GROUP_ID);
                 console.info('subscribed tagGroup nodeId =' + cmd.NODE_ID + ' tagGroupId = ' + cmd.TAG_GROUP_ID);
+                // Test of creating new tags
+                if (cmd.NODE_ID === testNodeId && cmd.CUSTOM_TYPE === 3000) {
+                    // Save tag group ID of test tag group
+                    testTagGroupId = cmd.TAG_GROUP_ID;
+                    // Create tag for testing changing value
+                    verse.tagCreate(cmd.NODE_ID, cmd.TAG_GROUP_ID, 3, 2, 3100);
+                    console.log('creating new tag with custom type: 3100');
+                    // Create tag for testing destroying of tag
+                    verse.tagCreate(cmd.NODE_ID, cmd.TAG_GROUP_ID, 3, 2, 3101);
+                    console.log('creating new tag with custom type: 3101');
+                }
                 // Test of destroying existing tag group
                 if (cmd.NODE_ID === testNodeId && cmd.CUSTOM_TYPE === 3001) {
                     verse.tagGroupDestroy(cmd.NODE_ID, cmd.TAG_GROUP_ID);
+                    console.log('destroying tag group with custom_type 3001');
                 }
             }
         });
@@ -70,7 +80,7 @@
             console.log(cmd);
             if (cmd.CMD === 'LAYER_CREATE') {
                 verse.layerSubscribe(cmd.NODE_ID, cmd.LAYER_ID);
-                console.info('subscribed Layer nodeId =' + cmd.NODE_ID + ' layerId = ' + cmd.LAYER_ID);
+                console.info('subscribed Layer nodeId = ' + cmd.NODE_ID + ' layerId = ' + cmd.LAYER_ID);
                 // Test of destroying existing layer
                 if (cmd.NODE_ID === testNodeId && cmd.CUSTOM_TYPE === 4001) {
                     verse.layerDestroy(cmd.NODE_ID, cmd.LAYER_ID);
@@ -80,7 +90,20 @@
     };
 
     tagHandler = function tagHandler(data) {
-        console.log(data);
+        data.forEach(function(cmd) {
+            console.log(cmd);
+            if (cmd.CMD === 'TAG_CREATE') {
+                // TODO: test of setting tag value
+                if (cmd.NODE_ID === testNodeId && cmd.TAG_GROUP_ID === testTagGroupId && cmd.CUSTOM_TYPE === 3100) {
+                    console.log('TODO: send tag value for tag with custom type: 3100');
+                }
+                // Testo of destroying of existing tag group
+                if (cmd.NODE_ID === testNodeId && cmd.TAG_GROUP_ID === testTagGroupId && cmd.CUSTOM_TYPE === 3101) {
+                    verse.tagDestroy(cmd.NODE_ID, cmd.TAG_GROUP_ID, cmd.TAG_ID);
+                    console.log('destroying tag with custom type: 3101');
+                }
+            }
+        });
     };
 
 
