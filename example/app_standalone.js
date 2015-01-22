@@ -60,7 +60,7 @@
                 // Test of destroying existing tag group
                 if (cmd.NODE_ID === testNodeId && cmd.CUSTOM_TYPE === 3001) {
                     verse.tagGroupDestroy(cmd.NODE_ID, cmd.TAG_GROUP_ID);
-                };
+                }
             }
         });
     };
@@ -74,7 +74,7 @@
                 // Test of destroying existing layer
                 if (cmd.NODE_ID === testNodeId && cmd.CUSTOM_TYPE === 4001) {
                     verse.layerDestroy(cmd.NODE_ID, cmd.LAYER_ID);
-                };
+                }
             }
         });
     };
