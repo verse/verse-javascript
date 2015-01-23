@@ -35,7 +35,8 @@ define(["tag"], function(tag) {
 
         describe("Prepare Tag create command", function() {
             beforeEach(function() {
-                testCommand = tag.create(182, 17, 3, 4, 298); // node_id, tg_id, data_type, count custom_type
+                // node_id, tg_id, data_type, count custom_type
+                testCommand = tag.create(182, 17, 'UINT32', 4, 298);
                 view = new DataView(testCommand);
             });
 

@@ -30,7 +30,7 @@
 define(['Int64', 'message'], function(Int64, message) {
     'use strict';
 
-    var commands, routines, tag, getTagSetCommons, getTagSetUint8, getTagSetUint16,
+    var commands, routines, data_types, tag, getTagSetCommons, getTagSetUint8, getTagSetUint16,
         getTagSetUint32, getTagSetUint64, getTagSetFloat16,
         getTagSetFloat32, getTagSetFloat64, getTagSetString8;
 
@@ -263,8 +263,7 @@ define(['Int64', 'message'], function(Int64, message) {
     };
 
 
-
-    //command codes = opCodes
+    // Command codes = opCodes
     commands = {
         68: 'TAG_CREATE',
         69: 'TAG_DESTROY',
@@ -297,8 +296,8 @@ define(['Int64', 'message'], function(Int64, message) {
         96: 'TAG_SET_REAL64',
         97: 'TAG_SET_REAL64',
         98: 'TAG_SET_STRING8'
-        
     };
+
 
     /*
      * routines - parsing functions for tag commands from server
@@ -350,8 +349,23 @@ define(['Int64', 'message'], function(Int64, message) {
         96: getTagSetFloat64,
         97: getTagSetFloat64,
         98: getTagSetString8
-
     };
+
+
+    /*
+     * allowed names of tag data types
+     */
+    data_types = {
+        'UINT8': 1,
+        'UINT16': 2,
+        'UINT32': 3,
+        'UINT64': 4,
+        'REAL16': 5,
+        'REAL32': 6,
+        'REAL64': 7,
+        'STRING8': 8
+    };
+
 
     tag = {
 
@@ -374,7 +388,11 @@ define(['Int64', 'message'], function(Int64, message) {
             view.setUint32(3, nodeId);
             view.setUint16(7, tagGroupId);
             view.setUint16(9, 65535); // tag ID will be defined by server
-            view.setUint8(11, dataType);
+            if ( data_types.hasOwnProperty(dataType) ) {
+                view.setUint8(11, data_types[dataType]);
+            } else {
+                return null;
+            }
             view.setUint8(12, count);
             view.setUint16(13, customType);
             return msg;
