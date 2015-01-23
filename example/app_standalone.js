@@ -4,7 +4,7 @@
     'use strict';
 
     var settings, nodeHandler, tagHandler, tagGroupHandler, layerHandler, userID, avatarID;
-    var testNodeId, testTagGroupId;
+    var testNodeId, testTagGroupId, testLayerId, testTagId;
 
     nodeHandler = function nodeHandler(data) {
         data.forEach(function(cmd) {
@@ -60,10 +60,10 @@
                     // Save tag group ID of test tag group
                     testTagGroupId = cmd.TAG_GROUP_ID;
                     // Create tag for testing changing value
-                    verse.tagCreate(cmd.NODE_ID, cmd.TAG_GROUP_ID, 3, 2, 3100);
+                    verse.tagCreate(cmd.NODE_ID, cmd.TAG_GROUP_ID, 'UINT32', 2, 3100);
                     console.log('creating new tag with custom type: 3100');
                     // Create tag for testing destroying of tag
-                    verse.tagCreate(cmd.NODE_ID, cmd.TAG_GROUP_ID, 3, 2, 3101);
+                    verse.tagCreate(cmd.NODE_ID, cmd.TAG_GROUP_ID, 'UINT16', 2, 3101);
                     console.log('creating new tag with custom type: 3101');
                 }
                 // Test of destroying existing tag group
@@ -81,6 +81,11 @@
             if (cmd.CMD === 'LAYER_CREATE') {
                 verse.layerSubscribe(cmd.NODE_ID, cmd.LAYER_ID);
                 console.info('subscribed Layer nodeId = ' + cmd.NODE_ID + ' layerId = ' + cmd.LAYER_ID);
+                // TODO: Test of setting layer item value
+                if (cmd.NODE_ID === testNodeId && cmd.CUSTOM_TYPE === 4000) {
+                    testLayerId = cmd.LAYER_ID;
+                    console.log('TODO: send two layer_item_set commands for layer with custom type: 4000');
+                }
                 // Test of destroying existing layer
                 if (cmd.NODE_ID === testNodeId && cmd.CUSTOM_TYPE === 4001) {
                     verse.layerDestroy(cmd.NODE_ID, cmd.LAYER_ID);
@@ -95,6 +100,7 @@
             if (cmd.CMD === 'TAG_CREATE') {
                 // TODO: test of setting tag value
                 if (cmd.NODE_ID === testNodeId && cmd.TAG_GROUP_ID === testTagGroupId && cmd.CUSTOM_TYPE === 3100) {
+                    testTagId = cmd.TAG_ID;
                     console.log('TODO: send tag value for tag with custom type: 3100');
                 }
                 // Testo of destroying of existing tag group
