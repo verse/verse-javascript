@@ -30,7 +30,7 @@
 define(['message', 'Int64'], function(message, Int64) {
     'use strict';
 
-    var commands, routines, layer, getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
+    var commands, routines, data_types, layer, getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
         getLayerSetUint32, getLayerSetUint64, getLayerSetFloat16, getLayerSetFloat32, getLayerSetFloat64,
         getLayerCmdCommons, getLayerSubUnsub, sendLayerSubUnsub;
 
@@ -384,6 +384,19 @@ define(['message', 'Int64'], function(message, Int64) {
         160: getLayerSetFloat64
     };
 
+    /*
+     * allowed names of tag data types
+     */
+    data_types = {
+        'UINT8': 1,
+        'UINT16': 2,
+        'UINT32': 3,
+        'UINT64': 4,
+        'REAL16': 5,
+        'REAL32': 6,
+        'REAL64': 7
+    };
+
     layer = {
 
         /*
@@ -400,9 +413,17 @@ define(['message', 'Int64'], function(message, Int64) {
             view = new DataView(msg);
             view.setUint8(3, 0); //share
             view.setUint32(3, nodeId);
-            view.setUint16(7, parentLayerId);
+            if ( parentLayerId === null ) {
+                view.setUint16(7, -1);
+            } else {
+                view.setUint16(7, parentLayerId);
+            }
             view.setUint16(9, 65535);   // Layer ID will be set by server
-            view.setUint8(11, dataType);
+            if ( data_types.hasOwnProperty(dataType) ) {
+                view.setUint8(11, data_types[dataType]);
+            } else {
+                return null;
+            }
             view.setUint8(12, count);
             view.setUint16(13, customType);
             return msg;

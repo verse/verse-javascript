@@ -393,7 +393,7 @@ define(["layer"], function(layer) {
         describe("Layer Create command", function() {
             beforeEach(function() {
                 // node_id, parent_layer_id, data_type, count, custom_type
-                testCommand = layer.create(182, 31, 3, 2, 315);
+                testCommand = layer.create(182, 31, 'UINT32', 2, 315);
                 view = new DataView(testCommand);
             });
 
@@ -435,6 +435,62 @@ define(["layer"], function(layer) {
 
             it("Count (byte 14) should be 315", function() {
                 expect(view.getUint16(13)).toEqual(315);
+            });
+        });
+
+        describe("Layer Create command with no parent layer", function() {
+            beforeEach(function() {
+                // node_id, parent_layer_id, data_type, count, custom_type
+                testCommand = layer.create(182, null, 'UINT32', 2, 315);
+                view = new DataView(testCommand);
+            });
+
+            it("length of create command should be equal to 15", function() {
+                expect(testCommand.byteLength).toEqual(15);
+            });
+
+            it("first byte - opcode - should be 128", function() {
+                expect(view.getUint8(0)).toEqual(128);
+            });
+
+            it("second byte - message length - should be 15", function() {
+                expect(view.getUint8(1)).toEqual(15);
+            });
+
+            it("third byte - share - should be 0", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("Parent layer ID (byte 8) should be 65535", function() {
+                expect(view.getUint16(7)).toEqual(65535);
+            });
+
+            it("Layer ID (byte 10) should be 65535", function() {
+                expect(view.getUint16(9)).toEqual(65535);
+            });
+
+            it("Data type (byte 12) should be 3", function() {
+                expect(view.getUint8(11)).toEqual(3);
+            });
+
+            it("Count (byte 13) should be 2", function() {
+                expect(view.getUint8(12)).toEqual(2);
+            });
+
+            it("Count (byte 14) should be 315", function() {
+                expect(view.getUint16(13)).toEqual(315);
+            });
+        });
+
+        describe("Wrong Layer Create command", function() {
+            it("the command should not be created", function() {
+                // String8 is not supported by layers
+                testCommand = layer.create(182, 31, 'STRING8', 2, 315);
+                expect(testCommand === null);
             });
         });
 
