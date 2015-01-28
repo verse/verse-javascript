@@ -33,10 +33,10 @@
                     verse.tagGroupCreate(cmd.NODE_ID, 3001);
                     console.log('creating tag group with custom_type: 3001');
                     // Create layer for testing layer commands
-                    verse.layerCreate(cmd.NODE_ID, -1, 3, 2, 4000);
+                    verse.layerCreate(cmd.NODE_ID, null, 'UINT32', 2, 4000);
                     console.log('creating layer with custom_type: 4000');
                     // Create layer for testing destroying layer
-                    verse.layerCreate(cmd.NODE_ID, -1, 3, 2, 4001);
+                    verse.layerCreate(cmd.NODE_ID, null, 'UINT32', 2, 4001);
                     console.log('creating layer with custom_type: 4001');
                 }
                 // Test of destroying existing node on the server
