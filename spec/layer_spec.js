@@ -554,6 +554,14 @@ define(["layer"], function(layer) {
             it("Layer ID (byte 8) id should be 31", function() {
                 expect(view.getUint16(7)).toEqual(31);
             });
+
+            it("Version (byte 10) should be 0", function() {
+                expect(view.getUint32(9)).toEqual(0);
+            });
+
+            it("CRC32 (byte 14) should be 0", function() {
+                expect(view.getUint32(13)).toEqual(0);
+            });
         });
 
         describe("Layer UnSubscribe command", function() {
@@ -578,6 +586,44 @@ define(["layer"], function(layer) {
                 expect(view.getUint8(2)).toEqual(0);
             });
 
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("Layer ID (byte 8) id should be 31", function() {
+                expect(view.getUint16(7)).toEqual(31);
+            });
+
+            it("Version (byte 10) should be 0", function() {
+                expect(view.getUint32(9)).toEqual(0);
+            });
+
+            it("CRC32 (byte 14) should be 0", function() {
+                expect(view.getUint32(13)).toEqual(0);
+            });
+        });
+
+        describe("Layer UnSet command", function() {
+            beforeEach(function() {
+                testCommand = layer.unset(182, 31, 5); // node_it, layer_id, item_id
+                view = new DataView(testCommand);
+            });
+
+            it("length of the command should be equal to 13", function() {
+                expect(testCommand.byteLength).toEqual(13);
+            });
+
+            it("first byte - opcode - should be 132", function() {
+                expect(view.getUint8(0)).toEqual(132);
+            });
+
+            it("second byte - message length - should be 13", function() {
+                expect(view.getUint8(1)).toEqual(13);
+            });
+
+            it("third byte - share - should be 0", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
 
             it("fourth byte node ID should be 182", function() {
                 expect(view.getUint32(3)).toEqual(182);
@@ -587,8 +633,10 @@ define(["layer"], function(layer) {
                 expect(view.getUint16(7)).toEqual(31);
             });
 
+            it("Item ID (byte 10) id should be 5", function() {
+                expect(view.getUint32(9)).toEqual(5);
+            });
         });
-
     });
 
 

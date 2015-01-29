@@ -442,8 +442,19 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
                 var buf = layer.unsubscribe(nodeId, layerId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
-            }
+            },
 
+            /*
+             * unset item layer on server
+             * @param nodeId uint32
+             * @param layerId uint16
+             * @param itemId uint32
+             */
+            layerUnSetItem: function layerUnSetItem(nodeId, layerId, itemId) {
+                var buf = layer.unset(nodeId, layerId, itemId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            }
         };
 
         return verse;

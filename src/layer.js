@@ -463,6 +463,23 @@ define(['message', 'Int64'], function(message, Int64) {
         },
 
         /*
+         * unset value of item layer at verse server
+         * @param nodeId int32
+         * @param layerId int16
+         * @param itemId int32
+         */
+        unset: function(nodeId, layerId, itemId) {
+            var msg, view;
+            msg = message.template(13, 132);
+            view = new DataView(msg);
+            view.setUint8(3, 0); //share
+            view.setUint32(3, nodeId);
+            view.setUint16(7, layerId);
+            view.setUint32(9, itemId);
+            return msg;
+        },
+
+        /*
          * parse received buffer for tag command VALUES
          */
         getLayerValues: function getLayerValues(opCode, receivedView, bufferPosition, length) {
