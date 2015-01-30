@@ -27,7 +27,7 @@
 
 /* globals define */
 
-define(['message'], function(message) {
+define(['command'], function(command) {
     'use strict';
 
     var commands, routines, tagGroup, sendSubUnsub, getSubUnsub;
@@ -36,15 +36,15 @@ define(['message'], function(message) {
      * subscibe and ubsucribe tagGroup
      */
     sendSubUnsub = function sendSubUnsub(opCode, nodeId, tagGroupId) {
-        var msg, view;
-        msg = message.template(17, opCode);
-        view = new DataView(msg);
+        var cmd, view;
+        cmd = command.template(17, opCode);
+        view = new DataView(cmd);
         view.setUint8(3, 0); //share
         view.setUint32(3, nodeId);
         view.setUint16(7, tagGroupId);
         view.setUint32(9, 0); //Version
         view.setUint32(13, 0); //CRC32
-        return msg;
+        return cmd;
     };
 
 
@@ -101,14 +101,14 @@ define(['message'], function(message) {
          * @param customType int16
          */
         create: function(nodeId, customType) {
-            var msg, view;
-            msg = message.template(11, 64);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(11, 64);
+            view = new DataView(cmd);
             view.setUint8(3, 0); //share
             view.setUint32(3, nodeId);
             view.setUint16(7, 65535); // tagGroup ID will be defined by server
             view.setUint16(9, customType);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -117,13 +117,13 @@ define(['message'], function(message) {
          * @param tagGroupId int16
          */
         destroy: function(nodeId, tagGroupId) {
-            var msg, view;
-            msg = message.template(9, 65);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(9, 65);
+            view = new DataView(cmd);
             view.setUint8(3, 0); //share
             view.setUint32(3, nodeId);
             view.setUint16(7, tagGroupId);
-            return msg;
+            return cmd;
         },
 
         /*

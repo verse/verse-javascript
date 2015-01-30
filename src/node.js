@@ -27,7 +27,7 @@
 
 /* globals define */
 
-define(['message'], function(message) {
+define(['command'], function(command) {
     'use strict';
 
     var node, commands, routines;
@@ -160,15 +160,15 @@ define(['message'], function(message) {
          * @param custom_type - custom type of node
          */
         create: function(user_id, avatar_id, custom_type) {
-            var msg, view;
-            msg = message.template(15, 32);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(15, 32);
+            view = new DataView(cmd);
             view.setUint8(2, 0);
             view.setUint16(3, user_id);
             view.setUint32(5, avatar_id);
             view.setUint32(9, 4294967295);
             view.setUint16(13, custom_type);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -176,11 +176,11 @@ define(['message'], function(message) {
          * @param node_id - ID of node to be destroyed
          */
         destroy: function(node_id) {
-            var msg, view;
-            msg = message.template(6, 33);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(6, 33);
+            view = new DataView(cmd);
             view.setUint32(2, node_id);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -188,13 +188,13 @@ define(['message'], function(message) {
          * @param id - node id
          */
         subscribe: function(node_id) {
-            var msg, view;
-            msg = message.template(14, 34);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(14, 34);
+            view = new DataView(cmd);
             view.setUint32(2, node_id);
             view.setUint32(6, 0);
             view.setUint32(10, 0);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -202,13 +202,13 @@ define(['message'], function(message) {
          * @param id - node id
          */
         unsubscribe: function(node_id) {
-            var msg, view;
-            msg = message.template(14, 35);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(14, 35);
+            view = new DataView(cmd);
             view.setUint32(2, node_id);
             view.setUint32(6, 0);
             view.setUint32(10, 0);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -217,13 +217,13 @@ define(['message'], function(message) {
          * @param child_id - node ID of child node
          */
         link: function(parent_node_id, child_node_id) {
-            var msg, view;
-            msg = message.template(11, 37);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(11, 37);
+            view = new DataView(cmd);
             view.setUint8(2, 0); // share
             view.setUint32(3, parent_node_id);
             view.setUint32(7, child_node_id);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -233,14 +233,14 @@ define(['message'], function(message) {
          * @param permission
          */
         perm: function(node_id, user_id, permission) {
-            var msg, view;
-            msg = message.template(10, 38);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(10, 38);
+            view = new DataView(cmd);
             view.setUint8(2, 0); // share
             view.setUint16(3, user_id);
             view.setUint8(5, permission);
             view.setUint32(6, node_id);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -248,11 +248,11 @@ define(['message'], function(message) {
          * @param permission
          */
         umask: function(permission) {
-            var msg, view;
-            msg = message.template(3, 39);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(3, 39);
+            view = new DataView(cmd);
             view.setUint8(2, permission);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -261,13 +261,13 @@ define(['message'], function(message) {
          * @param user_id - ID of new owner
          */
         owner: function(node_id, user_id) {
-            var msg, view;
-            msg = message.template(9, 40);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(9, 40);
+            view = new DataView(cmd);
             view.setUint8(2, 0); // share
             view.setUint16(3, user_id);
             view.setUint32(5, node_id);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -276,13 +276,13 @@ define(['message'], function(message) {
          * @param node_id - ID of node
          */
         lock: function(avatar_id, node_id) {
-            var msg, view;
-            msg = message.template(11, 41);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(11, 41);
+            view = new DataView(cmd);
             view.setUint8(2, 0); // share
             view.setUint32(3, avatar_id);
             view.setUint32(7, node_id);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -291,13 +291,13 @@ define(['message'], function(message) {
          * @param node_id - ID of node
          */
         unlock: function(avatar_id, node_id) {
-            var msg, view;
-            msg = message.template(11, 42);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(11, 42);
+            view = new DataView(cmd);
             view.setUint8(2, 0); // share
             view.setUint32(3, avatar_id);
             view.setUint32(7, node_id);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -306,13 +306,13 @@ define(['message'], function(message) {
          * @param priority - new priority of node
          */
         prio: function(node_id, priority) {
-            var msg, view;
-            msg = message.template(8, 43);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(8, 43);
+            view = new DataView(cmd);
             view.setUint8(2, 0); // share
             view.setUint8(3, priority);
             view.setUint32(4, node_id);
-            return msg;
+            return cmd;
         }
 
     };

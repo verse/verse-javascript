@@ -27,7 +27,7 @@
 
 /* globals define */
 
-define(['message', 'Int64'], function(message, Int64) {
+define(['command', 'Int64'], function(command, Int64) {
     'use strict';
 
     var commands, routines, data_types, layer, getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
@@ -279,15 +279,15 @@ define(['message', 'Int64'], function(message, Int64) {
      * Layer subscibe and unsubscribe commands for server
      */
     sendLayerSubUnsub = function sendLayerSubUnsub(opCode, nodeId, layerId) {
-        var msg, view;
-        msg = message.template(17, opCode);
-        view = new DataView(msg);
+        var cmd, view;
+        cmd = command.template(17, opCode);
+        view = new DataView(cmd);
         view.setUint8(3, 0); //share
         view.setUint32(3, nodeId, false);
         view.setUint16(7, layerId, false);
         view.setUint32(9, 0, false); //Version
         view.setUint32(13, 0, false); //CRC32
-        return msg;
+        return cmd;
     };
 
 
@@ -408,9 +408,9 @@ define(['message', 'Int64'], function(message, Int64) {
           @param customType uint16
          */
         create: function(nodeId, parentLayerId, dataType, count, customType) {
-            var msg, view;
-            msg = message.template(15, 128);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(15, 128);
+            view = new DataView(cmd);
             view.setUint8(3, 0); //share
             view.setUint32(3, nodeId);
             if ( parentLayerId === null ) {
@@ -426,7 +426,7 @@ define(['message', 'Int64'], function(message, Int64) {
             }
             view.setUint8(12, count);
             view.setUint16(13, customType);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -435,13 +435,13 @@ define(['message', 'Int64'], function(message, Int64) {
          * @param layerId int16
          */
         destroy: function(nodeId, layerId) {
-            var msg, view;
-            msg = message.template(9, 129);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(9, 129);
+            view = new DataView(cmd);
             view.setUint8(3, 0); //share
             view.setUint32(3, nodeId);
             view.setUint16(7, layerId);
-            return msg;
+            return cmd;
         },
 
         /*
@@ -469,14 +469,27 @@ define(['message', 'Int64'], function(message, Int64) {
          * @param itemId int32
          */
         unset: function(nodeId, layerId, itemId) {
-            var msg, view;
-            msg = message.template(13, 132);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(13, 132);
+            view = new DataView(cmd);
             view.setUint8(3, 0); //share
             view.setUint32(3, nodeId);
             view.setUint16(7, layerId);
             view.setUint32(9, itemId);
-            return msg;
+            return cmd;
+        },
+
+        /*
+         * set value of layer item at verse server
+         * @param nodeId
+         * @param layerId
+         * @param itemId
+         * @param dataType
+         * @param value
+         */
+        set: function(nodeId, layerId, itemId, dataType, value) {
+            // TODO: implement creating this command
+            return null;
         },
 
         /*

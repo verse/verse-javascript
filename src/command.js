@@ -30,21 +30,18 @@
 define(function() {
     'use strict';
 
-    var message;
+    var command;
 
+    /*
+     * Abstract command array buffer
+     */
+    command = {
 
-    /**
-     * Abstract message array buffer
-     **/
-
-    message = {
-
-        /**
+        /*
          * basic mesage template
          * @param opcode int
          * @param length int
-         **/
-
+         */
         template: function(length, opCode) {
             var buf, view;
 
@@ -52,13 +49,13 @@ define(function() {
             view = new DataView(buf);
             /* first byte - op code*/
             view.setUint8(0, opCode);
-            /* second byte - message length */
+            /* second byte - command length */
             view.setUint8(1, length);
 
             return buf;
         }
     };
 
-    return message;
+    return command;
 
 });

@@ -27,7 +27,7 @@
 
 /* globals define */
 
-define(['Int64', 'message'], function(Int64, message) {
+define(['Int64', 'command'], function(Int64, command) {
     'use strict';
 
     var commands, routines, data_types, tag, getTagSetCommons, getTagSetUint8, getTagSetUint16,
@@ -381,9 +381,9 @@ define(['Int64', 'message'], function(Int64, message) {
          * create new tag at verse server
          */
         create: function(nodeId, tagGroupId, dataType, count, customType) {
-            var msg, view;
-            msg = message.template(15, 68);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(15, 68);
+            view = new DataView(cmd);
             view.setUint8(3, 0); //share
             view.setUint32(3, nodeId);
             view.setUint16(7, tagGroupId);
@@ -395,21 +395,21 @@ define(['Int64', 'message'], function(Int64, message) {
             }
             view.setUint8(12, count);
             view.setUint16(13, customType);
-            return msg;
+            return cmd;
         },
 
         /*
          * create new tag at verse server
          */
         destroy: function(nodeId, tagGroupId, tagId) {
-            var msg, view;
-            msg = message.template(11, 69);
-            view = new DataView(msg);
+            var cmd, view;
+            cmd = command.template(11, 69);
+            view = new DataView(cmd);
             view.setUint8(3, 0); //share
             view.setUint32(3, nodeId);
             view.setUint16(7, tagGroupId);
             view.setUint16(9, tagId);
-            return msg;
+            return cmd;
         }
     };
 
