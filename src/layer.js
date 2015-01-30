@@ -30,7 +30,7 @@
 define(['command', 'Int64'], function(command, Int64) {
     'use strict';
 
-    var commands, routines, data_types, layer, getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
+    var commands, routines, data_types, data_type_len, op_codes, layer, getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
         getLayerSetUint32, getLayerSetUint64, getLayerSetFloat16, getLayerSetFloat32, getLayerSetFloat64,
         getLayerCmdCommons, getLayerSubUnsub, sendLayerSubUnsub;
 
@@ -291,7 +291,7 @@ define(['command', 'Int64'], function(command, Int64) {
     };
 
 
-    //command codes = opCodes
+    // Command codes = OpCodes
     commands = {
         128: 'LAYER_CREATE',
         129: 'LAYER_DESTROY',
@@ -327,11 +327,10 @@ define(['command', 'Int64'], function(command, Int64) {
         159: 'LAYER_SET_REAL64',
         160: 'LAYER_SET_REAL64',
         161: 'LAYER_UNSET_DATA'
-
     };
 
     /*
-     * routines - parsing functions for tag commands from server
+     * Routines - parsing functions for tag commands from server
      */
     routines = {
         128: function getLayerCreate(opCode, receivedView, bufferPosition) {
@@ -341,7 +340,6 @@ define(['command', 'Int64'], function(command, Int64) {
             result.COUNT = receivedView.getUint8(bufferPosition + 12);
             result.CUSTOM_TYPE = receivedView.getUint16(bufferPosition + 13, false);
             return result;
-
         },
         129: function getLayerDestroy(opCode, receivedView, bufferPosition) {
             return {
@@ -395,6 +393,32 @@ define(['command', 'Int64'], function(command, Int64) {
         'REAL16': 5,
         'REAL32': 6,
         'REAL64': 7
+    };
+
+    /*
+     * data types length in memory
+     */
+    data_type_len = {
+        'UINT8': 1,
+        'UINT16': 2,
+        'UINT32': 4,
+        'UINT64': 8,
+        'REAL16': 2,
+        'REAL32': 4,
+        'REAL64': 8
+    };
+
+    /*
+     * basic OpCodes (with one value) for data types
+     */
+    op_codes = {
+        'UINT8': 133,
+        'UINT16': 137,
+        'UINT32': 141,
+        'UINT64': 145,
+        'REAL16': 149,
+        'REAL32': 153,
+        'REAL64': 157
     };
 
     layer = {
@@ -485,11 +509,29 @@ define(['command', 'Int64'], function(command, Int64) {
          * @param layerId
          * @param itemId
          * @param dataType
-         * @param value
+         * @param values
          */
-        set: function(nodeId, layerId, itemId, dataType, value) {
-            // TODO: implement creating this command
-            return null;
+        set: function(nodeId, layerId, itemId, dataType, values) {
+            var cmd, view, cmd_len;
+            // Try to compute length of the command first
+            if ( data_types.hasOwnProperty(dataType) ) {
+                cmd_len = 13 + values.length*data_type_len[dataType];
+            } else {
+                return null;
+            }
+            cmd = command.template(cmd_len, op_codes[dataType] + values.length - 1);
+            view = new DataView(cmd);
+            view.setUint8(3, 0); //share
+            view.setUint32(3, nodeId);
+            view.setUint16(7, layerId);
+            view.setUint32(9, itemId);
+            for (var i = 0; i < values.length; i++) {
+                if (dataType === 'UINT8') {
+                    view.setUint8(13, values[i]);
+                }
+                // TODO: add support for other data types
+            }
+            return cmd;
         },
 
         /*
