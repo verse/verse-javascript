@@ -30,7 +30,8 @@
 define(['command', 'Int64'], function(command, Int64) {
     'use strict';
 
-    var commands, routines, data_types, data_type_len, op_codes, layer, getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
+    var commands, get_routines, data_types, data_type_len, op_codes, layer, set_routines,
+        getLayerCreateCommons, getLayerSetUint8, getLayerSetUint16,
         getLayerSetUint32, getLayerSetUint64, getLayerSetFloat16, getLayerSetFloat32, getLayerSetFloat64,
         getLayerCmdCommons, getLayerSubUnsub, sendLayerSubUnsub;
 
@@ -330,9 +331,9 @@ define(['command', 'Int64'], function(command, Int64) {
     };
 
     /*
-     * Routines - parsing functions for tag commands from server
+     * get_routines - parsing functions for tag commands from server
      */
-    routines = {
+    get_routines = {
         128: function getLayerCreate(opCode, receivedView, bufferPosition) {
             var result;
             result = getLayerCreateCommons(opCode, receivedView, bufferPosition);
@@ -421,6 +422,43 @@ define(['command', 'Int64'], function(command, Int64) {
         'REAL64': 157
     };
 
+    /*
+     * routines for setting values of layer items
+     */
+    set_routines = {
+        'UINT8': function setItemsUint8(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setUint8(13 + i, values[i]);
+            }
+        },
+        'UINT16': function setItemsUint16(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setUint16(13 + 2*i, values[i]);
+            }
+        },
+        'UINT32': function setItemsUint32(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setUint32(13 + 4*i, values[i]);
+            }
+        },
+        'UINT64': function setItemsUint64(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setUint64(13 + 8*i, values[i]);
+            }
+        },
+        'REAL16': null,
+        'REAL32': function setItemsReal32(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setFloat32(13 + 4*i, values[i]);
+            }
+        },
+        'REAL64': function setItemsReal64(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setFloat64(13 + 8*i, values[i]);
+            }
+        }
+    };
+
     layer = {
 
         /*
@@ -504,7 +542,7 @@ define(['command', 'Int64'], function(command, Int64) {
         },
 
         /*
-         * set value of layer item at verse server
+         * set values of layer item at verse server
          * @param nodeId
          * @param layerId
          * @param itemId
@@ -525,12 +563,7 @@ define(['command', 'Int64'], function(command, Int64) {
             view.setUint32(3, nodeId);
             view.setUint16(7, layerId);
             view.setUint32(9, itemId);
-            for (var i = 0; i < values.length; i++) {
-                if (dataType === 'UINT8') {
-                    view.setUint8(13, values[i]);
-                }
-                // TODO: add support for other data types
-            }
+            set_routines[dataType](view, values);
             return cmd;
         },
 
@@ -538,7 +571,7 @@ define(['command', 'Int64'], function(command, Int64) {
          * parse received buffer for tag command VALUES
          */
         getLayerValues: function getLayerValues(opCode, receivedView, bufferPosition, length) {
-            var result = routines[opCode](opCode, receivedView, bufferPosition, length);
+            var result = get_routines[opCode](opCode, receivedView, bufferPosition, length);
             return result;
         }
 
