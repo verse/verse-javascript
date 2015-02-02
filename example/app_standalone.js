@@ -81,14 +81,22 @@
             if (cmd.CMD === 'LAYER_CREATE') {
                 verse.layerSubscribe(cmd.NODE_ID, cmd.LAYER_ID);
                 console.info('subscribed Layer nodeId = ' + cmd.NODE_ID + ' layerId = ' + cmd.LAYER_ID);
-                // TODO: Test of setting layer item value
+                // Test of setting layer item value
                 if (cmd.NODE_ID === testNodeId && cmd.CUSTOM_TYPE === 4000) {
                     testLayerId = cmd.LAYER_ID;
-                    console.log('TODO: send two layer_item_set commands for layer with custom type: 4000');
+                    verse.layerSetItems(cmd.NODE_ID, cmd.LAYER_ID, 'UINT32', {1: [5, 6], 2: [7, 8]});
+                    console.log('sending layer_item_set command for layer with custom type: 4000');
                 }
                 // Test of destroying existing layer
                 if (cmd.NODE_ID === testNodeId && cmd.CUSTOM_TYPE === 4001) {
                     verse.layerDestroy(cmd.NODE_ID, cmd.LAYER_ID);
+                }
+            }
+            if (cmd.CMD === 'LAYER_SET_UINT32') {
+                // Test of unseting existing items
+                if (cmd.NODE_ID === testNodeId && cmd.LAYER_ID === testLayerId && cmd.ITEM_ID === 1) {
+                    verse.layerUnSetItems(cmd.NODE_ID, cmd.LAYER_ID, [1, 2]);
+                    console.log('sending layer_item_unset command');
                 }
             }
         });
