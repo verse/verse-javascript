@@ -30,7 +30,8 @@
 define(['Int64', 'command'], function(Int64, command) {
     'use strict';
 
-    var commands, routines, data_types, tag, getTagSetCommons, getTagSetUint8, getTagSetUint16,
+    var commands, get_routines, set_routines, data_types, data_type_len, op_codes, tag,
+        getTagSetCommons, getTagSetUint8, getTagSetUint16,
         getTagSetUint32, getTagSetUint64, getTagSetFloat16,
         getTagSetFloat32, getTagSetFloat64, getTagSetString8;
 
@@ -300,9 +301,9 @@ define(['Int64', 'command'], function(Int64, command) {
 
 
     /*
-     * routines - parsing functions for tag commands from server
+     * get_routines - parsing functions for tag commands from server
      */
-    routines = {
+    get_routines = {
         68: function getTagCreate(opCode, receivedView, bufferPosition) {
             var result;
             result = getTagSetCommons(opCode, receivedView, bufferPosition);
@@ -351,6 +352,54 @@ define(['Int64', 'command'], function(Int64, command) {
         98: getTagSetString8
     };
 
+    /*
+     * set_routines - setting values of tags
+     */
+    set_routines = {
+        'UINT8': function setTagSetUint8(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setUint8(11 + i, values[i]);
+            }
+        },
+        'UINT16': function setTagSetUint16(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setUint16(11 + 2 * i, values[i]);
+            }
+        },
+        'UINT32': function setTagSetUint32(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setUint32(11 + 4 * i, values[i]);
+            }
+        },
+        'UINT64': function setTagSetUint64(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setUint16(11 + 8 * i, values[i]);
+            }
+        },
+        'REAL16': null,
+        'REAL32': function setTagSetReal32(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setFloat32(11 + 4 * i, values[i]);
+            }
+        },
+        'REAL64': function setTagSetReal64(view, values) {
+            for (var i = 0; i < values.length; i++) {
+                view.setFloat64(11 + 4 * i, values[i]);
+            }
+        },
+        'STRING8': function setTagSetString8(view, values) {
+            var n;
+            // Encode length of the string
+            view.setUint8(11, values[0].length);
+            for (var i = 0; i < values[0].length; i++) {
+                n = values[0].charCodeAt(i);
+                if (n >= 0 && n < 128) {
+                    view.setUint8(12 + i, n);
+                }
+                // TODO: encode properly other unicode values
+            }
+        }
+    };
 
     /*
      * allowed names of tag data types
@@ -366,6 +415,31 @@ define(['Int64', 'command'], function(Int64, command) {
         'STRING8': 8
     };
 
+    /*
+     * data types length in memory
+     */
+    data_type_len = {
+        'UINT8': 1,
+        'UINT16': 2,
+        'UINT32': 4,
+        'UINT64': 8,
+        'REAL16': 2,
+        'REAL32': 4,
+        'REAL64': 8
+    };
+
+    /*
+     * basic OpCodes (with one value) for data types
+     */
+    op_codes = {
+        'UINT8': 70,
+        'UINT16': 74,
+        'UINT32': 78,
+        'UINT64': 82,
+        'REAL16': 86,
+        'REAL32': 90,
+        'REAL64': 94
+    };
 
     tag = {
 
@@ -373,7 +447,7 @@ define(['Int64', 'command'], function(Int64, command) {
          * parse received buffer for tag command VALUES
          */
         getTagValues: function getTagValues(opCode, receivedView, bufferPosition, length) {
-            var result = routines[opCode](opCode, receivedView, bufferPosition, length);
+            var result = get_routines[opCode](opCode, receivedView, bufferPosition, length);
             return result;
         },
 
@@ -384,7 +458,7 @@ define(['Int64', 'command'], function(Int64, command) {
             var cmd, view;
             cmd = command.template(15, 68);
             view = new DataView(cmd);
-            view.setUint8(3, 0); //share
+            view.setUint8(2, 0); //share
             view.setUint32(3, nodeId);
             view.setUint16(7, tagGroupId);
             view.setUint16(9, 65535); // tag ID will be defined by server
@@ -405,12 +479,40 @@ define(['Int64', 'command'], function(Int64, command) {
             var cmd, view;
             cmd = command.template(11, 69);
             view = new DataView(cmd);
-            view.setUint8(3, 0); //share
+            view.setUint8(2, 0); //share
             view.setUint32(3, nodeId);
             view.setUint16(7, tagGroupId);
             view.setUint16(9, tagId);
             return cmd;
-        }
+        },
+
+        /*
+         * set/change value of tag at verse server
+         */
+         set: function(nodeId, tagGroupId, tagId, dataType, values) {
+            var cmd, view, cmd_len;
+            // Compute length of the command and create almost empty command
+            if ( data_types.hasOwnProperty(dataType) ) {
+                if (dataType === 'STRING8') {
+                    // Tag can contain only one string!
+                    cmd_len = 11 + 1 + values[0].length;
+                    cmd = command.template(cmd_len, 98);
+                } else {
+                    cmd_len = 11 + ( values.length * data_type_len[dataType] );
+                    cmd = command.template(cmd_len, op_codes[dataType] + values.length - 1);
+                }
+            } else {
+                return null;
+            }
+            view = new DataView(cmd);
+            view.setUint8(2, 0); //share
+            view.setUint32(3, nodeId);
+            view.setUint16(7, tagGroupId);
+            view.setUint16(9, tagId);
+            set_routines[dataType](view, values);
+
+            return cmd;
+         }
     };
 
     return tag;

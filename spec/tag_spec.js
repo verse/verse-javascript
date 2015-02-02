@@ -114,8 +114,184 @@ define(["tag"], function(tag) {
             it("tag (byte 10) id should be 2", function() {
                 expect(view.getUint16(9)).toEqual(2);
             });
-
         });
+
+        describe("Prepare Tag set command (two uint8 items)", function() {
+            beforeEach(function() {
+                // node_id, tg_id, tag_id, data_type, array of values
+                testCommand = tag.set(183, 18, 2, 'UINT8', [1, 2]);
+                view = new DataView(testCommand);
+            });
+
+            it("length of tag set command should be equal to 13", function() {
+                expect(testCommand.byteLength).toEqual(13);
+            });
+
+            it("first byte - opcode - should be 71", function() {
+                expect(view.getUint8(0)).toEqual(71);
+            });
+
+            it("second byte - message length - should be 13 ", function() {
+                expect(view.getUint8(1)).toEqual(13);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 183", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("tagGroup (byte 8) id should be 17", function() {
+                expect(view.getUint16(7)).toEqual(18);
+            });
+
+            it("tag (byte 10) id should be 2", function() {
+                expect(view.getUint16(9)).toEqual(2);
+            });
+
+            it("1st value (byte 11) should be 1", function() {
+                expect(view.getUint8(11)).toEqual(1);
+            });
+
+            it("2nd value (byte 12) should be 2", function() {
+                expect(view.getUint8(12)).toEqual(2);
+            });
+        });
+
+        describe("Prepare Tag set command (two uint16 items)", function() {
+            beforeEach(function() {
+                // node_id, tg_id, tag_id, data_type, array of values
+                testCommand = tag.set(183, 18, 2, 'UINT16', [1001, 1002]);
+                view = new DataView(testCommand);
+            });
+
+            it("length of tag set command should be equal to 15", function() {
+                expect(testCommand.byteLength).toEqual(15);
+            });
+
+            it("first byte - opcode - should be 75", function() {
+                expect(view.getUint8(0)).toEqual(75);
+            });
+
+            it("second byte - message length - should be 15 ", function() {
+                expect(view.getUint8(1)).toEqual(15);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 183", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("tagGroup (byte 8) id should be 17", function() {
+                expect(view.getUint16(7)).toEqual(18);
+            });
+
+            it("tag (byte 10) id should be 2", function() {
+                expect(view.getUint16(9)).toEqual(2);
+            });
+
+            it("1st value (byte 11) should be 1001", function() {
+                expect(view.getUint16(11)).toEqual(1001);
+            });
+
+            it("2nd value (byte 14) should be 1002", function() {
+                expect(view.getUint16(13)).toEqual(1002);
+            });
+        });
+
+        describe("Prepare Tag set command (two uint32 items)", function() {
+            beforeEach(function() {
+                // node_id, tg_id, tag_id, data_type, array of values
+                testCommand = tag.set(183, 18, 2, 'UINT32', [100001, 100002]);
+                view = new DataView(testCommand);
+            });
+
+            it("length of tag set command should be equal to 19", function() {
+                expect(testCommand.byteLength).toEqual(19);
+            });
+
+            it("first byte - opcode - should be 79", function() {
+                expect(view.getUint8(0)).toEqual(79);
+            });
+
+            it("second byte - message length - should be 19 ", function() {
+                expect(view.getUint8(1)).toEqual(19);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 183", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("tagGroup (byte 8) id should be 17", function() {
+                expect(view.getUint16(7)).toEqual(18);
+            });
+
+            it("tag (byte 10) id should be 2", function() {
+                expect(view.getUint16(9)).toEqual(2);
+            });
+
+            it("1st value (byte 11) should be 100001", function() {
+                expect(view.getUint32(11)).toEqual(100001);
+            });
+
+            it("2nd value (byte 16) should be 100002", function() {
+                expect(view.getUint32(15)).toEqual(100002);
+            });
+        });
+
+        describe("Prepare Tag set command (two real32 items)", function() {
+            beforeEach(function() {
+                // node_id, tg_id, tag_id, data_type, array of values
+                testCommand = tag.set(183, 18, 2, 'REAL32', [3.141592, 2.718281]);
+                view = new DataView(testCommand);
+            });
+
+            it("length of tag set command should be equal to 19", function() {
+                expect(testCommand.byteLength).toEqual(19);
+            });
+
+            it("first byte - opcode - should be 91", function() {
+                expect(view.getUint8(0)).toEqual(91);
+            });
+
+            it("second byte - message length - should be 19 ", function() {
+                expect(view.getUint8(1)).toEqual(19);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 183", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("tagGroup (byte 8) id should be 17", function() {
+                expect(view.getUint16(7)).toEqual(18);
+            });
+
+            it("tag (byte 10) id should be 2", function() {
+                expect(view.getUint16(9)).toEqual(2);
+            });
+
+            it("1st value (byte 11) should be 3.141592", function() {
+                expect(view.getFloat32(11)).toBeCloseTo(3.141592);
+            });
+
+            it("2nd value (byte 16) should be 2.718281", function() {
+                expect(view.getFloat32(15)).toBeCloseTo(2.718281);
+            });
+        });
+
 
         describe("got tagCreate from server", function() {
             beforeEach(function() {
@@ -133,7 +309,6 @@ define(["tag"], function(tag) {
                 view.setUint8(11, 3); //Data Type
                 view.setUint8(12, 4); //Count
                 view.setUint16(13, 298); //custom type
-
             });
 
             it("command should be parsed out as TAG_CREATE, NODE_ID = 111 object", function() {

@@ -371,8 +371,8 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
              * create new tag at verse server
              * @param nodeId uint32
              * @param tagGroupId uint16
-             * @param tagGroupId uint16
-             * @param dataType uint8
+             * @param dataType string const
+             *   ('UINT8', 'UINT16', 'UINT32', 'UINT64', 'RELA16', 'RELA32', 'RELA64', 'STRING8')
              * @param count uint8
              * @param customType uint16
              */
@@ -386,11 +386,26 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
              * destroy existing tag at verse server
              * @param nodeId uint32
              * @param tagGroupId uint16
-             * @param tagGroupId uint16
              * @param tagId uint16
              */
             tagDestroy: function tagDestroy(nodeId, tagGroupId, tagId) {
                 var buf = tag.destroy(nodeId, tagGroupId, tagId);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
+             * set/change value of existing tag at verse server
+             * @param nodeId uint32
+             * @param tagGroupId uint16
+             * @param tagId uint16
+             * @param dataType string const
+             *   ('UINT8', 'UINT16', 'UINT32', 'UINT64', 'RELA16', 'RELA32', 'RELA64', 'STRING8')
+             * @param values array of values (each item of array has to have same type, e.g. int)
+             * @note when dataType is 'STRING8', then array of values can contain only one item
+             */
+            tagSet: function tagSet(nodeId, tagGroupId, tagId, dataType, values) {
+                var buf = tag.set(nodeId, tagGroupId, tagId, dataType, values);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
             },
