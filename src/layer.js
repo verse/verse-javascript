@@ -426,36 +426,54 @@ define(['command', 'Int64'], function(command, Int64) {
      * routines for setting values of layer items
      */
     set_routines = {
-        'UINT8': function setItemsUint8(view, values) {
+        'UINT8': function setItemsUint8(view, buf_pos, values) {
+            var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setUint8(13 + i, values[i]);
+                view.setUint8(buf_pos + i, values[i]);
+                size += 1;
             }
+            return size;
         },
-        'UINT16': function setItemsUint16(view, values) {
+        'UINT16': function setItemsUint16(view, buf_pos, values) {
+            var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setUint16(13 + 2*i, values[i]);
+                view.setUint16(buf_pos + 2*i, values[i]);
+                size += 2;
             }
+            return size;
         },
-        'UINT32': function setItemsUint32(view, values) {
+        'UINT32': function setItemsUint32(view, buf_pos, values) {
+            var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setUint32(13 + 4*i, values[i]);
+                view.setUint32(buf_pos + 4*i, values[i]);
+                size += 4;
             }
+            return size;
         },
-        'UINT64': function setItemsUint64(view, values) {
+        'UINT64': function setItemsUint64(view, buf_pos, values) {
+            var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setUint64(13 + 8*i, values[i]);
+                view.setUint64(buf_pos + 8*i, values[i]);
+                size += 8;
             }
+            return size;
         },
         'REAL16': null,
-        'REAL32': function setItemsReal32(view, values) {
+        'REAL32': function setItemsReal32(view, buf_pos, values) {
+            var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setFloat32(13 + 4*i, values[i]);
+                view.setFloat32(buf_pos + 4*i, values[i]);
+                size += 4;
             }
+            return size;
         },
-        'REAL64': function setItemsReal64(view, values) {
+        'REAL64': function setItemsReal64(view, buf_pos, values) {
+            var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setFloat64(13 + 8*i, values[i]);
+                view.setFloat64(buf_pos + 8*i, values[i]);
+                size += 8;
             }
+            return size;
         }
     };
 
@@ -493,8 +511,8 @@ define(['command', 'Int64'], function(command, Int64) {
 
         /*
          * destroy existing layer at verse server
-         * @param nodeId int32
-         * @param layerId int16
+         * @param nodeId uint32
+         * @param layerId uint16
          */
         destroy: function(nodeId, layerId) {
             var cmd, view;
@@ -508,8 +526,8 @@ define(['command', 'Int64'], function(command, Int64) {
 
         /*
          * subscribe layer commad OpCode 130
-         * @param nodeId int32
-         * @param layerId int16
+         * @param nodeId uint32
+         * @param layerId uint16
          */
         subscribe: function(nodeId, layerId) {
             return sendLayerSubUnsub(130, nodeId, layerId);
@@ -517,8 +535,8 @@ define(['command', 'Int64'], function(command, Int64) {
 
         /*
          * unsubscribe layer commad OpCode 131
-         * @param nodeId int32
-         * @param layerId int16
+         * @param nodeId uint32
+         * @param layerId uint16
          */
         unsubscribe: function(nodeId, layerId) {
             return sendLayerSubUnsub(131, nodeId, layerId);
@@ -526,49 +544,64 @@ define(['command', 'Int64'], function(command, Int64) {
 
         /*
          * unset value of item layer at verse server
-         * @param nodeId int32
-         * @param layerId int16
-         * @param itemId int32
+         * @param nodeId uint32
+         * @param layerId uint16
+         * @param itemIds array of uint32
          */
-        unset: function(nodeId, layerId, itemId) {
-            var cmd, view;
-            cmd = command.template(13, 132);
+        unsetItems: function(nodeId, layerId, itemIds) {
+            var cmd, view, cmd_len;
+            cmd = command.template(9 + 4 * itemIds.length, 132);
             view = new DataView(cmd);
-            view.setUint8(3, 0); //share
+            view.setUint8(2, 6); //share
             view.setUint32(3, nodeId);
             view.setUint16(7, layerId);
-            view.setUint32(9, itemId);
+            for (var i = 0; i < itemIds.length; i++) {
+                view.setUint32(9 + 4 * i, itemIds[i]);
+            }
             return cmd;
         },
 
         /*
          * set values of layer item at verse server
-         * @param nodeId
-         * @param layerId
-         * @param itemId
-         * @param dataType
-         * @param values
+         * @param nodeId uint32
+         * @param layerId uint16
+         * @param dataType string
+         * @param items object containing arrays of items
          */
-        set: function(nodeId, layerId, itemId, dataType, values) {
+        setItems: function(nodeId, layerId, dataType, items) {
             var cmd, view, cmd_len;
+            var val_count = 0, key, buf_pos;
+            // Compute number of items
+            for (key in items) {
+                if (items.hasOwnProperty(key)) {
+                    val_count++;
+                }
+            }
             // Try to compute length of the command first
             if ( data_types.hasOwnProperty(dataType) ) {
-                cmd_len = 13 + values.length*data_type_len[dataType];
+                cmd_len = 9 + val_count * (4 + items[key].length * data_type_len[dataType]);
             } else {
                 return null;
             }
-            cmd = command.template(cmd_len, op_codes[dataType] + values.length - 1);
+            cmd = command.template(cmd_len, op_codes[dataType] + items[key].length - 1);
             view = new DataView(cmd);
-            view.setUint8(3, 0); //share
+            view.setUint8(2, 6); // nodeId and layerId will be shared
             view.setUint32(3, nodeId);
             view.setUint16(7, layerId);
-            view.setUint32(9, itemId);
-            set_routines[dataType](view, values);
+            // Set values of items
+            buf_pos = 9;
+            for (key in items) {
+                // Set item ID first
+                view.setUint32(buf_pos, key);
+                buf_pos += 4;
+                // Then set values of item
+                buf_pos += set_routines[dataType](view, buf_pos, items[key]);
+            }
             return cmd;
         },
 
         /*
-         * parse received buffer for tag command VALUES
+         * parse received buffer for layer command VALUES
          */
         getLayerValues: function getLayerValues(opCode, receivedView, bufferPosition, length) {
             var result = get_routines[opCode](opCode, receivedView, bufferPosition, length);

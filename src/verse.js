@@ -401,7 +401,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
              * create new layer on server
              * @param nodeId uint32
              * @param parentLayerId uint16
-             * @param dataType uint8
+             * @param dataType string
              * @param count uint8
              * @param customType uint16
              */
@@ -448,10 +448,23 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
              * unset item layer on server
              * @param nodeId uint32
              * @param layerId uint16
-             * @param itemId uint32
+             * @param itemIds array of uint32 (e.g.: [0, 1, 2])
              */
-            layerUnSetItem: function layerUnSetItem(nodeId, layerId, itemId) {
-                var buf = layer.unset(nodeId, layerId, itemId);
+            layerUnSetItems: function layerUnSetItems(nodeId, layerId, itemIds) {
+                var buf = layer.unsetItems(nodeId, layerId, itemIds);
+                buf = request.message(buf);
+                myWebscoket.send(buf);
+            },
+
+            /*
+             * set items of layer on server
+             * @param nodeId uint32
+             * @param layerId uint16
+             * @param dataType string
+             * @param items object of arrays (e.g.: {0: [1.0, 0.0], 1: [1.0, -1.0]} )
+             */
+            layerSetItems: function layerSetItems(nodeId, layerId, dataTypes, items) {
+                var buf = layer.setItems(nodeId, layerId, dataTypes, items);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
             }
