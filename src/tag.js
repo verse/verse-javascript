@@ -373,7 +373,8 @@ define(['Int64', 'command'], function(Int64, command) {
         },
         'UINT64': function setTagSetUint64(view, values) {
             for (var i = 0; i < values.length; i++) {
-                view.setUint16(11 + 8 * i, values[i]);
+                // Javascript currently supports only 32-bit integers
+                view.setUint32(11 + 4 + 8 * i, values[i]);
             }
         },
         'REAL16': null,
@@ -384,7 +385,7 @@ define(['Int64', 'command'], function(Int64, command) {
         },
         'REAL64': function setTagSetReal64(view, values) {
             for (var i = 0; i < values.length; i++) {
-                view.setFloat64(11 + 4 * i, values[i]);
+                view.setFloat64(11 + 8 * i, values[i]);
             }
         },
         'STRING8': function setTagSetString8(view, values) {

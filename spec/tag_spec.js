@@ -151,7 +151,7 @@ define(["tag"], function(tag) {
                 expect(view.getUint16(9)).toEqual(2);
             });
 
-            it("1st value (byte 11) should be 1", function() {
+            it("1st value (byte 12) should be 1", function() {
                 expect(view.getUint8(11)).toEqual(1);
             });
 
@@ -195,7 +195,7 @@ define(["tag"], function(tag) {
                 expect(view.getUint16(9)).toEqual(2);
             });
 
-            it("1st value (byte 11) should be 1001", function() {
+            it("1st value (byte 12) should be 1001", function() {
                 expect(view.getUint16(11)).toEqual(1001);
             });
 
@@ -239,12 +239,56 @@ define(["tag"], function(tag) {
                 expect(view.getUint16(9)).toEqual(2);
             });
 
-            it("1st value (byte 11) should be 100001", function() {
+            it("1st value (byte 12) should be 100001", function() {
                 expect(view.getUint32(11)).toEqual(100001);
             });
 
             it("2nd value (byte 16) should be 100002", function() {
                 expect(view.getUint32(15)).toEqual(100002);
+            });
+        });
+
+        describe("Prepare Tag set command (two uint64 items)", function() {
+            beforeEach(function() {
+                // node_id, tg_id, tag_id, data_type, array of values
+                testCommand = tag.set(183, 18, 2, 'UINT64', [100001, 100002]);
+                view = new DataView(testCommand);
+            });
+
+            it("length of tag set command should be equal to 27", function() {
+                expect(testCommand.byteLength).toEqual(27);
+            });
+
+            it("first byte - opcode - should be 83", function() {
+                expect(view.getUint8(0)).toEqual(83);
+            });
+
+            it("second byte - message length - should be 27 ", function() {
+                expect(view.getUint8(1)).toEqual(27);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 183", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("tagGroup (byte 8) id should be 17", function() {
+                expect(view.getUint16(7)).toEqual(18);
+            });
+
+            it("tag (byte 10) id should be 2", function() {
+                expect(view.getUint16(9)).toEqual(2);
+            });
+
+            it("1st value (byte 12) should be 100001", function() {
+                expect(view.getUint32(11 + 4)).toEqual(100001);
+            });
+
+            it("2nd value (byte 20) should be 100002", function() {
+                expect(view.getUint32(19 + 4)).toEqual(100002);
             });
         });
 
@@ -283,7 +327,7 @@ define(["tag"], function(tag) {
                 expect(view.getUint16(9)).toEqual(2);
             });
 
-            it("1st value (byte 11) should be 3.141592", function() {
+            it("1st value (byte 12) should be 3.141592", function() {
                 expect(view.getFloat32(11)).toBeCloseTo(3.141592);
             });
 
@@ -292,6 +336,50 @@ define(["tag"], function(tag) {
             });
         });
 
+
+        describe("Prepare Tag set command (two real64 items)", function() {
+            beforeEach(function() {
+                // node_id, tg_id, tag_id, data_type, array of values
+                testCommand = tag.set(183, 18, 2, 'REAL64', [3.141592, 2.718281]);
+                view = new DataView(testCommand);
+            });
+
+            it("length of tag set command should be equal to 27", function() {
+                expect(testCommand.byteLength).toEqual(27);
+            });
+
+            it("first byte - opcode - should be 95", function() {
+                expect(view.getUint8(0)).toEqual(95);
+            });
+
+            it("second byte - message length - should be 27 ", function() {
+                expect(view.getUint8(1)).toEqual(27);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 183", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("tagGroup (byte 8) id should be 17", function() {
+                expect(view.getUint16(7)).toEqual(18);
+            });
+
+            it("tag (byte 10) id should be 2", function() {
+                expect(view.getUint16(9)).toEqual(2);
+            });
+
+            it("1st value (byte 12) should be 3.141592", function() {
+                expect(view.getFloat64(11)).toBeCloseTo(3.141592);
+            });
+
+            it("2nd value (byte 20) should be 2.718281", function() {
+                expect(view.getFloat64(19)).toBeCloseTo(2.718281);
+            });
+        });
 
         describe("got tagCreate from server", function() {
             beforeEach(function() {
