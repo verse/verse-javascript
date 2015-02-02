@@ -677,7 +677,7 @@ define(["layer"], function(layer) {
             });
         });
 
-        describe("Layer Set command (one item)", function() {
+        describe("Layer Set command (one uint8 item)", function() {
             beforeEach(function() {
                 // node_it, layer_id, data_type, { item_id: [values of one item] }
                 testCommand = layer.setItems(182, 31, 'UINT8', {6: [1, 2, 3]});
@@ -726,7 +726,7 @@ define(["layer"], function(layer) {
         });
 
 
-        describe("Layer Set command (two item)", function() {
+        describe("Layer Set command (two uint8 item)", function() {
             beforeEach(function() {
                 // node_it, layer_id, data_type, { item_id: [values of one item], ... }
                 testCommand = layer.setItems(182, 31, 'UINT8', {6: [1, 2], 8: [3, 4]});
@@ -737,7 +737,7 @@ define(["layer"], function(layer) {
                 expect(testCommand.byteLength).toEqual(21);
             });
 
-            it("first byte - opcode - should be 135", function() {
+            it("first byte - opcode - should be 134", function() {
                 expect(view.getUint8(0)).toEqual(134);
             });
 
@@ -781,6 +781,176 @@ define(["layer"], function(layer) {
                 expect(view.getUint8(20)).toEqual(4);
             });
         });
+
+        describe("Layer Set command (two uint16 item)", function() {
+            beforeEach(function() {
+                // node_it, layer_id, data_type, { item_id: [values of one item], ... }
+                testCommand = layer.setItems(182, 31, 'UINT16', {6: [1001, 1002], 8: [1003, 1004]});
+                view = new DataView(testCommand);
+            });
+
+            it("length of the command should be equal to 25", function() {
+                expect(testCommand.byteLength).toEqual(25);
+            });
+
+            it("first byte - opcode - should be 138", function() {
+                expect(view.getUint8(0)).toEqual(138);
+            });
+
+            it("second byte - message length - should be 25", function() {
+                expect(view.getUint8(1)).toEqual(25);
+            });
+
+            it("third byte - share - should be 6", function() {
+                expect(view.getUint8(2)).toEqual(6);
+            });
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("Layer ID (byte 8) should be 31", function() {
+                expect(view.getUint16(7)).toEqual(31);
+            });
+
+            it("1st Item ID (byte 10) should be 6", function() {
+                expect(view.getUint32(9)).toEqual(6);
+            });
+
+            it("1st value of item (byte 14) should be 1001", function() {
+                expect(view.getUint16(13)).toEqual(1001);
+            });
+
+            it("2nd value of item (byte 16) should be 1002", function() {
+                expect(view.getUint16(15)).toEqual(1002);
+            });
+
+            it("2nd Item ID (byte 18) should be 8", function() {
+                expect(view.getUint32(17)).toEqual(8);
+            });
+
+            it("1st value of item (byte 20) should be 1003", function() {
+                expect(view.getUint16(21)).toEqual(1003);
+            });
+
+            it("2nd value of item (byte 21) should be 1004", function() {
+                expect(view.getUint16(23)).toEqual(1004);
+            });
+        });
+
+        describe("Layer Set command (two uint32 item)", function() {
+            beforeEach(function() {
+                // node_it, layer_id, data_type, { item_id: [values of one item], ... }
+                testCommand = layer.setItems(182, 31, 'UINT32', {6: [100001, 100002], 8: [100003, 100004]});
+                view = new DataView(testCommand);
+            });
+
+            it("length of the command should be equal to 33", function() {
+                expect(testCommand.byteLength).toEqual(33);
+            });
+
+            it("first byte - opcode - should be 142", function() {
+                expect(view.getUint8(0)).toEqual(142);
+            });
+
+            it("second byte - message length - should be 33", function() {
+                expect(view.getUint8(1)).toEqual(33);
+            });
+
+            it("third byte - share - should be 6", function() {
+                expect(view.getUint8(2)).toEqual(6);
+            });
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("Layer ID (byte 8) should be 31", function() {
+                expect(view.getUint16(7)).toEqual(31);
+            });
+
+            it("1st Item ID (byte 10) should be 6", function() {
+                expect(view.getUint32(9)).toEqual(6);
+            });
+
+            it("1st value of item (byte 14) should be 100001", function() {
+                expect(view.getUint32(13)).toEqual(100001);
+            });
+
+            it("2nd value of item (byte 18) should be 100002", function() {
+                expect(view.getUint32(17)).toEqual(100002);
+            });
+
+            it("2nd Item ID (byte 18) should be 8", function() {
+                expect(view.getUint32(21)).toEqual(8);
+            });
+
+            it("1st value of item (byte 20) should be 100003", function() {
+                expect(view.getUint32(25)).toEqual(100003);
+            });
+
+            it("2nd value of item (byte 21) should be 100004", function() {
+                expect(view.getUint32(29)).toEqual(100004);
+            });
+        });
+
+
+        describe("Layer Set command (two uint64 item)", function() {
+            beforeEach(function() {
+                // node_it, layer_id, data_type, { item_id: [values of one item], ... }
+                testCommand = layer.setItems(182, 31, 'UINT64', {6: [100001, 100002], 8: [100003, 100004]});
+                view = new DataView(testCommand);
+            });
+
+            it("length of the command should be equal to 49", function() {
+                expect(testCommand.byteLength).toEqual(49);
+            });
+
+            it("first byte - opcode - should be 142", function() {
+                expect(view.getUint8(0)).toEqual(146);
+            });
+
+            it("second byte - message length - should be 49", function() {
+                expect(view.getUint8(1)).toEqual(49);
+            });
+
+            it("third byte - share - should be 6", function() {
+                expect(view.getUint8(2)).toEqual(6);
+            });
+
+            it("fourth byte node ID should be 182", function() {
+                expect(view.getUint32(3)).toEqual(182);
+            });
+
+            it("Layer ID (byte 8) should be 31", function() {
+                expect(view.getUint16(7)).toEqual(31);
+            });
+
+            it("1st Item ID (byte 10) should be 6", function() {
+                expect(view.getUint32(9)).toEqual(6);
+            });
+
+            it("1st value of item (byte 14) should be 100001", function() {
+                expect(view.getUint32(13 + 4)).toEqual(100001);
+            });
+
+            it("2nd value of item (byte 18) should be 100002", function() {
+                expect(view.getUint32(21 + 4)).toEqual(100002);
+            });
+
+            it("2nd Item ID (byte 18) should be 8", function() {
+                expect(view.getUint32(29)).toEqual(8);
+            });
+
+            it("1st value of item (byte 20) should be 100003", function() {
+                expect(view.getUint32(33 + 4)).toEqual(100003);
+            });
+
+            it("2nd value of item (byte 21) should be 100004", function() {
+                expect(view.getUint32(41 + 4)).toEqual(100004);
+            });
+        });
+
     });
 
 

@@ -437,7 +437,7 @@ define(['command', 'Int64'], function(command, Int64) {
         'UINT16': function setItemsUint16(view, buf_pos, values) {
             var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setUint16(buf_pos + 2*i, values[i]);
+                view.setUint16(buf_pos + 2 * i, values[i]);
                 size += 2;
             }
             return size;
@@ -445,7 +445,7 @@ define(['command', 'Int64'], function(command, Int64) {
         'UINT32': function setItemsUint32(view, buf_pos, values) {
             var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setUint32(buf_pos + 4*i, values[i]);
+                view.setUint32(buf_pos + 4 * i, values[i]);
                 size += 4;
             }
             return size;
@@ -453,7 +453,8 @@ define(['command', 'Int64'], function(command, Int64) {
         'UINT64': function setItemsUint64(view, buf_pos, values) {
             var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setUint64(buf_pos + 8*i, values[i]);
+                // Javascript supports only 32-bit integers
+                view.setUint32(buf_pos + 4 + 8 * i, values[i]);
                 size += 8;
             }
             return size;
@@ -462,7 +463,7 @@ define(['command', 'Int64'], function(command, Int64) {
         'REAL32': function setItemsReal32(view, buf_pos, values) {
             var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setFloat32(buf_pos + 4*i, values[i]);
+                view.setFloat32(buf_pos + 4 * i, values[i]);
                 size += 4;
             }
             return size;
@@ -470,7 +471,7 @@ define(['command', 'Int64'], function(command, Int64) {
         'REAL64': function setItemsReal64(view, buf_pos, values) {
             var size = 0;
             for (var i = 0; i < values.length; i++) {
-                view.setFloat64(buf_pos + 8*i, values[i]);
+                view.setFloat64(buf_pos + 8 * i, values[i]);
                 size += 8;
             }
             return size;
