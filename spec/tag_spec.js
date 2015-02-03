@@ -81,6 +81,14 @@ define(["tag"], function(tag) {
             });
         });
 
+        describe("Tag create command (wrong data type)", function() {
+            it("the command should not be created", function() {
+                // REAL8 is not any data type
+                testCommand = tag.create(182, 17, 'REAL8', 4, 299);
+                expect(testCommand === null);
+            });
+        });
+
         describe("Prepare Tag destroy command", function() {
             beforeEach(function() {
                 testCommand = tag.destroy(183, 18, 2); // node_id, tg_id, tag_id
@@ -157,6 +165,14 @@ define(["tag"], function(tag) {
 
             it("2nd value (byte 12) should be 2", function() {
                 expect(view.getUint8(12)).toEqual(2);
+            });
+        });
+
+        describe("Tag set command (wrong data type)", function() {
+            it("the command should not be created", function() {
+                // REAL8 is not any data type
+                testCommand = tag.set(182, 17, 2, 'REAL8', [3.14]);
+                expect(testCommand === null);
             });
         });
 
@@ -336,7 +352,6 @@ define(["tag"], function(tag) {
             });
         });
 
-
         describe("Prepare Tag set command (two real64 items)", function() {
             beforeEach(function() {
                 // node_id, tg_id, tag_id, data_type, array of values
@@ -378,6 +393,62 @@ define(["tag"], function(tag) {
 
             it("2nd value (byte 20) should be 2.718281", function() {
                 expect(view.getFloat64(19)).toBeCloseTo(2.718281);
+            });
+        });
+
+        describe("Prepare Tag set command (one string)", function() {
+            beforeEach(function() {
+                // node_id, tg_id, tag_id, data_type, array of values
+                testCommand = tag.set(183, 18, 2, 'STRING8', ['Ahoj']);
+                view = new DataView(testCommand);
+            });
+
+            it("length of tag set command should be equal to 16", function() {
+                expect(testCommand.byteLength).toEqual(16);
+            });
+
+            it("first byte - opcode - should be 98", function() {
+                expect(view.getUint8(0)).toEqual(98);
+            });
+
+            it("second byte - message length - should be 16 ", function() {
+                expect(view.getUint8(1)).toEqual(16);
+            });
+
+            it("third byte - share - should be 0 ", function() {
+                expect(view.getUint8(2)).toEqual(0);
+            });
+
+            it("fourth byte node ID should be 183", function() {
+                expect(view.getUint32(3)).toEqual(183);
+            });
+
+            it("tagGroup (byte 8) id should be 17", function() {
+                expect(view.getUint16(7)).toEqual(18);
+            });
+
+            it("tag (byte 10) id should be 2", function() {
+                expect(view.getUint16(9)).toEqual(2);
+            });
+
+            it("String length should be 4", function() {
+                expect(view.getUint8(11)).toEqual(4);
+            });
+
+            it("1st character should be 'A'", function() {
+                expect(view.getUint8(12)).toEqual('A'.charCodeAt(0));
+            });
+
+            it("2nd character should be 'h'", function() {
+                expect(view.getUint8(13)).toEqual('h'.charCodeAt(0));
+            });
+
+            it("3th character should be 'o'", function() {
+                expect(view.getUint8(14)).toEqual('o'.charCodeAt(0));
+            });
+
+            it("4th character should be 'j'", function() {
+                expect(view.getUint8(15)).toEqual('j'.charCodeAt(0));
             });
         });
 
