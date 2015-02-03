@@ -42,25 +42,25 @@ define(['verse'], function(verse) {
                     passwd: 'paswd'
                 };
 
+                // Spy on init function of verse object
                 spyOn(verse, 'init');
+
+                // Spy on atempt of connecting to server using WebSocket
                 spyOn(window, 'WebSocket').and.returnValue(function() {
                     return {
                         onmessage: null
                     };
                 });
+
                 verse.init(config);
             });
 
-
-            it("tracks that the spy was called", function() {
+            it("Tracks that the verse.init was called", function() {
                 expect(verse.init).toHaveBeenCalledWith(config);
             });
 
-            
         });
 
-
     });
-
 
 });

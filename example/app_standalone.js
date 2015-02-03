@@ -107,13 +107,13 @@
         data.forEach(function(cmd) {
             console.log(cmd);
             if (cmd.CMD === 'TAG_CREATE') {
-                // TODO: test of setting tag value
+                // Test of setting tag value
                 if (cmd.NODE_ID === testNodeId && cmd.TAG_GROUP_ID === testTagGroupId && cmd.CUSTOM_TYPE === 3100) {
                     testTagId = cmd.TAG_ID;
                     verse.tagSet(prio, cmd.NODE_ID, cmd.TAG_GROUP_ID, cmd.TAG_ID, 'UINT32', [88888, 99999]);
                     console.log('sending tag value for tag with custom type: 3100');
                 }
-                // Testo of destroying of existing tag group
+                // Test of destroying of existing tag group
                 if (cmd.NODE_ID === testNodeId && cmd.TAG_GROUP_ID === testTagGroupId && cmd.CUSTOM_TYPE === 3101) {
                     verse.tagDestroy(prio, cmd.NODE_ID, cmd.TAG_GROUP_ID, cmd.TAG_ID);
                     console.log('destroying tag with custom type: 3101');
