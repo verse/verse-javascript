@@ -760,7 +760,6 @@ define(["layer"], function(layer) {
             });
         });
 
-
         describe("Layer Set command (wrong data type)", function() {
             it("the command should not be created", function() {
                 // String8 is not supported by layers
