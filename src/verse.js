@@ -202,11 +202,12 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * create new node on server
+             * @param prio uint8 (priority of command)
              * @param userId uint16
              * @param avatarId uint32
              * @param customType uint16
              */
-            nodeCreate: function nodeCreate(userId, avatarId, customType) {
+            nodeCreate: function nodeCreate(prio, userId, avatarId, customType) {
                 var buf = node.create(userId, avatarId, customType);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -214,9 +215,10 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * destroy existing node on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              */
-            nodeDestroy: function nodeDestroy(nodeId) {
+            nodeDestroy: function nodeDestroy(prio, nodeId) {
                 var buf = node.destroy(nodeId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -224,9 +226,10 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * subscribe node on server
-             * @param nodeId int
+             * @param prio uint8 (priority of command)
+             * @param nodeId uint32
              */
-            nodeSubscribe: function nodeSubscribe(nodeId) {
+            nodeSubscribe: function nodeSubscribe(prio, nodeId) {
                 var buf = node.subscribe(nodeId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -234,9 +237,10 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * unsubscribe from node on server
-             * @param nodeId int
+             * @param prio uint8 (priority of command)
+             * @param nodeId uint32
              */
-            nodeUnSubscribe: function nodeUnSubscribe(nodeId) {
+            nodeUnSubscribe: function nodeUnSubscribe(prio, nodeId) {
                 var buf = node.unsubscribe(nodeId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -244,10 +248,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * link two nodes
+             * @param prio uint8 (priority of command)
              * @param parenNodeId uint32
              * @param childNodeId uint32
              */
-            nodeLink: function nodeLink(parenNodeId, childNodeId) {
+            nodeLink: function nodeLink(prio, parenNodeId, childNodeId) {
                 var buf = node.link(parenNodeId, childNodeId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -255,11 +260,12 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * change permission of node
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param userId uint16
              * @param permission uint8
              */
-            nodePerm: function nodePerm(nodeId, userId, perm) {
+            nodePerm: function nodePerm(prio, nodeId, userId, perm) {
                 var buf = node.perm(nodeId, userId, perm);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -267,9 +273,10 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * change umask of new created nodes
+             * @param prio uint8 (priority of command)
              * @param permission uint8
              */
-            nodeUmask: function nodeUmask(permission) {
+            nodeUmask: function nodeUmask(prio, permission) {
                 var buf = node.umask(permission);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -277,10 +284,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * change owner of the node
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param userId uint32
              */
-            nodeOwner: function nodeOwner(nodeId, userId) {
+            nodeOwner: function nodeOwner(prio, nodeId, userId) {
                 var buf = node.owner(nodeId, userId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -288,10 +296,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * lock the node
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param avatarId uint32 - it has to be your avatar ID
              */
-            nodeLock: function nodeLock(nodeId, avatarId) {
+            nodeLock: function nodeLock(prio, nodeId, avatarId) {
                 var buf = node.lock(nodeId, avatarId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -299,10 +308,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * unlock the node
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param avatarId uint32 - it has to be also your avatar ID
              */
-            nodeUnLock: function nodeUnLock(nodeId, avatarId) {
+            nodeUnLock: function nodeUnLock(prio, nodeId, avatarId) {
                 var buf = node.unlock(nodeId, avatarId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -310,10 +320,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * set new priority of the node
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param priority uint8
              */
-            nodePrio: function nodePrio(nodeId, priority) {
+            nodePrio: function nodePrio(prio, nodeId, priority) {
                 var buf = node.prio(nodeId, priority);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -323,10 +334,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * create tag_group on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param customType uint16
              */
-            tagGroupCreate: function tagGroupCreate(nodeId, customType) {
+            tagGroupCreate: function tagGroupCreate(prio, nodeId, customType) {
                 var buf = tagGroup.create(nodeId, customType);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -334,10 +346,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * destroy existing tag_group on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param tagGroupId uint16
              */
-            tagGroupDestroy: function tagGroupDestroy(nodeId, tagGroupId) {
+            tagGroupDestroy: function tagGroupDestroy(prio, nodeId, tagGroupId) {
                 var buf = tagGroup.destroy(nodeId, tagGroupId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -345,10 +358,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * subscribe tag_group on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param tagGroupId uint16
              */
-            tagGroupSubscribe: function tagGroupSubscribe(nodeId, tagGroupId) {
+            tagGroupSubscribe: function tagGroupSubscribe(prio, nodeId, tagGroupId) {
                 var buf = tagGroup.subscribe(nodeId, tagGroupId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -356,10 +370,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * subscribe tag_group on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param tagGroupId uint16
              */
-            tagGroupUnSubscribe: function tagGroupUnSubscribe(nodeId, tagGroupId) {
+            tagGroupUnSubscribe: function tagGroupUnSubscribe(prio, nodeId, tagGroupId) {
                 var buf = tagGroup.unsubscribe(nodeId, tagGroupId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -369,6 +384,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * create new tag at verse server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param tagGroupId uint16
              * @param dataType string const
@@ -376,7 +392,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
              * @param count uint8
              * @param customType uint16
              */
-            tagCreate: function tagCreate(nodeId, tagGroupId, dataType, count, customType) {
+            tagCreate: function tagCreate(prio, nodeId, tagGroupId, dataType, count, customType) {
                 var buf = tag.create(nodeId, tagGroupId, dataType, count, customType);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -384,11 +400,12 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * destroy existing tag at verse server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param tagGroupId uint16
              * @param tagId uint16
              */
-            tagDestroy: function tagDestroy(nodeId, tagGroupId, tagId) {
+            tagDestroy: function tagDestroy(prio, nodeId, tagGroupId, tagId) {
                 var buf = tag.destroy(nodeId, tagGroupId, tagId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -396,6 +413,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * set/change value of existing tag at verse server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param tagGroupId uint16
              * @param tagId uint16
@@ -404,7 +422,7 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
              * @param values array of values (each item of array has to have same type, e.g. int)
              * @note when dataType is 'STRING8', then array of values can contain only one item
              */
-            tagSet: function tagSet(nodeId, tagGroupId, tagId, dataType, values) {
+            tagSet: function tagSet(prio, nodeId, tagGroupId, tagId, dataType, values) {
                 var buf = tag.set(nodeId, tagGroupId, tagId, dataType, values);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -414,13 +432,14 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * create new layer on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param parentLayerId uint16
              * @param dataType string
              * @param count uint8
              * @param customType uint16
              */
-            layerCreate: function layerCreate(nodeId, parentLayerId, dataType, count, customType) {
+            layerCreate: function layerCreate(prio, nodeId, parentLayerId, dataType, count, customType) {
                 var buf = layer.create(nodeId, parentLayerId, dataType, count, customType);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -428,10 +447,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * destroy existing layer on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param layerId uint16
              */
-            layerDestroy: function layerDestroy(nodeId, layerId) {
+            layerDestroy: function layerDestroy(prio, nodeId, layerId) {
                 var buf = layer.destroy(nodeId, layerId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -439,10 +459,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * subscribe layer on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param layerId uint16
              */
-            layerSubscribe: function layerSubscribe(nodeId, layerId) {
+            layerSubscribe: function layerSubscribe(prio, nodeId, layerId) {
                 var buf = layer.subscribe(nodeId, layerId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -450,10 +471,11 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * unsubscribe from layer on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param layerId uint16
              */
-            layerUnSubscribe: function layerUnSubscribe(nodeId, layerId) {
+            layerUnSubscribe: function layerUnSubscribe(prio, nodeId, layerId) {
                 var buf = layer.unsubscribe(nodeId, layerId);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -461,11 +483,12 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * unset item layer on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param layerId uint16
              * @param itemIds array of uint32 (e.g.: [0, 1, 2])
              */
-            layerUnSetItems: function layerUnSetItems(nodeId, layerId, itemIds) {
+            layerUnSetItems: function layerUnSetItems(prio, nodeId, layerId, itemIds) {
                 var buf = layer.unsetItems(nodeId, layerId, itemIds);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
@@ -473,12 +496,13 @@ define('verse', ['request', 'response', 'negotiation', 'node', 'user', 'taggroup
 
             /*
              * set items of layer on server
+             * @param prio uint8 (priority of command)
              * @param nodeId uint32
              * @param layerId uint16
              * @param dataType string
              * @param items object of arrays (e.g.: {0: [1.0, 0.0], 1: [1.0, -1.0]} )
              */
-            layerSetItems: function layerSetItems(nodeId, layerId, dataTypes, items) {
+            layerSetItems: function layerSetItems(prio, nodeId, layerId, dataTypes, items) {
                 var buf = layer.setItems(nodeId, layerId, dataTypes, items);
                 buf = request.message(buf);
                 myWebscoket.send(buf);
